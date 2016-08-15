@@ -1,0 +1,19 @@
+{
+  "name": "memi",
+  "version": "1.0.0",
+  "description": "Helps you decide what to delete on your hard drive.",
+  "main": "main.js",
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "disk",
+    "space",
+    "management"
+  ],
+  "author": "Jay Gill",
+  "license": "ISC",
+  "dependencies": {
+    "electron": "^1.4.4"
+  }
+}
