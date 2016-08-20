@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <title>My template</title>
     <meta name="description" content="My template">
-
-    <!-- style -->
-
 </head>
 <body class="">
   <form id="form_sendmsg" onsubmit="sendMsg(); return false">
@@ -15,21 +12,6 @@
   </form>
   <p id="msgHolder"></p>
 
-<!-- scripts -->
-<script>
-const {ipcRenderer: ipc}= require('electron')
-var msgHolder = document.getElementById('msgHolder'),
-    msgInput = document.getElementById('input_sendmsg')
-
-ipc.on('echoMain', (event, arg1) => {
-  msgHolder.innerHTML = arg1
-})
-
-function sendMsg(){
-  console.log(`sending msg: ${msgInput.value}`)
-  var msg = msgInput.value
-  ipc.send('clientSendFormMsg', msg)
-}
-</script>
+  <script src='index.js'></script>
 </body>
 </html>
