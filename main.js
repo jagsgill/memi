@@ -2,6 +2,10 @@ const {app, BrowserWindow, ipcMain: ipc} = require('electron')
 const exec = require('child_process').exec
 const platform = process.platform
 
+// TODO tests for each command
+// TODO move commands into module
+// TODO implement `du` commands
+
 let win
 let commands = {
   list_dir_contents: {
