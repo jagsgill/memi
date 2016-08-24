@@ -1,5 +1,5 @@
 const {app, BrowserWindow, ipcMain: ipc} = require('electron')
-const child_process = require('child_process')
+const exec = require('child_process').exec
 const platform = process.platform
 
 let win
@@ -31,6 +31,10 @@ function notImpl(){
   // TODO
 }
 
+function addArg(cmd, arg){
+  // typeof(cmd) = String, typeof(arg) = String
+  return cmd + ' ' + arg
+}
 
 function createMainWindow(){
   win = new BrowserWindow({
@@ -54,3 +58,17 @@ ipc.on('clientSendFormMsg', (event, arg1) => {
   console.log(`Received msg: ${arg1}`)
   event.sender.send('echoMain', arg1)
 })
+
+{
+  let channel = 'clientRequestListDirContents'
+  let command = commands.list_dir_contents[platform]
+  ipc.on(channel, (event, dir) => {
+    exec(
+      addArg(command, dir),
+      (err, stdout, stderr) => {
+      let output = (err || stdout || stderr)
+      console.log(`${command} :\n ${output}`)
+      event.sender.send(channel, output)
+    })
+  })
+}
