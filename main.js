@@ -4,7 +4,6 @@ const platform = process.platform
 const commands = require('./commands').commands
 
 // TODO tests for each command
-// TODO move commands into module
 // TODO implement `du` commands
 
 let win
