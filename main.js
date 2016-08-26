@@ -1,35 +1,13 @@
 const {app, BrowserWindow, ipcMain: ipc} = require('electron')
 const exec = require('child_process').exec
 const platform = process.platform
+const commands = require('./commands').commands
 
 // TODO tests for each command
 // TODO move commands into module
 // TODO implement `du` commands
 
 let win
-let commands = {
-  list_dir_contents: {
-    'darwin': 'ls -a',
-    'freebsd': undefined,
-    'linux': undefined,
-    'sunos': undefined,
-    'win32': undefined
-  },
-  disk_usage_summary: {
-    'darwin': 'du -s',
-    'freebsd': undefined,
-    'linux': undefined,
-    'sunos': undefined,
-    'win32': undefined
-  },
-  disk_usage_all: {
-    'darwin': 'du -a',
-    'freebsd': undefined,
-    'linux': undefined,
-    'sunos': undefined,
-    'win32': undefined
-  }
-}
 
 function notImpl(){
   // TODO
