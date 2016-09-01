@@ -5,6 +5,7 @@ const commands = require('./commands').commands
 
 // TODO tests for each command
 // TODO implement `du` commands
+// TODO handle user permission for e.g. sudo or other protected directories
 
 let win
 
