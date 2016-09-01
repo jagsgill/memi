@@ -5,12 +5,12 @@ var msgHolder = document.getElementById('msgHolder'),
     msgDu = document.getElementById('input_senddu')
 
 ipc.on('clientRequestListDirContents', (event, arg1) => {
-  msgHolder.innerHTML = `${arg1}`
+  msg.innerHTML = `${arg1}`
   console.log(`${arg1}`)
 })
 
 ipc.on('clientRequestDiskUsageAll', (event, arg1) => {
-  msgDu.innerHTML = `${arg1}`
+  msg.innerHTML = `${arg1}`
   console.log(`${arg1}`)
 })
 
