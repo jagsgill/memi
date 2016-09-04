@@ -6,7 +6,6 @@ const commands = require('./commands').commands
 // TODO tests for each command
 // TODO implement `du` commands
 // TODO handle user permission for e.g. sudo or other protected directories
-// TODO Node raises error on very large `du -a` output, could happen even with -d 1
 
 let win // the window
 let sudo_options = {
@@ -17,16 +16,11 @@ function notImpl(){
   // TODO
 }
 
-function addArg(cmd, arg){
-  // typeof(cmd) = String, typeof(arg) = String
-  return cmd + ' ' + arg
-}
-
 function createMainWindow(){
   win = new BrowserWindow({
-                          width: 800,
-                          height: 800
-                          })
+    width: 800,
+    height: 800
+  })
 
   win.loadURL(`file://${__dirname}/index.html`)
   var contents = win.webContents
@@ -46,31 +40,31 @@ ipc.on('clientSendFormMsg', (event, arg1) => {
 })
 
 {
-  let channel = 'clientRequestListDirContents'
-  let command = commands.list_dir_contents[platform]
+  let channel = 'clientRequestListDirContents',
+  command = commands.list_dir_contents[platform]
   ipc.on(channel, (event, dir) => {
     exec(
-      addArg(command, dir),
+      command(dir),
       sudo_options,
       (err, stdout, stderr) => {
-      let output = (err || stdout || stderr)
-      console.log(`${command} :\n ${output}`)
-      event.sender.send(channel, output)
-    })
+        let output = (err || stdout || stderr)
+        console.log(`${command} :\n ${output}`)
+        event.sender.send(channel, output)
+      })
   })
 }
 
 {
-  let channel = 'clientRequestDiskUsageAll'
-  let command = commands.disk_usage_all[platform]
+  let channel = 'clientRequestDiskUsageAll',
+  command = commands.disk_usage_all[platform]
   ipc.on(channel, (event, dir) => {
     exec(
-      addArg(command, dir),
+      command(dir),
       sudo_options,
       (err, stdout, stderr) => {
-      let output = (err || stdout || stderr)
-      console.log(`${command} :\n ${output}`)
-      event.sender.send(channel, output)
+        let output = (err || stdout || stderr)
+        console.log(`${command} :\n ${output}`)
+        event.sender.send(channel, output)
     })
   })
 }
