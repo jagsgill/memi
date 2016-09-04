@@ -7,7 +7,7 @@ exports.commands = {
     'win32': undefined
   },
   disk_usage_summary: {
-    'darwin': (dir) => { return `(cd ${dir} && du -s *)` }, // folders and files in current dir
+    'darwin': (dir) => { return `cd ${dir} && du -s *` }, // folders and files in current dir
     'freebsd': undefined,
     'linux': undefined,
     'sunos': undefined,
