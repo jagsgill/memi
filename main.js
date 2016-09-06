@@ -4,8 +4,7 @@ const platform = process.platform
 const commands = require('./commands').commands
 
 // TODO tests for each command
-// TODO implement `du` commands
-// TODO handle user permission for e.g. sudo or other protected directories
+// TODO Node raises error on very large `du -a` output, could happen even with -d 1
 
 let win // the window
 let sudo_options = {
