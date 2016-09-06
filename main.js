@@ -55,8 +55,8 @@ ipc.on('clientSendFormMsg', (event, arg1) => {
 }
 
 {
-  let channel = 'clientRequestDiskUsageAll',
-  command = commands.disk_usage_all[platform]
+  let channel = 'clientRequestDiskUsageCurrDir',
+  command = commands.disk_usage_summary[platform]
   ipc.on(channel, (event, dir) => {
     exec(
       command(dir),

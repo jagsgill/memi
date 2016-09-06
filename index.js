@@ -9,7 +9,7 @@ ipc.on('clientRequestListDirContents', (event, arg1) => {
   console.log(`${arg1}`)
 })
 
-ipc.on('clientRequestDiskUsageAll', (event, arg1) => {
+ipc.on('clientRequestDiskUsageCurrDir', (event, arg1) => {
   msg.innerHTML = `${arg1}`
   console.log(`${arg1}`)
 })
@@ -23,5 +23,5 @@ function sendMsg(){
 function sendDu(){
   console.log(`sending msg: ${msgDu.value}`)
   var msg = msgDu.value
-  ipc.send('clientRequestDiskUsageAll', msg)
+  ipc.send('clientRequestDiskUsageCurrDir', msg)
 }
