@@ -7,7 +7,12 @@ exports.commands = {
     'win32': undefined
   },
   disk_usage_summary: {
-    'darwin': (dir) => { return `cd ${dir} && du -s *` }, // folders and files in current dir sizes
+     // folders and files sizes in current dir, including hidden
+     // TODO tests
+     // any differences between shells (bash vs zsh vs ...)
+     // total subdir/file sizes == total for dir
+     // all files/subdirs listed, including hidden
+    'darwin': (dir) => { return `cd ${dir} && du -sc .[^.]* *` },
     'freebsd': undefined,
     'linux': undefined,
     'sunos': undefined,
