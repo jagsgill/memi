@@ -4,7 +4,9 @@ const platform = process.platform
 const commands = require('./commands').commands
 
 // TODO tests for each command
-// TODO Node raises error on very large `du -a` output, could happen even with -d 1
+// TODO add progress notification for long operations, stop command for user
+// TODO want to use -x flag for `du` ?
+// TODO make sure `du` looks at hidden files/dirs
 
 let win // the window
 let sudo_options = {
