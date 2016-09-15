@@ -6,7 +6,6 @@ const commands = require('./commands').commands
 // TODO tests for each command
 // TODO add progress notification for long operations, stop command for user
 // TODO want to use -x flag for `du` ?
-// TODO make sure `du` looks at hidden files/dirs
 
 let win // the window
 let sudo_options = {
