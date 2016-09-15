@@ -1,12 +1,12 @@
 const {app, BrowserWindow, ipcMain: ipc} = require('electron')
 const exec = require('sudo-prompt').exec
-const platform = process.platform
 const commands = require('./commands').commands
 
 // TODO tests for each command
 // TODO add progress notification for long operations, stop command for user
 // TODO want to use -x flag for `du` ?
 
+const platform = process.platform
 let win // the window
 let sudo_options = {
   name: 'memi'
@@ -48,7 +48,7 @@ ipc.on('clientSendFormMsg', (event, arg1) => {
       sudo_options,
       (err, stdout, stderr) => {
         let output = (err || stdout || stderr)
-        console.log(`${command} :\n ${output}`)
+        console.log(`${command(dir)} :\n ${output}`)
         event.sender.send(channel, output)
       })
   })
@@ -63,7 +63,7 @@ ipc.on('clientSendFormMsg', (event, arg1) => {
       sudo_options,
       (err, stdout, stderr) => {
         let output = (err || stdout || stderr)
-        console.log(`${command} :\n ${output}`)
+        console.log(`${command(dir)} :\n ${output}`)
         event.sender.send(channel, output)
     })
   })
