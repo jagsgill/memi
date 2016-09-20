@@ -1,6 +1,13 @@
+const script_path = process.cwd()+'/scripts/'
+
+function cmdRunMacScript(script_name, dir){
+  return `bash ${script_path}/${script_name} ${dir}`
+}
+
 exports.commands = {
   list_dir_contents: {
-    'darwin': (dir) => { return `ls -a ${dir}` }, // list all dir contents
+    // list all dir contents
+    'darwin': undefined,
     'freebsd': undefined,
     'linux': undefined,
     'sunos': undefined,
@@ -12,14 +19,7 @@ exports.commands = {
      // any differences between shells (bash vs zsh vs ...)
      // total subdir/file sizes == total for dir
      // all files/subdirs listed, including hidden
-    'darwin': (dir) => { return `cd ${dir} && du -sc .[^.]* *` },
-    'freebsd': undefined,
-    'linux': undefined,
-    'sunos': undefined,
-    'win32': undefined
-  },
-  disk_usage_all: {
-    'darwin': (dir) => { return `du -a ${dir}` }, // recurse to list all files/subdirs sizes
+    'darwin': (dir) => { return cmdRunMacScript('disk_usage_summary_MAC.sh', dir)},
     'freebsd': undefined,
     'linux': undefined,
     'sunos': undefined,
