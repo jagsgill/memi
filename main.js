@@ -64,7 +64,7 @@ ipc.on('clientSendFormMsg', (event, arg1) => {
       (err, stdout, stderr) => {
         let output = (err || stdout || stderr)
         console.log(`${command(dir)} :\n ${output}`)
-        event.sender.send(channel, output)
+        event.sender.send(channel, output, dir)
     })
   })
 }
