@@ -9,9 +9,10 @@ du_output=`cd "$dir" && du -sc .[^.]* *`
 f=""
 while read line; 
 	do
-	#line=`echo "$line" | tr -s $"\t" ''`
-	fd=`echo "$line" | cut -d$'\t' -f2`
+	line=`echo "$line" | tr -s $"\t" ':'`
+	fd=`echo "$line" | cut -d':' -f2`
 	type=`file --brief "$dir"/"$fd"`
-	f="$f\t$line\t$type\n"
+	f="$f$line:$type\n"
 done < <(echo "$du_output")
-echo -e "$f" | column -t -s $'\t' 
+echo -e "$f"
+# echo -e "$f" | column -t -s':' # for inspecting output
