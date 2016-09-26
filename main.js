@@ -1,6 +1,6 @@
 const {app, BrowserWindow, ipcMain: ipc} = require('electron')
 const exec = require('sudo-prompt').exec
-const commands = require('./commands').commands
+const commands = require('./dev/backend/commands').commands
 
 // TODO tests for each command
 // TODO add progress notification for long operations, stop command for user
@@ -22,7 +22,7 @@ function createMainWindow(){
     height: 800
   })
 
-  win.loadURL(`file://${__dirname}/index.html`)
+  win.loadURL(`file://${__dirname}/dev/frontend/app/index.html`)
   var contents = win.webContents
 
   win.webContents.openDevTools()

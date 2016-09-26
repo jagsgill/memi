@@ -17,11 +17,10 @@ ipc.on('clientRequestDiskUsageCurrDir', (event, output, dir) => {
   let entries_to_process = rawdata.slice(0, -3) // trim total line, 2x ""
   let entries = entries_to_process.map((e) => {
     let obj = {},
-        data = e.split(/:/),
-        fname = data[1].toString()
-    obj.fname = {}
-    obj.fname.fsize = data[0].toString()
-    obj.fname.type = data[2].toString()
+        data = e.split(/:/)
+    obj.fname = data[1].toString()
+    obj.fsize = data[0].toString()
+    obj.type = data[2].toString()
     return obj
   })
   let summary = (() => {

@@ -1,4 +1,4 @@
-const script_path = process.cwd()+'/scripts/'
+const script_path = process.cwd()+'/dev/backend/scripts/'
 
 function cmdRunMacScript(script_name, dir){
   return `bash ${script_path}/${script_name} ${dir}`

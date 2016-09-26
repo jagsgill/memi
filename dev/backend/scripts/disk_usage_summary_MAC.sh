@@ -3,11 +3,11 @@
 # Outputs tab-separated columns [filesize name type]
 
 dir=$1
-du_output=`cd "$dir" && du -sc .[^.]* *`
+du_output=`cd "$dir" && du -sc .[^.]* *` # works in bash, not in zsh - glob mismatch
 
 # http://mywiki.wooledge.org/ProcessSubstitution
 f=""
-while read line; 
+while read line;
 	do
 	line=`echo "$line" | tr -s $"\t" ':'`
 	fd=`echo "$line" | cut -d':' -f2`
