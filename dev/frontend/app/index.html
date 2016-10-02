@@ -1,21 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html>
+  <head>
+    <base href="/">
+    <title>Angular With Webpack</title>
     <meta charset="UTF-8">
-    <title>My template</title>
-    <meta name="description" content="My template">
-</head>
-<body class="">
-  <form id="form_sendmsg" onsubmit="sendMsg(); return false">
-    <input id="input_sendmsg" type="text">
-    <input id="button_sendmsg" type="submit" value="Send"> <!-- onclick="sendMsg()" value="Send"> -->
-  </form>
-  <form id="form_senddu" onsubmit="sendDu(); return false">
-    <input id="input_senddu" type="text">
-    <input id="button_senddu" type="submit" value="Send"> <!-- onclick="sendMsg()" value="Send"> -->
-  </form>
-  <p id="msg"></p>
-
-  <script src='index.js'></script>
-</body>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body>
+    <my-app>Loading...</my-app>
+  </body>
 </html>
