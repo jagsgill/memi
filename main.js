@@ -5,6 +5,7 @@ const commands = require('./dev/backend/commands').commands
 // TODO tests for each command
 // TODO add progress notification for long operations, stop command for user
 // TODO want to use -x flag for `du` ?
+// TODO make base url in win.loadURL call injectable
 
 const platform = process.platform
 let win // the window
