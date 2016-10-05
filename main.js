@@ -22,7 +22,7 @@ function createMainWindow(){
     height: 800
   })
 
-  win.loadURL(`file://${__dirname}/dev/frontend/app/index.html`)
+  win.loadURL(`http://localhost:8080/index.html`)
   var contents = win.webContents
 
   win.webContents.openDevTools()
