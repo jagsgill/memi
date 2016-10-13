@@ -9,24 +9,22 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require("@angular/core");
-var platform_browser_1 = require("@angular/platform-browser");
-var menu_bar_main_component_1 = require("./menu-bar-main.component");
-var AppModule = (function () {
-    function AppModule() {
+var MenuBarMainComponent = (function () {
+    function MenuBarMainComponent() {
+        this.navlist = {
+            "Home": ""
+        };
     }
-    return AppModule;
+    return MenuBarMainComponent;
 }());
-AppModule = __decorate([
-    core_1.NgModule({
-        imports: [
-            platform_browser_1.BrowserModule
-        ],
-        declarations: [
-            menu_bar_main_component_1.MenuBarMainComponent
-        ],
-        bootstrap: []
+MenuBarMainComponent = __decorate([
+    core_1.Component({
+        moduleId: module.id,
+        selector: "menu-bar-main",
+        template: "menu-bar-main.html",
+        styleUrls: []
     }),
     __metadata("design:paramtypes", [])
-], AppModule);
-exports.AppModule = AppModule;
-//# sourceMappingURL=app.module.js.map
+], MenuBarMainComponent);
+exports.MenuBarMainComponent = MenuBarMainComponent;
+//# sourceMappingURL=menu-bar-main.component.js.map
