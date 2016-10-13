@@ -9,26 +9,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require("@angular/core");
-var platform_browser_1 = require("@angular/platform-browser");
-var home_component_1 = require("./home.component");
-var menu_bar_main_component_1 = require("./menu-bar-main.component");
-var AppModule = (function () {
-    function AppModule() {
+var DiskQueryService = (function () {
+    function DiskQueryService() {
     }
-    return AppModule;
+    return DiskQueryService;
 }());
-AppModule = __decorate([
-    core_1.NgModule({
-        imports: [
-            platform_browser_1.BrowserModule
-        ],
-        declarations: [
-            home_component_1.HomeComponent,
-            menu_bar_main_component_1.MenuBarMainComponent
-        ],
-        bootstrap: []
-    }),
+DiskQueryService = __decorate([
+    core_1.Injectable(),
     __metadata("design:paramtypes", [])
-], AppModule);
-exports.AppModule = AppModule;
-//# sourceMappingURL=app.module.js.map
+], DiskQueryService);
+exports.DiskQueryService = DiskQueryService;
+//# sourceMappingURL=disk-query.service.js.map

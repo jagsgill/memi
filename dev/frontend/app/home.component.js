@@ -9,26 +9,19 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require("@angular/core");
-var platform_browser_1 = require("@angular/platform-browser");
-var home_component_1 = require("./home.component");
-var menu_bar_main_component_1 = require("./menu-bar-main.component");
-var AppModule = (function () {
-    function AppModule() {
+var HomeComponent = (function () {
+    function HomeComponent() {
     }
-    return AppModule;
+    return HomeComponent;
 }());
-AppModule = __decorate([
-    core_1.NgModule({
-        imports: [
-            platform_browser_1.BrowserModule
-        ],
-        declarations: [
-            home_component_1.HomeComponent,
-            menu_bar_main_component_1.MenuBarMainComponent
-        ],
-        bootstrap: []
+HomeComponent = __decorate([
+    core_1.Component({
+        moduleId: module.id,
+        selector: "app-home",
+        template: "home.component.html",
+        styleUrls: []
     }),
     __metadata("design:paramtypes", [])
-], AppModule);
-exports.AppModule = AppModule;
-//# sourceMappingURL=app.module.js.map
+], HomeComponent);
+exports.HomeComponent = HomeComponent;
+//# sourceMappingURL=home.component.js.map
