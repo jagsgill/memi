@@ -12,6 +12,8 @@ var core_1 = require("@angular/core");
 var platform_browser_1 = require("@angular/platform-browser");
 var home_component_1 = require("./home.component");
 var menu_bar_main_component_1 = require("./menu-bar-main.component");
+var path_input_component_1 = require("./path-input.component");
+var disk_query_service_1 = require("./disk-query.service");
 var AppModule = (function () {
     function AppModule() {
     }
@@ -24,9 +26,13 @@ AppModule = __decorate([
         ],
         declarations: [
             home_component_1.HomeComponent,
-            menu_bar_main_component_1.MenuBarMainComponent
+            menu_bar_main_component_1.MenuBarMainComponent,
+            path_input_component_1.PathInputComponent
         ],
-        bootstrap: []
+        providers: [
+            disk_query_service_1.DiskQueryService
+        ],
+        bootstrap: [home_component_1.HomeComponent]
     }),
     __metadata("design:paramtypes", [])
 ], AppModule);

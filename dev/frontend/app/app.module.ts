@@ -3,6 +3,9 @@ import { BrowserModule }  from '@angular/platform-browser';
 
 import { HomeComponent } from './home.component'
 import { MenuBarMainComponent } from './menu-bar-main.component'
+import { PathInputComponent } from './path-input.component'
+
+import { DiskQueryService } from './disk-query.service'
 
 
 @NgModule({
@@ -11,9 +14,13 @@ import { MenuBarMainComponent } from './menu-bar-main.component'
   ],
   declarations: [
     HomeComponent,
-    MenuBarMainComponent
+    MenuBarMainComponent,
+    PathInputComponent
   ],
-  bootstrap: [ ]
+  providers: [
+    DiskQueryService
+  ],
+  bootstrap: [ HomeComponent ]
 })
 
 export class AppModule { }
