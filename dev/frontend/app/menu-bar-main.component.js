@@ -21,7 +21,7 @@ MenuBarMainComponent = __decorate([
     core_1.Component({
         moduleId: module.id,
         selector: "menu-bar-main",
-        template: "menu-bar-main.html",
+        templateUrl: "menu-bar-main.html",
         styleUrls: []
     }),
     __metadata("design:paramtypes", [])

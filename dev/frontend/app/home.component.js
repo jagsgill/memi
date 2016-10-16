@@ -18,7 +18,7 @@ HomeComponent = __decorate([
     core_1.Component({
         moduleId: module.id,
         selector: "app-home",
-        template: "home.component.html",
+        templateUrl: "home.component.html",
         styleUrls: []
     }),
     __metadata("design:paramtypes", [])

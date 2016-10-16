@@ -5,7 +5,7 @@ import { MenuBarMainComponent } from './menu-bar-main.component'
 @Component({
   moduleId: module.id,
   selector: "app-home",
-  template: "home.component.html",
+  templateUrl: "home.component.html",
   styleUrls: [
 
   ]
