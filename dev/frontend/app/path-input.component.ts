@@ -5,7 +5,7 @@ import { Component } from '@angular/core'
   selector: 'path-input',
   templateUrl: 'path-input.component.html',
   styleUrls: [
-
+    'path-input.style.css'  
   ]
 })
 

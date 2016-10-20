@@ -19,7 +19,9 @@ PathInputComponent = __decorate([
         moduleId: module.id,
         selector: 'path-input',
         templateUrl: 'path-input.component.html',
-        styleUrls: []
+        styleUrls: [
+            'path-input.style.css'
+        ]
     }),
     __metadata("design:paramtypes", [])
 ], PathInputComponent);

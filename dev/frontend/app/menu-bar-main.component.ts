@@ -5,7 +5,7 @@ import { Component } from "@angular/core"
   selector: "menu-bar-main",
   templateUrl: "menu-bar-main.html",
   styleUrls: [
-
+    'menu-bar-main.style.css'  
   ]
 })
 

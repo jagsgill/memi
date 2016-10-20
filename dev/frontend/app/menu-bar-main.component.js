@@ -22,7 +22,9 @@ MenuBarMainComponent = __decorate([
         moduleId: module.id,
         selector: "menu-bar-main",
         templateUrl: "menu-bar-main.html",
-        styleUrls: []
+        styleUrls: [
+            'menu-bar-main.style.css'
+        ]
     }),
     __metadata("design:paramtypes", [])
 ], MenuBarMainComponent);
