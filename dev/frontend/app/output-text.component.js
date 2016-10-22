@@ -16,7 +16,6 @@ var OutputTextComponent = (function () {
 }());
 OutputTextComponent = __decorate([
     core_1.Component({
-        moduleId: module.id,
         selector: "output-text",
         templateUrl: "output-text.component.html",
         styleUrls: []

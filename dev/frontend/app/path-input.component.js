@@ -16,7 +16,6 @@ var PathInputComponent = (function () {
 }());
 PathInputComponent = __decorate([
     core_1.Component({
-        moduleId: module.id,
         selector: 'path-input',
         templateUrl: 'path-input.component.html',
         styleUrls: [

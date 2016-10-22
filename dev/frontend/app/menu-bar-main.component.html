@@ -1,3 +1,7 @@
 <nav>
-  <a *ngFor="let dest of navlist" href="return false">{{dest}}</a>
+  <ul id="nav">
+    <li *ngFor="let dest of navlist">
+      <a>{{dest}}</a>
+    </li>
+  </ul>
 </nav>

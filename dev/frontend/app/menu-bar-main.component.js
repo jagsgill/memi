@@ -11,17 +11,17 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require("@angular/core");
 var MenuBarMainComponent = (function () {
     function MenuBarMainComponent() {
-        this.navlist = {
-            "Home": ""
-        };
+        this.navlist = [
+            "Home"
+        ];
     }
+    MenuBarMainComponent.prototype.noop = function () { };
     return MenuBarMainComponent;
 }());
 MenuBarMainComponent = __decorate([
     core_1.Component({
-        moduleId: module.id,
         selector: "menu-bar-main",
-        templateUrl: "menu-bar-main.html",
+        templateUrl: "menu-bar-main.component.html",
         styleUrls: [
             'menu-bar-main.style.css'
         ]

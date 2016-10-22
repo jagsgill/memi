@@ -1,16 +1,17 @@
 import { Component } from "@angular/core"
 
 @Component({
-  moduleId: module.id,
   selector: "menu-bar-main",
-  templateUrl: "menu-bar-main.html",
+  templateUrl: "menu-bar-main.component.html",
   styleUrls: [
-    'menu-bar-main.style.css'  
+    'menu-bar-main.style.css'
   ]
 })
 
 export class MenuBarMainComponent {
-  navlist = {
-    "Home" : ""
-  }
+  navlist = [
+    "Home"
+  ]
+
+  noop(): void {}
 }
