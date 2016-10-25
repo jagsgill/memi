@@ -49,5 +49,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './dev/frontend/app/index.html'
     })
-  ]
+  ],
+
+  target: 'electron-renderer' 
 };
