@@ -32,8 +32,9 @@
   },
   "devDependencies": {
     "@types/core-js": "^0.9.34",
-    "@types/node": "^6.0.46",
+    "@types/electron": "^1.4.25",
     "@types/jasmine": "^2.5.35",
+    "@types/node": "^6.0.46",
     "angular2-template-loader": "^0.4.0",
     "awesome-typescript-loader": "^2.2.4",
     "css-loader": "^0.23.1",
