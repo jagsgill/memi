@@ -1,4 +1,4 @@
-import { Component } from '@angular/core'
+import { Component, Input } from '@angular/core'
 
 @Component({
   selector: "output-text",
@@ -9,5 +9,12 @@ import { Component } from '@angular/core'
 })
 
 export class OutputTextComponent {
+  entries: string
+  summary: string
 
+  diskQueryFinished(result: any): void {
+      // TODO could be done using Observables?
+      this.entries = result.entries
+      this.summary = result.summary
+  }
 }

@@ -1,5 +1,5 @@
 <form class="basic-grey">
-<input type="text" name="path" placeholder="path">
+<input [(ngModel)]="path" type="text" name="path" placeholder="path">
 <!-- TODO use platform-specific examples -->
-<button>Analyze</button>
+<button (click)="analyze()">Analyze</button>
 </form>

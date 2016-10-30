@@ -9,11 +9,25 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require("@angular/core");
+var disk_query_service_1 = require("./disk-query.service");
 var PathInputComponent = (function () {
-    function PathInputComponent() {
+    function PathInputComponent(diskQueryService) {
+        this.diskQueryService = diskQueryService;
+        this.path = "";
+        this.diskQueryFinished = new core_1.EventEmitter();
     }
+    PathInputComponent.prototype.analyze = function () {
+        console.log("Analyzing path: " + this.path);
+        var result = this.diskQueryService.diskUsage(this.path);
+        console.log("Query finished with result: " + result.toString());
+        this.diskQueryFinished.emit(result);
+    };
     return PathInputComponent;
 }());
+__decorate([
+    core_1.Output(),
+    __metadata("design:type", Object)
+], PathInputComponent.prototype, "diskQueryFinished", void 0);
 PathInputComponent = __decorate([
     core_1.Component({
         selector: 'path-input',
@@ -22,7 +36,7 @@ PathInputComponent = __decorate([
             'path-input.style.css'
         ]
     }),
-    __metadata("design:paramtypes", [])
+    __metadata("design:paramtypes", [disk_query_service_1.DiskQueryService])
 ], PathInputComponent);
 exports.PathInputComponent = PathInputComponent;
 //# sourceMappingURL=path-input.component.js.map

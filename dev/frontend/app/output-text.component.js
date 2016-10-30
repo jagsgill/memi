@@ -12,6 +12,11 @@ var core_1 = require("@angular/core");
 var OutputTextComponent = (function () {
     function OutputTextComponent() {
     }
+    OutputTextComponent.prototype.diskQueryFinished = function (result) {
+        // TODO could be done using Observables?
+        this.entries = result.entries;
+        this.summary = result.summary;
+    };
     return OutputTextComponent;
 }());
 OutputTextComponent = __decorate([

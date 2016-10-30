@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule }  from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms'
 
 import { HomeComponent } from './home.component'
 import { MenuBarMainComponent } from './menu-bar-main.component'
@@ -11,7 +12,8 @@ import { DiskQueryService } from './disk-query.service'
 
 @NgModule({
   imports: [
-    BrowserModule
+    BrowserModule,
+    FormsModule,
   ],
   declarations: [
     HomeComponent,
