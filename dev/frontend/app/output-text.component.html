@@ -1,2 +1,21 @@
-<p *ngIf="entries">Getting entries...</p>
-<p *ngIf="summary">Getting summary...</p>
+<h2 *ngIf="summary">{{summary.curr_dir}}</h2>
+<table *ngIf="entries">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Size (bytes) </th>
+      <th>Type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="entry" *ngFor="let e of entries">
+      <td>{{e.fname}}</td>
+      <td>{{e.fsize}}</td>
+      <td>{{e.type}}</td>
+    </tr>
+    <tr class="summary">
+      <td>Total size:</td>
+    <td>{{summary.totalsize}} bytes</td>
+    </tr>
+  </tbody>
+</table>

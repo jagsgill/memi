@@ -14,20 +14,14 @@ var PathInputComponent = (function () {
     function PathInputComponent(diskQueryService) {
         this.diskQueryService = diskQueryService;
         this.path = "";
-        this.diskQueryFinished = new core_1.EventEmitter();
     }
     PathInputComponent.prototype.analyze = function () {
+        // TODO replace console.log with dev logging
         console.log("Analyzing path: " + this.path);
-        var result = this.diskQueryService.diskUsage(this.path);
-        console.log("Query finished with result: " + result.toString());
-        this.diskQueryFinished.emit(result);
+        this.diskQueryService.diskUsage(this.path);
     };
     return PathInputComponent;
 }());
-__decorate([
-    core_1.Output(),
-    __metadata("design:type", Object)
-], PathInputComponent.prototype, "diskQueryFinished", void 0);
 PathInputComponent = __decorate([
     core_1.Component({
         selector: 'path-input',

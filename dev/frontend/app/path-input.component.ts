@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter } from '@angular/core'
+import { Component } from '@angular/core'
 
 import { DiskQueryService } from './disk-query.service'
 
@@ -17,14 +17,11 @@ export class PathInputComponent {
   ) {}
 
   path = ""
-  @Output() diskQueryFinished = new EventEmitter()
-
 
   analyze(): void {
+    // TODO replace console.log with dev logging
     console.log(`Analyzing path: ${this.path}`)
-    let result = this.diskQueryService.diskUsage(this.path)
-    console.log(`Query finished with result: ${result.toString()}`)
-    this.diskQueryFinished.emit(result)
+    this.diskQueryService.diskUsage(this.path)
   }
 
 
