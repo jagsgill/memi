@@ -10,15 +10,22 @@
   </thead>
   <tbody>
     <tr class="entry" *ngFor="let e of entries">
-      <td><img [attr.src]="e.type === 'directory' ? iconFolder : iconFile"></td>
-      <td>{{e.fname}}</td>
+      <td> <img [attr.src]="e.type === 'directory' ? iconFolder : iconFile"></td>
+      <td class="entry-name">
+        <div class="rowbg" [style.width.%]="e.relativeSize"></div>
+        <span class="entry-content">
+          <img [attr.src]="iconLt" class="entrybracket">
+          {{e.fname}}
+          <img [attr.src]="iconGt" class="entrybracket">
+        </span>
+      </td>
       <td>{{e.fsize}}</td>
       <td>{{e.type}}</td>
     </tr>
     <tr class="summary">
       <td></td>
       <td>Total size:</td>
-    <td>{{summary.totalsize}} bytes</td>
+      <td>{{summary.totalsize}} bytes</td>
     </tr>
   </tbody>
 </table>

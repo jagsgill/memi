@@ -16,6 +16,8 @@ var OutputTextComponent = (function () {
         this.changeDetectorRef = changeDetectorRef;
         this.iconFolder = require('./icons/ic_folder_black_18px.svg');
         this.iconFile = require('./icons/ic_event_note_black_18px.svg');
+        this.iconLt = require('./icons/ic_keyboard_arrow_left_black_18px.svg');
+        this.iconGt = require('./icons/ic_keyboard_arrow_right_black_18px.svg');
     }
     OutputTextComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -27,7 +29,12 @@ var OutputTextComponent = (function () {
         // Possibly non-futureproof solution at http://stackoverflow.com/questions/34827334/triggering-angular2-change-detection-manually
         this.entries = result.entries;
         this.summary = result.summary;
+        for (var i = 0; i < this.entries.length; i++) {
+            var e = this.entries[i];
+            e.relativeSize = e.fsize / this.summary.totalsize * 100;
+        }
         this.changeDetectorRef.detectChanges();
+        console.log(this.entries);
     };
     return OutputTextComponent;
 }());
