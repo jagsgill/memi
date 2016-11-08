@@ -14,6 +14,8 @@ var OutputTextComponent = (function () {
     function OutputTextComponent(diskQueryService, changeDetectorRef) {
         this.diskQueryService = diskQueryService;
         this.changeDetectorRef = changeDetectorRef;
+        this.iconFolder = require('./icons/ic_folder_black_18px.svg');
+        this.iconFile = require('./icons/ic_event_note_black_18px.svg');
     }
     OutputTextComponent.prototype.ngOnInit = function () {
         var _this = this;

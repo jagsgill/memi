@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core'
 import { DiskQueryService } from './disk-query.service'
 
+
 @Component({
   selector: "output-text",
   templateUrl: "output-text.component.html",
@@ -10,8 +11,11 @@ import { DiskQueryService } from './disk-query.service'
 })
 
 export class OutputTextComponent implements OnInit {
+
   entries: string[]
   summary: string
+  iconFolder = require('./icons/ic_folder_black_18px.svg')
+  iconFile = require('./icons/ic_event_note_black_18px.svg')
 
   ngOnInit(): void {
     this.diskQueryService.diskQueryFinishedEvent.subscribe((result:any) => this.diskQueryFinishedHandler(result))
