@@ -11,7 +11,7 @@ import { DiskQueryService } from './disk-query.service'
 })
 
 export class PathInputComponent {
-
+// TODO path completion
   constructor(
     private diskQueryService: DiskQueryService
   ) {}
