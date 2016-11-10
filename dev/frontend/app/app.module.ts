@@ -6,6 +6,7 @@ import { HomeComponent } from './home.component'
 import { MenuBarMainComponent } from './menu-bar-main.component'
 import { PathInputComponent } from './path-input.component'
 import { OutputTextComponent } from './output-text.component'
+import { OutputDetectiveComponent } from './output-detective.component'
 
 import { DiskQueryService } from './disk-query.service'
 
@@ -19,7 +20,8 @@ import { DiskQueryService } from './disk-query.service'
     HomeComponent,
     MenuBarMainComponent,
     PathInputComponent,
-    OutputTextComponent
+    OutputTextComponent,
+    OutputDetectiveComponent
   ],
   providers: [
     DiskQueryService

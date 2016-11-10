@@ -15,6 +15,7 @@ var home_component_1 = require("./home.component");
 var menu_bar_main_component_1 = require("./menu-bar-main.component");
 var path_input_component_1 = require("./path-input.component");
 var output_text_component_1 = require("./output-text.component");
+var output_detective_component_1 = require("./output-detective.component");
 var disk_query_service_1 = require("./disk-query.service");
 var AppModule = (function () {
     function AppModule() {
@@ -31,7 +32,8 @@ AppModule = __decorate([
             home_component_1.HomeComponent,
             menu_bar_main_component_1.MenuBarMainComponent,
             path_input_component_1.PathInputComponent,
-            output_text_component_1.OutputTextComponent
+            output_text_component_1.OutputTextComponent,
+            output_detective_component_1.OutputDetectiveComponent
         ],
         providers: [
             disk_query_service_1.DiskQueryService
