@@ -12,13 +12,15 @@ var core_1 = require("@angular/core");
 var output_detective_chart_1 = require("./output-detective.chart");
 var OutputDetectiveComponent = (function () {
     function OutputDetectiveComponent() {
-        this.chart = new output_detective_chart_1.OutputDetectiveChart(this.canvas.nativeElement);
-        this.chart.render(this.files);
     }
     OutputDetectiveComponent.prototype.ngOnChanges = function (changes) {
         if (this.chart) {
             this.chart.render(changes.values);
         }
+    };
+    OutputDetectiveComponent.prototype.ngAfterViewInit = function () {
+        this.chart = new output_detective_chart_1.OutputDetectiveChart(this.canvas.nativeElement);
+        this.chart.render(this.files);
     };
     return OutputDetectiveComponent;
 }());
@@ -33,7 +35,7 @@ __decorate([
 OutputDetectiveComponent = __decorate([
     core_1.Component({
         selector: 'output-detective',
-        template: '<svg #canvas width="400" height="40"></svg>'
+        template: '<svg #canvas width="400" height="400"></svg>'
     }),
     __metadata("design:paramtypes", [])
 ], OutputDetectiveComponent);
