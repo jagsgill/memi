@@ -1,12 +1,12 @@
-import { Component } from '@angular/core'
+import { Component } from "@angular/core";
 
-import { DiskQueryService } from './disk-query.service'
+import { DiskQueryService } from "./disk-query.service";
 
 @Component({
-  selector: 'path-input',
-  templateUrl: 'path-input.component.html',
+  selector: "path-input",
+  templateUrl: "path-input.component.html",
   styleUrls: [
-    'path-input.style.css'
+    "path-input.style.css"
   ]
 })
 
@@ -16,13 +16,11 @@ export class PathInputComponent {
     private diskQueryService: DiskQueryService
   ) {}
 
-  path = ""
+  path = "";
 
   analyze(): void {
     // TODO replace console.log with dev logging
-    console.log(`Analyzing path: ${this.path}`)
-    this.diskQueryService.diskUsage(this.path)
+    console.log(`Analyzing path: ${this.path}`);
+    this.diskQueryService.diskUsage(this.path);
   }
-
-
 }

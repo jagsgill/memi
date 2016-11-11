@@ -14,10 +14,10 @@ var OutputTextComponent = (function () {
     function OutputTextComponent(diskQueryService, changeDetectorRef) {
         this.diskQueryService = diskQueryService;
         this.changeDetectorRef = changeDetectorRef;
-        this.iconFolder = require('./icons/ic_folder_black_18px.svg');
-        this.iconFile = require('./icons/ic_event_note_black_18px.svg');
-        this.iconLt = require('./icons/ic_keyboard_arrow_left_black_18px.svg');
-        this.iconGt = require('./icons/ic_keyboard_arrow_right_black_18px.svg');
+        this.iconFolder = require("./icons/ic_folder_black_18px.svg");
+        this.iconFile = require("./icons/ic_event_note_black_18px.svg");
+        this.iconLt = require("./icons/ic_keyboard_arrow_left_black_18px.svg");
+        this.iconGt = require("./icons/ic_keyboard_arrow_right_black_18px.svg");
     }
     OutputTextComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -43,7 +43,7 @@ OutputTextComponent = __decorate([
         selector: "output-text",
         templateUrl: "output-text.component.html",
         styleUrls: [
-            'output-text.style.css'
+            "output-text.style.css"
         ]
     }),
     __metadata("design:paramtypes", [disk_query_service_1.DiskQueryService,

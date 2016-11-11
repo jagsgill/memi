@@ -23,7 +23,7 @@ MenuBarMainComponent = __decorate([
         selector: "menu-bar-main",
         templateUrl: "menu-bar-main.component.html",
         styleUrls: [
-            'menu-bar-main.style.css'
+            "menu-bar-main.style.css"
         ]
     }),
     __metadata("design:paramtypes", [])

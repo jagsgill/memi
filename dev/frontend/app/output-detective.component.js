@@ -29,13 +29,13 @@ __decorate([
     __metadata("design:type", Array)
 ], OutputDetectiveComponent.prototype, "files", void 0);
 __decorate([
-    core_1.ViewChild('canvas'),
+    core_1.ViewChild("canvas"),
     __metadata("design:type", Object)
 ], OutputDetectiveComponent.prototype, "canvas", void 0);
 OutputDetectiveComponent = __decorate([
     core_1.Component({
-        selector: 'output-detective',
-        template: '<svg #canvas width="400" height="400"></svg>'
+        selector: "output-detective",
+        template: "<svg #canvas width='400' height='400'></svg>"
     }),
     __metadata("design:paramtypes", [])
 ], OutputDetectiveComponent);

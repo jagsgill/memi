@@ -1,6 +1,6 @@
-import { Component } from '@angular/core'
+import { Component } from "@angular/core";
 
-import { OutputDetectiveComponent } from './output-detective.component'
+import { OutputDetectiveComponent } from "./output-detective.component";
 
 @Component({
   selector: "app-home",

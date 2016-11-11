@@ -14,32 +14,32 @@ var DiskQueryService = (function () {
     function DiskQueryService() {
         this.diskQueryFinishedEvent = new core_1.EventEmitter();
         // http://onehungrymind.com/electron-angular-2-things/
-        electron_1.ipcRenderer.on('clientRequestDiskUsageForPath', this.sendParsedDiskUsageForPath.bind(this));
+        electron_1.ipcRenderer.on("clientRequestDiskUsageForPath", this.sendParsedDiskUsageForPath.bind(this));
     }
     DiskQueryService.prototype.diskUsage = function (path) {
         console.log("sending path: " + path);
-        electron_1.ipcRenderer.send('clientRequestDiskUsageForPath', path);
+        electron_1.ipcRenderer.send("clientRequestDiskUsageForPath", path);
     };
     DiskQueryService.prototype.sendParsedDiskUsageForPath = function (event, output, dir) {
         var rawdata = output.split("\n");
-        var entries_to_process = rawdata.slice(0, -3); // trim the total line and 2x ""
+        var entries_to_process = rawdata.slice(0, -3); // trim the total line and 2x
         var entries = entries_to_process.map(function (e) {
             var obj = {}, data = e.split(/:/);
-            obj['fname'] = data[1].toString();
-            obj['fsize'] = data[0].toString();
-            obj['type'] = data[2].toString();
+            obj["fname"] = data[1].toString();
+            obj["fsize"] = data[0].toString();
+            obj["type"] = data[2].toString();
             return obj;
         });
         var summary = (function () {
             var data = rawdata[rawdata.length - 3].split(/:/), obj = {};
-            obj['totalsize'] = data[0];
-            obj['curr_dir'] = dir;
+            obj["totalsize"] = data[0];
+            obj["curr_dir"] = dir;
             return obj;
         })();
         console.log(entries);
         console.log(summary);
         console.log("before emit");
-        this.diskQueryFinishedEvent.emit({ 'entries': entries, 'summary': summary });
+        this.diskQueryFinishedEvent.emit({ "entries": entries, "summary": summary });
     };
     return DiskQueryService;
 }());

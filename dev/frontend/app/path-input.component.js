@@ -25,10 +25,10 @@ var PathInputComponent = (function () {
 }());
 PathInputComponent = __decorate([
     core_1.Component({
-        selector: 'path-input',
-        templateUrl: 'path-input.component.html',
+        selector: "path-input",
+        templateUrl: "path-input.component.html",
         styleUrls: [
-            'path-input.style.css'
+            "path-input.style.css"
         ]
     }),
     __metadata("design:paramtypes", [disk_query_service_1.DiskQueryService])

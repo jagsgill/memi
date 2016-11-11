@@ -1,14 +1,14 @@
-import { NgModule } from '@angular/core';
-import { BrowserModule }  from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms'
+import { NgModule } from "@angular/core";
+import { BrowserModule }  from "@angular/platform-browser";
+import { FormsModule } from "@angular/forms";
 
-import { HomeComponent } from './home.component'
-import { MenuBarMainComponent } from './menu-bar-main.component'
-import { PathInputComponent } from './path-input.component'
-import { OutputTextComponent } from './output-text.component'
-import { OutputDetectiveComponent } from './output-detective.component'
+import { HomeComponent } from "./home.component";
+import { MenuBarMainComponent } from "./menu-bar-main.component";
+import { PathInputComponent } from "./path-input.component";
+import { OutputTextComponent } from "./output-text.component";
+import { OutputDetectiveComponent } from "./output-detective.component";
 
-import { DiskQueryService } from './disk-query.service'
+import { DiskQueryService } from "./disk-query.service";
 
 
 @NgModule({
