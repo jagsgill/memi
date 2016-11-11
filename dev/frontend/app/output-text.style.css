@@ -1,12 +1,15 @@
 table {
   border-collapse: collapse;
-  width: 100%
+  width: 100%;
+  table-layout: fixed;
 }
 
 tr, td {
   position: relative;
-  height: 1.8em;
-}
+  height: auto;
+  width: auto;
+  word-break: break-all;
+  }
 
 tr:hover .entrybracket {
   visibility: visible;
@@ -29,10 +32,10 @@ tbody tr:nth-last-child(2) {
   font-weight: bold
 }
 
-.rowbg {  /* TODO vertical align table contents better */
+.rowbg {
   background-color: lightblue;
   position: absolute;
-  height: 1.5em;
+  height: calc(100% - 4px);
   top: 50%;
   transform: translateY(-50%);
   z-index: -1;
@@ -43,11 +46,20 @@ tbody tr:nth-last-child(2) {
 }
 
 .entry-content {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
 }
 
 .entry-name {
-  width: 50%;
+  width: 400px;
+}
+
+.col1 {
+  width: 20px;
+}
+
+.col2, .col4 {
+  width: 20px;
+}
+
+.col3 {
+  width: 400px;
 }

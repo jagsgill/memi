@@ -2,30 +2,35 @@
 <table *ngIf="entries">
   <thead>
     <tr>
-      <th></th>
-      <th>Name</th>
-      <th>Size (bytes) </th>
+      <th class="col1"></th>
+      <th class="col2"></th>
+      <th class="col3">Name</th>
+      <th class="col4"></th>
+      <th>Size (bytes)</th>
       <th>Type</th>
     </tr>
   </thead>
   <tbody>
     <tr class="entry" *ngFor="let e of entries">
-      <td> <img [attr.src]="e.type === 'directory' ? iconFolder : iconFile"></td>
+      <td><img [attr.src]="e.type === 'directory' ? iconFolder : iconFile"></td>
+      <td><img [attr.src]="iconLt" class="entrybracket"></td>
       <td class="entry-name">
         <div class="rowbg" [style.width.%]="e.relativeSize"></div>
         <span class="entry-content">
-          <img [attr.src]="iconLt" class="entrybracket">
           {{e.fname}}
-          <img [attr.src]="iconGt" class="entrybracket">
         </span>
       </td>
+      <td><img [attr.src]="iconGt" class="entrybracket"></td>
       <td>{{e.fsize}}</td>
       <td>{{e.type}}</td>
     </tr>
     <tr class="summary">
       <td></td>
+      <td></td>
       <td>Total size:</td>
+      <td></td>
       <td>{{summary.totalsize}} bytes</td>
+      <td></td>
     </tr>
   </tbody>
 </table>
