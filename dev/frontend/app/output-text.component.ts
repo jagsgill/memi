@@ -14,6 +14,9 @@ export class OutputTextComponent implements OnInit {
 
   entries: any[];
   summary: any;
+
+  cwd: string;
+
   iconFolder = require("./icons/ic_folder_black_18px.svg");
   iconFile = require("./icons/ic_event_note_black_18px.svg");
   iconLt = require("./icons/ic_keyboard_arrow_left_black_18px.svg");
@@ -28,10 +31,15 @@ export class OutputTextComponent implements OnInit {
     private changeDetectorRef: ChangeDetectorRef
   ) {}
 
+  sendDiskUsageQuery(path: string): void {
+    this.diskQueryService.diskUsage(path);
+  }
+
   diskQueryFinishedHandler(result: any): void {
       // TODO could be done using Observables?
       // View is not re-rendered until some UI action takes place
       // Possibly non-futureproof solution at http://stackoverflow.com/questions/34827334/triggering-angular2-change-detection-manually
+      this.cwd = result.cwd;
       this.entries = result.entries;
       this.summary = result.summary;
       for (let i = 0; i < this.entries.length; i++) {
