@@ -14,10 +14,11 @@ var PathInputComponent = (function () {
     function PathInputComponent(diskQueryService, changeDetectorRef) {
         this.diskQueryService = diskQueryService;
         this.changeDetectorRef = changeDetectorRef;
+        // TODO path completion
+        // TODO handle platform-specific paths ('\' vs '/', etc)
+        this.iconToParentDir = require("./icons/ic_subdirectory_arrow_right_black_24px.svg");
         this.path = "";
     }
-    // TODO path completion
-    // TODO handle platform-specific paths ('\' vs '/', etc)
     PathInputComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.diskQueryService.diskQueryFinishedEvent.subscribe(function (result) { return _this.diskQueryFinishedHandler(result); });
@@ -31,6 +32,9 @@ var PathInputComponent = (function () {
         this.cwd = result.cwd;
         this.path = result.cwd;
         this.changeDetectorRef.detectChanges();
+    };
+    PathInputComponent.prototype.toParentDir = function () {
+        this.sendDiskUsageQuery(this.cwd + "/..");
     };
     return PathInputComponent;
 }());

@@ -13,6 +13,9 @@ import { DiskQueryService } from "./disk-query.service";
 export class PathInputComponent implements OnInit {
 // TODO path completion
 // TODO handle platform-specific paths ('\' vs '/', etc)
+
+  iconToParentDir = require("./icons/ic_subdirectory_arrow_right_black_24px.svg");
+
   ngOnInit(): void {
     this.diskQueryService.diskQueryFinishedEvent.subscribe((result: any) => this.diskQueryFinishedHandler(result));
   }
@@ -35,5 +38,9 @@ export class PathInputComponent implements OnInit {
     this.cwd = result.cwd;
     this.path = result.cwd;
     this.changeDetectorRef.detectChanges();
+  }
+
+  toParentDir(): void {
+    this.sendDiskUsageQuery(`${this.cwd}/..`);
   }
 }

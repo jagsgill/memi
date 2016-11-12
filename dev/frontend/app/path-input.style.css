@@ -82,3 +82,16 @@
 .basic-grey .button:hover {
     background: #CF7A7A
 }
+
+#currDirHeading {
+  float: right;
+}
+
+#iconToParentDir {
+  border: 1px solid transparent;
+  transform: rotate(-90deg);
+}
+
+#iconToParentDir:hover {
+  border: 1px solid black;
+}
