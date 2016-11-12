@@ -18,7 +18,7 @@
         <span class="entry-content">
           <!-- TODO handle files and directories separately -->
           <!-- TODO handle empty dirs -->
-          <a (click)="sendDiskUsageQuery(cwd + '/' + e.fname)">{{e.fname}}</a>
+          <a (click)="sendDiskUsageQuery(summary.cwd + '/' + e.fname)">{{e.fname}}</a>
         </span>
       </td>
       <td><img [attr.src]="iconGt" class="entrybracket"></td>

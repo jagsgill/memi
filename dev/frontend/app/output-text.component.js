@@ -30,7 +30,6 @@ var OutputTextComponent = (function () {
         // TODO could be done using Observables?
         // View is not re-rendered until some UI action takes place
         // Possibly non-futureproof solution at http://stackoverflow.com/questions/34827334/triggering-angular2-change-detection-manually
-        this.cwd = result.cwd;
         this.entries = result.entries;
         this.summary = result.summary;
         for (var i = 0; i < this.entries.length; i++) {

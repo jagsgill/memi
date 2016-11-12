@@ -35,8 +35,8 @@ export class PathInputComponent implements OnInit {
   }
 
   diskQueryFinishedHandler(result: any): void {
-    this.cwd = result.cwd;
-    this.path = result.cwd;
+    this.cwd = result.summary.cwd;
+    this.path = result.summary.cwd;
     this.changeDetectorRef.detectChanges();
   }
 

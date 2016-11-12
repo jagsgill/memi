@@ -32,14 +32,16 @@ export class DiskQueryService {
     });
 
     let summary = (() => {
-      let data = rawdata[rawdata.length - 3].split(/:/),
+      let data = rawdata[rawdata.length - 2].split(/:/),
       obj = {};
+      console.log("summary data: " , data);
       obj["totalsize"] = data[0];
+      obj["cwd"] = data[1];
       return obj;
     })();
     console.log(entries);
     console.log(summary);
     console.log("before emit");
-    this.diskQueryFinishedEvent.emit( {"cwd": dir, "entries": entries, "summary": summary} );
+    this.diskQueryFinishedEvent.emit( {"entries": entries, "summary": summary} );
   }
 }

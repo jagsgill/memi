@@ -29,8 +29,8 @@ var PathInputComponent = (function () {
         this.diskQueryService.diskUsage(path);
     };
     PathInputComponent.prototype.diskQueryFinishedHandler = function (result) {
-        this.cwd = result.cwd;
-        this.path = result.cwd;
+        this.cwd = result.summary.cwd;
+        this.path = result.summary.cwd;
         this.changeDetectorRef.detectChanges();
     };
     PathInputComponent.prototype.toParentDir = function () {
