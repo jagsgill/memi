@@ -11,5 +11,6 @@ require("rxjs");
 // Other vendors for example jQuery, Lodash or Bootstrap
 // You can import js, ts, css, sass, ...
 require("electron");
+require("path");
 require("d3");
 //# sourceMappingURL=vendor.js.map
