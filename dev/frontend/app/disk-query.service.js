@@ -33,13 +33,12 @@ var DiskQueryService = (function () {
         var summary = (function () {
             var data = rawdata[rawdata.length - 3].split(/:/), obj = {};
             obj["totalsize"] = data[0];
-            obj["curr_dir"] = dir;
             return obj;
         })();
         console.log(entries);
         console.log(summary);
         console.log("before emit");
-        this.diskQueryFinishedEvent.emit({ "entries": entries, "summary": summary });
+        this.diskQueryFinishedEvent.emit({ "cwd": dir, "entries": entries, "summary": summary });
     };
     return DiskQueryService;
 }());
