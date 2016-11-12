@@ -1,9 +1,8 @@
 #!/bin/bash
 
 # Outputs tab-separated columns [filesize name type]
-
 dir=$1
-du_output=`cd "$dir" && du -sc .[^.]* *` # works in bash, not in zsh - glob mismatch
+du_entries=`cd "$dir" && du -s .[^.]* *` # works in bash, not in zsh - glob mismatch
 
 # http://mywiki.wooledge.org/ProcessSubstitution
 f=""
@@ -13,6 +12,10 @@ while read line;
 	fd=`echo "$line" | cut -d':' -f2`
 	type=`file --brief "$dir"/"$fd"`
 	f="$f$line:$type\n"
-done < <(echo "$du_output")
+done < <(echo "$du_entries")
 echo -e "$f"
 # echo -e "$f" | column -t -s':' # for inspecting output
+
+du_total=`cd "$dir" && du -s`
+read -r first _ <<< "$du_total"
+echo "$first:$dir:<<TOTAL>>"
