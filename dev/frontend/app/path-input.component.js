@@ -9,7 +9,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require("@angular/core");
-var paths = require("path");
 var disk_query_service_1 = require("./disk-query.service");
 var PathInputComponent = (function () {
     function PathInputComponent(diskQueryService, changeDetectorRef) {
@@ -26,10 +25,11 @@ var PathInputComponent = (function () {
     PathInputComponent.prototype.sendDiskUsageQuery = function (path) {
         // TODO replace console.log with dev logging
         console.log("Analyzing path: " + path);
-        this.diskQueryService.diskUsage(paths.normalize(path));
+        this.diskQueryService.diskUsage(path);
     };
     PathInputComponent.prototype.diskQueryFinishedHandler = function (result) {
         this.cwd = result.cwd;
+        this.path = result.cwd;
         this.changeDetectorRef.detectChanges();
     };
     return PathInputComponent;

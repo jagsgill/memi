@@ -1,5 +1,6 @@
 import { Injectable, Output, EventEmitter } from "@angular/core";
 import { ipcRenderer as ipc } from "electron";
+import * as paths from "path";
 
 
 @Injectable()
@@ -14,7 +15,7 @@ export class DiskQueryService {
 
   diskUsage(path: string): any {
     console.log(`sending path: ${path}`);
-    ipc.send("clientRequestDiskUsageForPath", path);
+    ipc.send("clientRequestDiskUsageForPath", paths.normalize(path));
   }
 
   private sendParsedDiskUsageForPath(event: any, output: any, dir: any) {

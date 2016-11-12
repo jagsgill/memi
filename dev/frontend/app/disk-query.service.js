@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require("@angular/core");
 var electron_1 = require("electron");
+var paths = require("path");
 var DiskQueryService = (function () {
     function DiskQueryService() {
         this.diskQueryFinishedEvent = new core_1.EventEmitter();
@@ -18,7 +19,7 @@ var DiskQueryService = (function () {
     }
     DiskQueryService.prototype.diskUsage = function (path) {
         console.log("sending path: " + path);
-        electron_1.ipcRenderer.send("clientRequestDiskUsageForPath", path);
+        electron_1.ipcRenderer.send("clientRequestDiskUsageForPath", paths.normalize(path));
     };
     DiskQueryService.prototype.sendParsedDiskUsageForPath = function (event, output, dir) {
         var rawdata = output.split("\n");

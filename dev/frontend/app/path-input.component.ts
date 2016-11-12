@@ -1,5 +1,4 @@
 import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
-import * as paths from "path";
 
 import { DiskQueryService } from "./disk-query.service";
 
@@ -29,11 +28,12 @@ export class PathInputComponent implements OnInit {
   sendDiskUsageQuery(path: string): void {
     // TODO replace console.log with dev logging
     console.log(`Analyzing path: ${path}`);
-    this.diskQueryService.diskUsage(paths.normalize(path));
+    this.diskQueryService.diskUsage(path);
   }
 
   diskQueryFinishedHandler(result: any): void {
     this.cwd = result.cwd;
+    this.path = result.cwd;
     this.changeDetectorRef.detectChanges();
   }
 }
