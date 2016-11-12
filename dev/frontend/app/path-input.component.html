@@ -1,5 +1,6 @@
 <form class="basic-grey">
 <input [(ngModel)]="path" type="text" name="path" placeholder="path">
 <!-- TODO use platform-specific examples -->
-<button (click)="analyze()">Analyze</button>
+<button (click)="sendDiskUsageQuery(path)">Analyze</button>
 </form>
+<h2 *ngIf="cwd">{{cwd}}</h2>

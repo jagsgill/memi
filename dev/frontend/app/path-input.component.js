@@ -9,17 +9,28 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require("@angular/core");
+var paths = require("path");
 var disk_query_service_1 = require("./disk-query.service");
 var PathInputComponent = (function () {
-    // TODO path completion
-    function PathInputComponent(diskQueryService) {
+    function PathInputComponent(diskQueryService, changeDetectorRef) {
         this.diskQueryService = diskQueryService;
+        this.changeDetectorRef = changeDetectorRef;
         this.path = "";
     }
-    PathInputComponent.prototype.analyze = function () {
+    // TODO path completion
+    // TODO handle platform-specific paths ('\' vs '/', etc)
+    PathInputComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        this.diskQueryService.diskQueryFinishedEvent.subscribe(function (result) { return _this.diskQueryFinishedHandler(result); });
+    };
+    PathInputComponent.prototype.sendDiskUsageQuery = function (path) {
         // TODO replace console.log with dev logging
-        console.log("Analyzing path: " + this.path);
-        this.diskQueryService.diskUsage(this.path);
+        console.log("Analyzing path: " + path);
+        this.diskQueryService.diskUsage(paths.normalize(path));
+    };
+    PathInputComponent.prototype.diskQueryFinishedHandler = function (result) {
+        this.cwd = result.cwd;
+        this.changeDetectorRef.detectChanges();
     };
     return PathInputComponent;
 }());
@@ -31,7 +42,8 @@ PathInputComponent = __decorate([
             "path-input.style.css"
         ]
     }),
-    __metadata("design:paramtypes", [disk_query_service_1.DiskQueryService])
+    __metadata("design:paramtypes", [disk_query_service_1.DiskQueryService,
+        core_1.ChangeDetectorRef])
 ], PathInputComponent);
 exports.PathInputComponent = PathInputComponent;
 //# sourceMappingURL=path-input.component.js.map
