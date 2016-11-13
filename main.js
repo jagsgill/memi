@@ -1,6 +1,8 @@
 const {app, BrowserWindow, ipcMain: ipc} = require('electron')
 const exec = require('sudo-prompt').exec
+
 const commands = require('./dev/backend/commands').commands
+const STATUS = require('./dev/util/errorcodes.js').STATUS
 
 // TODO tests for each command
 // TODO add progress notification for long operations, stop command for user
@@ -52,20 +54,24 @@ ipc.on('clientSendFormMsg', (event, arg1) => {
         console.log(`${command(dir)} :\n ${output}`)
         event.sender.send(channel, output)
       })
-  })
-}
-
-{
-  let channel = 'clientRequestDiskUsageForPath',
-  command = commands.disk_usage_summary[platform]
-  ipc.on(channel, (event, dir) => {
-    exec(
-      command(dir),
-      sudo_options,
-      (err, stdout, stderr) => {
-        let output = (err || stdout || stderr)
-        console.log(`${command(dir)} :\n ${output}`)
-        event.sender.send(channel, output, dir)
     })
-  })
-}
+  }
+
+  {
+    let channel = 'clientRequestDiskUsageForPath',
+    command = commands.disk_usage_summary[platform]
+    ipc.on(channel, (event, dir) => {
+      exec(
+        command(dir),
+        sudo_options,
+        (err, stdout, stderr) => {
+          let output = (err || stdout || stderr).trim()
+          if (output  === STATUS.DIR_NOT_EXIST){
+            event.sender.send(channel, { status: STATUS.DIR_NOT_EXIST, content: "" }, dir)
+          } else {
+            console.log(`${command(dir)} :\n ${output}`)
+            event.sender.send(channel, { status: STATUS.OK, content: output }, dir)
+          }
+        })
+      })
+    }
