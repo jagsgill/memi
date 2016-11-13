@@ -22,7 +22,7 @@ export class DiskQueryService {
 
   private sendParsedDiskUsageForPath(event: any, output: any, dir: any) {
     let rawdata = output.content.split("\n"),
-    entries_to_process = rawdata.slice(0, -3), // trim the total line and 2x
+    entries_to_process = rawdata.slice(0, -2), // trim the total line and 2x
     entries: any,
     summary: any;
 

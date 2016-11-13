@@ -23,7 +23,7 @@ var DiskQueryService = (function () {
         electron_1.ipcRenderer.send("clientRequestDiskUsageForPath", paths.normalize(path));
     };
     DiskQueryService.prototype.sendParsedDiskUsageForPath = function (event, output, dir) {
-        var rawdata = output.content.split("\n"), entries_to_process = rawdata.slice(0, -3), // trim the total line and 2x
+        var rawdata = output.content.split("\n"), entries_to_process = rawdata.slice(0, -2), // trim the total line and 2x
         entries, summary;
         if (output.status === STATUS.OK) {
             entries = entries_to_process.map(function (e) {
