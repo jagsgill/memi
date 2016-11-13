@@ -11,7 +11,23 @@ tr, td {
   word-break: break-all;
   }
 
-tr:hover .entrybracket {
+.entry {
+  border-bottom: 1px solid #ddd;
+}
+
+.entry:hover {
+  cursor: pointer;
+}
+
+.entry td {
+  background-color: white;
+}
+
+.entry:hover td {
+  background-color: #ebebeb;
+}
+
+.entry:hover .entrybracket {
   visibility: visible;
 }
 
@@ -24,32 +40,32 @@ tbody tr:nth-last-child(2) {
   border-bottom: 1px solid black;
 }
 
-.entry {
-  border-bottom: 1px solid #ddd;
-}
-
 .summary {
   font-weight: bold
-}
-
-.rowbg {
-  background-color: lightblue;
-  position: absolute;
-  height: calc(100% - 4px);
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: -1;
 }
 
 .entrybracket {
   visibility: hidden;
 }
 
-.entry-content {
-}
-
 .entry-name {
   width: 400px;
+}
+
+.entry-sizebar {
+  background-color: lightblue;
+  position: absolute;
+  height: calc(100% - 4px);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+.entry-content {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
 }
 
 .col1 {

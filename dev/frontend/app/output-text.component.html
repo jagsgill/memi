@@ -15,15 +15,15 @@
       <td colspan=6><h3>Empty</h3></td>
     </tr>
 
-    <tr *ngFor="let e of entries" class="entry">
+    <tr *ngFor="let e of entries" class="entry" (click)="e.type === 'directory'
+          ? sendDiskUsageQuery(summary.cwd + '/' + e.fname)
+          : openFileView(summary.cwd + '/' + e.fname)">
       <td><img [attr.src]="e.type === 'directory' ? iconFolder : iconFile"></td>
       <td><img [attr.src]="iconLt" class="entrybracket"></td>
       <td class="entry-name">
-        <div class="rowbg" [style.width.%]="e.relativeSize"></div>
+        <div class="entry-sizebar" [style.width.%]="e.relativeSize"></div>
         <span class="entry-content">
-          <a (click)="e.type === 'directory' ?
-          sendDiskUsageQuery(summary.cwd + '/' + e.fname)
-          : openFileView(summary.cwd + '/' + e.fname)">{{e.fname}}</a>
+          <a>{{e.fname}}</a>
         </span>
       </td>
       <td><img [attr.src]="iconGt" class="entrybracket"></td>
