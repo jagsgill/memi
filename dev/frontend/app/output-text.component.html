@@ -1,4 +1,4 @@
-<table *ngIf="dirExists">
+<table *ngIf="dirExists && entries">
   <thead>
     <tr>
       <th class="col1"></th>
@@ -10,7 +10,12 @@
     </tr>
   </thead>
   <tbody>
-    <tr class="entry" *ngFor="let e of entries">
+
+    <tr *ngIf="querySubmitted && entries.length === 0" class="no-entries">
+      <td colspan=6><h3>Empty</h3></td>
+    </tr>
+
+    <tr *ngFor="let e of entries" class="entry">
       <td><img [attr.src]="e.type === 'directory' ? iconFolder : iconFile"></td>
       <td><img [attr.src]="iconLt" class="entrybracket"></td>
       <td class="entry-name">
@@ -25,6 +30,7 @@
       <td>{{e.fsize}}</td>
       <td>{{e.type}}</td>
     </tr>
+
     <tr class="summary">
       <td></td>
       <td></td>
@@ -33,6 +39,8 @@
       <td>{{summary.totalsize}} bytes</td>
       <td></td>
     </tr>
+
   </tbody>
 </table>
+
 <h3 *ngIf="!dirExists && querySubmitted">Directory {{summary.cwd}} <br> was not found.</h3>

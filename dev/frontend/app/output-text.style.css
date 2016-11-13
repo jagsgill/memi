@@ -63,3 +63,8 @@ tbody tr:nth-last-child(2) {
 .col3 {
   width: 400px;
 }
+
+.no-entries h3 {
+  text-align: center;
+  color: #8f8f8f;
+}
