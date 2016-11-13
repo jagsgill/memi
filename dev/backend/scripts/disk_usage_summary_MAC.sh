@@ -2,20 +2,25 @@
 
 # Outputs tab-separated columns [filesize name type]
 dir=$1
-du_entries=`cd "$dir" && du -s .[^.]* *` # works in bash, not in zsh - glob mismatch
+if [ -d "$dir" ]
+then
+	du_entries=`cd "$dir" && du -s .[^.]* *` # works in bash, not in zsh - glob mismatch
 
-# http://mywiki.wooledge.org/ProcessSubstitution
-f=""
-while read line;
+	# http://mywiki.wooledge.org/ProcessSubstitution
+	f=""
+	while read line;
 	do
-	line=`echo "$line" | tr -s $"\t" ':'`
-	fd=`echo "$line" | cut -d':' -f2`
-	type=`file --brief "$dir"/"$fd"`
-	f="$f$line:$type\n"
-done < <(echo "$du_entries")
-echo -e "$f"
-# echo -e "$f" | column -t -s':' # for inspecting output
+		line=`echo "$line" | tr -s $"\t" ':'`
+		fd=`echo "$line" | cut -d':' -f2`
+		type=`file --brief "$dir"/"$fd"`
+		f="$f$line:$type\n"
+	done < <(echo "$du_entries")
+	echo -e "$f"
+	# echo -e "$f" | column -t -s':' # for inspecting output
 
-du_total=`cd "$dir" && du -s`
-read -r first _ <<< "$du_total"
-echo "$first:$dir:<<TOTAL>>"
+	du_total=`cd "$dir" && du -s`
+	read -r first _ <<< "$du_total"
+	echo "$first:$dir:<<TOTAL>>"
+else
+	echo "DIR_NOT_EXIST"
+fi
