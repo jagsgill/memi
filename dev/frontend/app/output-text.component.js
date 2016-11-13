@@ -50,6 +50,9 @@ var OutputTextComponent = (function () {
             this.changeDetectorRef.detectChanges();
         }
     };
+    OutputTextComponent.prototype.openFileView = function (path) {
+        // TODO handle user click on file
+    };
     return OutputTextComponent;
 }());
 OutputTextComponent = __decorate([

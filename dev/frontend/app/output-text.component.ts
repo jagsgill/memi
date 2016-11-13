@@ -58,4 +58,8 @@ export class OutputTextComponent implements OnInit {
       this.changeDetectorRef.detectChanges();
     }
   }
+
+  openFileView(path: string): void {
+    // TODO handle user click on file
+  }
 }
