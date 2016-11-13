@@ -22,7 +22,6 @@
         <div class="rowbg" [style.width.%]="e.relativeSize"></div>
         <span class="entry-content">
           <!-- TODO handle files and directories separately -->
-          <!-- TODO handle empty dirs -->
           <a (click)="sendDiskUsageQuery(summary.cwd + '/' + e.fname)">{{e.fname}}</a>
         </span>
       </td>

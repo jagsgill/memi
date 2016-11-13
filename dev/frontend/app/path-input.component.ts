@@ -13,7 +13,6 @@ const STATUS = require("../../util/errorcodes.js").STATUS;
 
 export class PathInputComponent implements OnInit {
   // TODO path completion
-  // TODO handle platform-specific paths ('\' vs '/', etc)
 
 iconToParentDir = require("./icons/ic_subdirectory_arrow_right_black_24px.svg");
 

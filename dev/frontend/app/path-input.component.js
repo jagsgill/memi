@@ -16,7 +16,6 @@ var PathInputComponent = (function () {
         this.diskQueryService = diskQueryService;
         this.changeDetectorRef = changeDetectorRef;
         // TODO path completion
-        // TODO handle platform-specific paths ('\' vs '/', etc)
         this.iconToParentDir = require("./icons/ic_subdirectory_arrow_right_black_24px.svg");
         this.path = "";
     }
