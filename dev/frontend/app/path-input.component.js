@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require("@angular/core");
 var disk_query_service_1 = require("./disk-query.service");
+var STATUS = require("../../util/errorcodes.js").STATUS;
 var PathInputComponent = (function () {
     function PathInputComponent(diskQueryService, changeDetectorRef) {
         this.diskQueryService = diskQueryService;

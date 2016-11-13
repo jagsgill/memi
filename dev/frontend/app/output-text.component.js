@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require("@angular/core");
 var disk_query_service_1 = require("./disk-query.service");
+var STATUS = require("../../util/errorcodes.js").STATUS;
 var OutputTextComponent = (function () {
     function OutputTextComponent(diskQueryService, changeDetectorRef) {
         this.diskQueryService = diskQueryService;
@@ -18,6 +19,8 @@ var OutputTextComponent = (function () {
         this.iconFile = require("./icons/ic_event_note_black_18px.svg");
         this.iconLt = require("./icons/ic_keyboard_arrow_left_black_18px.svg");
         this.iconGt = require("./icons/ic_keyboard_arrow_right_black_18px.svg");
+        this.dirExists = false;
+        this.querySubmitted = false;
     }
     OutputTextComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -27,17 +30,25 @@ var OutputTextComponent = (function () {
         this.diskQueryService.diskUsage(path);
     };
     OutputTextComponent.prototype.diskQueryFinishedHandler = function (result) {
-        // TODO could be done using Observables?
+        this.querySubmitted = true;
+        // TODO could be done using Observables? e.g. to solve situation where one can submit a long-time query then short
+        // time query, short query results are displayed, then later the longer query results are displayed
         // View is not re-rendered until some UI action takes place
         // Possibly non-futureproof solution at http://stackoverflow.com/questions/34827334/triggering-angular2-change-detection-manually
         this.entries = result.entries;
         this.summary = result.summary;
-        for (var i = 0; i < this.entries.length; i++) {
-            var e = this.entries[i];
-            e.relativeSize = e.fsize / this.summary.totalsize * 100;
+        if (result.status === STATUS.OK) {
+            this.dirExists = true;
+            for (var i = 0; i < this.entries.length; i++) {
+                var e = this.entries[i];
+                e.relativeSize = e.fsize / this.summary.totalsize * 100;
+            }
+            this.changeDetectorRef.detectChanges();
         }
-        this.changeDetectorRef.detectChanges();
-        console.log(this.entries);
+        else if (result.status === STATUS.DIR_NOT_EXIST) {
+            this.dirExists = false;
+            this.changeDetectorRef.detectChanges();
+        }
     };
     return OutputTextComponent;
 }());

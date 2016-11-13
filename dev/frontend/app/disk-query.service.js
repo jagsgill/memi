@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require("@angular/core");
 var electron_1 = require("electron");
 var paths = require("path");
+var STATUS = require("../../util/errorcodes.js").STATUS;
 var DiskQueryService = (function () {
     function DiskQueryService() {
         this.diskQueryFinishedEvent = new core_1.EventEmitter();
@@ -22,26 +23,31 @@ var DiskQueryService = (function () {
         electron_1.ipcRenderer.send("clientRequestDiskUsageForPath", paths.normalize(path));
     };
     DiskQueryService.prototype.sendParsedDiskUsageForPath = function (event, output, dir) {
-        var rawdata = output.split("\n");
-        var entries_to_process = rawdata.slice(0, -3); // trim the total line and 2x
-        var entries = entries_to_process.map(function (e) {
-            var obj = {}, data = e.split(/:/);
-            obj["fname"] = data[1].toString();
-            obj["fsize"] = data[0].toString();
-            obj["type"] = data[2].toString();
-            return obj;
-        });
-        var summary = (function () {
-            var data = rawdata[rawdata.length - 2].split(/:/), obj = {};
-            console.log("summary data: ", data);
-            obj["totalsize"] = data[0];
-            obj["cwd"] = data[1];
-            return obj;
-        })();
+        var rawdata = output.content.split("\n"), entries_to_process = rawdata.slice(0, -3), // trim the total line and 2x
+        entries, summary;
+        if (output.status === STATUS.OK) {
+            entries = entries_to_process.map(function (e) {
+                var obj = {}, data = e.split(/:/);
+                obj["fname"] = data[1].toString();
+                obj["fsize"] = data[0].toString();
+                obj["type"] = data[2].toString();
+                return obj;
+            });
+            summary = (function () {
+                var data = rawdata[rawdata.length - 1].split(/:/), obj = {};
+                obj["totalsize"] = data[0];
+                obj["cwd"] = data[1]; // normalized path from system
+                return obj;
+            })();
+        }
+        else if (output.status === STATUS.DIR_NOT_EXIST) {
+            entries = {};
+            summary = { totalsize: "0", cwd: dir };
+        }
+        console.log(output.status);
         console.log(entries);
         console.log(summary);
-        console.log("before emit");
-        this.diskQueryFinishedEvent.emit({ "entries": entries, "summary": summary });
+        this.diskQueryFinishedEvent.emit({ "status": output.status, "entries": entries, "summary": summary });
     };
     return DiskQueryService;
 }());

@@ -1,4 +1,4 @@
-<table *ngIf="entries">
+<table *ngIf="dirExists">
   <thead>
     <tr>
       <th class="col1"></th>
@@ -35,3 +35,4 @@
     </tr>
   </tbody>
 </table>
+<h3 *ngIf="!dirExists && querySubmitted">Directory {{summary.cwd}} <br> was not found.</h3>

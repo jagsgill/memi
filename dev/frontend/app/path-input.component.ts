@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
 
 import { DiskQueryService } from "./disk-query.service";
+const STATUS = require("../../util/errorcodes.js").STATUS;
 
 @Component({
   selector: "path-input",
@@ -11,10 +12,10 @@ import { DiskQueryService } from "./disk-query.service";
 })
 
 export class PathInputComponent implements OnInit {
-// TODO path completion
-// TODO handle platform-specific paths ('\' vs '/', etc)
+  // TODO path completion
+  // TODO handle platform-specific paths ('\' vs '/', etc)
 
-  iconToParentDir = require("./icons/ic_subdirectory_arrow_right_black_24px.svg");
+iconToParentDir = require("./icons/ic_subdirectory_arrow_right_black_24px.svg");
 
   ngOnInit(): void {
     this.diskQueryService.diskQueryFinishedEvent.subscribe((result: any) => this.diskQueryFinishedHandler(result));
@@ -35,9 +36,9 @@ export class PathInputComponent implements OnInit {
   }
 
   diskQueryFinishedHandler(result: any): void {
-    this.cwd = result.summary.cwd;
-    this.path = result.summary.cwd;
-    this.changeDetectorRef.detectChanges();
+      this.cwd = result.summary.cwd;
+      this.path = result.summary.cwd;
+      this.changeDetectorRef.detectChanges();
   }
 
   toParentDir(): void {

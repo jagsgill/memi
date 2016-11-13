@@ -2,6 +2,8 @@ import { Injectable, Output, EventEmitter } from "@angular/core";
 import { ipcRenderer as ipc } from "electron";
 import * as paths from "path";
 
+const STATUS = require("../../util/errorcodes.js").STATUS;
+
 
 @Injectable()
 export class DiskQueryService {
@@ -19,29 +21,35 @@ export class DiskQueryService {
   }
 
   private sendParsedDiskUsageForPath(event: any, output: any, dir: any) {
-    let rawdata = output.split("\n");
-    let entries_to_process = rawdata.slice(0, -3); // trim the total line and 2x
+    let rawdata = output.content.split("\n"),
+    entries_to_process = rawdata.slice(0, -3), // trim the total line and 2x
+    entries: any,
+    summary: any;
 
-    let entries = entries_to_process.map((e: string) => {
-      let obj = {},
-      data = e.split(/:/);
-      obj["fname"] = data[1].toString();
-      obj["fsize"] = data[0].toString();
-      obj["type"] = data[2].toString();
-      return obj;
-    });
+    if (output.status === STATUS.OK) {
+      entries = entries_to_process.map((e: string) => {
+        let obj = {},
+        data = e.split(/:/);
+        obj["fname"] = data[1].toString();
+        obj["fsize"] = data[0].toString();
+        obj["type"] = data[2].toString();
+        return obj;
+      });
 
-    let summary = (() => {
-      let data = rawdata[rawdata.length - 2].split(/:/),
-      obj = {};
-      console.log("summary data: " , data);
-      obj["totalsize"] = data[0];
-      obj["cwd"] = data[1];
-      return obj;
-    })();
+      summary = (() => {
+        let data = rawdata[rawdata.length - 1].split(/:/),
+        obj = {};
+        obj["totalsize"] = data[0];
+        obj["cwd"] = data[1]; // normalized path from system
+        return obj;
+      })();
+    } else if (output.status === STATUS.DIR_NOT_EXIST) {
+      entries = {};
+      summary = { totalsize: "0", cwd: dir };
+    }
+    console.log(output.status);
     console.log(entries);
     console.log(summary);
-    console.log("before emit");
-    this.diskQueryFinishedEvent.emit( {"entries": entries, "summary": summary} );
+    this.diskQueryFinishedEvent.emit( {"status": output.status, "entries": entries, "summary": summary} );
   }
 }
