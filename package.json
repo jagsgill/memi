@@ -4,7 +4,7 @@
   "description": "Helps you decide what to delete on your hard drive.",
   "main": "main.js",
   "scripts": {
-    "start": "webpack --config config/webpack.dev.js --progress && webpack-dev-server --content-base dev_output/ --port 8080",
+    "start": "webpack-dev-server --inline --progress --port 8080",
     "test": "karma start",
     "build": "rimraf dist && webpack --config config/webpack.prod.js --progress --profile --bail"
   },
