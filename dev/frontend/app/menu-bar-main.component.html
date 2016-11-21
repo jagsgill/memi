@@ -1,7 +1,7 @@
 <nav>
   <ul id="nav">
-    <li *ngFor="let dest of navlist">
-      <a>{{dest}}</a>
-    </li>
+    <li><a [routerLink]="['/']">Home</a></li>
+    <li><a [routerLink]="['/list']">List</a></li>
+    <li><a [routerLink]="['/detective']">Detective</a></li>
   </ul>
 </nav>

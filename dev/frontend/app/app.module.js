@@ -17,6 +17,7 @@ var path_input_component_1 = require("./path-input.component");
 var output_text_component_1 = require("./output-text.component");
 var output_detective_component_1 = require("./output-detective.component");
 var disk_query_service_1 = require("./disk-query.service");
+var app_routes_1 = require("./app.routes");
 var AppModule = (function () {
     function AppModule() {
     }
@@ -27,6 +28,7 @@ AppModule = __decorate([
         imports: [
             platform_browser_1.BrowserModule,
             forms_1.FormsModule,
+            app_routes_1.routing
         ],
         declarations: [
             home_component_1.HomeComponent,

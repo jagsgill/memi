@@ -43,12 +43,15 @@ var OutputTextComponent = (function () {
                 var e = this.entries[i];
                 e.relativeSize = e.fsize / this.summary.totalsize * 100;
             }
-            this.changeDetectorRef.detectChanges();
         }
         else if (result.status === STATUS.DIR_NOT_EXIST) {
             this.dirExists = false;
-            this.changeDetectorRef.detectChanges();
         }
+        // TODO find a non-buggy forced re-rendering method
+        // console shows Subscriber.js:227 Uncaught Error: Attempt to use a destroyed view: detectChanges
+        // inside this method
+        // potential solution @ http://blog.thoughtram.io/angular/2016/02/22/angular-2-change-detection-explained.html#change-detection
+        //this.changeDetectorRef.detectChanges();
     };
     OutputTextComponent.prototype.openFileView = function (path) {
         // TODO handle user click on file

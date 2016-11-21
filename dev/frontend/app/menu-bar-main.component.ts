@@ -8,10 +8,4 @@ import { Component } from "@angular/core";
   ]
 })
 
-export class MenuBarMainComponent {
-  navlist = [
-    "Home"
-  ];
-
-  noop(): void {}
-}
+export class MenuBarMainComponent {}

@@ -11,11 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require("@angular/core");
 var MenuBarMainComponent = (function () {
     function MenuBarMainComponent() {
-        this.navlist = [
-            "Home"
-        ];
     }
-    MenuBarMainComponent.prototype.noop = function () { };
     return MenuBarMainComponent;
 }());
 MenuBarMainComponent = __decorate([
