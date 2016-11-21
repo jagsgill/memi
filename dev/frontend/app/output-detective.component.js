@@ -43,7 +43,9 @@ var OutputDetectiveComponent = (function () {
             cwd: summary.cwd,
             children: entries
         };
-        var svg = d3.select(this.canvas.nativeElement), diameter = +svg.attr("width"), g = svg.append("g").attr("transform", "translate(2,2)"), format = d3.format(",d");
+        var svg = d3.select(this.canvas.nativeElement);
+        svg.selectAll("*").remove();
+        var diameter = +svg.attr("width"), g = svg.append("g").attr("transform", "translate(2,2)"), format = d3.format(",d");
         var pack = d3.pack()
             .size([diameter - 4, diameter - 4]);
         root = d3.hierarchy(root)

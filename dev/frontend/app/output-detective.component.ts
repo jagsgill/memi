@@ -54,8 +54,10 @@ export class OutputDetectiveComponent {
           children: entries
         };
 
-        let svg = d3.select(this.canvas.nativeElement),
-        diameter = +svg.attr("width"),
+        let svg = d3.select(this.canvas.nativeElement);
+        svg.selectAll("*").remove();
+
+        let diameter = +svg.attr("width"),
         g = svg.append("g").attr("transform", "translate(2,2)"),
         format = d3.format(",d");
 
