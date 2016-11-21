@@ -51,7 +51,7 @@ var OutputTextComponent = (function () {
         // console shows Subscriber.js:227 Uncaught Error: Attempt to use a destroyed view: detectChanges
         // inside this method
         // potential solution @ http://blog.thoughtram.io/angular/2016/02/22/angular-2-change-detection-explained.html#change-detection
-        //this.changeDetectorRef.detectChanges();
+        // this.changeDetectorRef.detectChanges();
     };
     OutputTextComponent.prototype.openFileView = function (path) {
         // TODO handle user click on file
