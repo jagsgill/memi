@@ -28,8 +28,8 @@ var OutputDetectiveComponent = (function () {
     };
     OutputDetectiveComponent.prototype.diskQueryFinishedHandler = function (result) {
         this.querySubmitted = true;
-        this.entries = result.entries;
-        this.summary = result.summary;
+        this.summary = result.summary; // for displaying <dir> not found msg
+        console.log(result);
         if (result.status === STATUS.OK) {
             this.dirExists = true;
             this.chart.render(result);

@@ -1,5 +1,7 @@
 import * as d3 from "d3";
 
+import { DiskQueryResult } from "./disk-query.service";
+
 export class OutputDetectiveChart {
 
   canvas: HTMLElement;
@@ -8,7 +10,10 @@ export class OutputDetectiveChart {
     this.canvas = canvas;
   }
 
-  render(files: any[]): void {
+  render(result: DiskQueryResult): void {
+      let entries = result.entries;
+      let summary = result.summary;
+
 
   }
 }

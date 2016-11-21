@@ -50,6 +50,20 @@ export class DiskQueryService {
     console.log(output.status);
     console.log(entries);
     console.log(summary);
-    this.diskQueryFinishedEvent.emit( {"status": output.status, "entries": entries, "summary": summary} );
+    this.diskQueryFinishedEvent.emit(
+      new DiskQueryResult(output.status, entries, summary)
+    );
+  }
+}
+
+export class DiskQueryResult {
+  status: string;
+  entries: any[];
+  summary: any;
+
+  constructor(status: string, entries: any[], summary: any) {
+    this.status = status;
+    this.entries = entries;
+    this.summary = summary;
   }
 }

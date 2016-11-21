@@ -12,6 +12,7 @@ var core_1 = require("@angular/core");
 var platform_browser_1 = require("@angular/platform-browser");
 var forms_1 = require("@angular/forms");
 var home_component_1 = require("./home.component");
+var home_content_component_1 = require("./home-content.component");
 var menu_bar_main_component_1 = require("./menu-bar-main.component");
 var path_input_component_1 = require("./path-input.component");
 var output_text_component_1 = require("./output-text.component");
@@ -32,10 +33,11 @@ AppModule = __decorate([
         ],
         declarations: [
             home_component_1.HomeComponent,
+            home_content_component_1.HomeContentComponent,
             menu_bar_main_component_1.MenuBarMainComponent,
             path_input_component_1.PathInputComponent,
             output_text_component_1.OutputTextComponent,
-            output_detective_component_1.OutputDetectiveComponent
+            output_detective_component_1.OutputDetectiveComponent,
         ],
         providers: [
             disk_query_service_1.DiskQueryService

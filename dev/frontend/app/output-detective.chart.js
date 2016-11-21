@@ -3,7 +3,9 @@ var OutputDetectiveChart = (function () {
     function OutputDetectiveChart(canvas) {
         this.canvas = canvas;
     }
-    OutputDetectiveChart.prototype.render = function (files) {
+    OutputDetectiveChart.prototype.render = function (result) {
+        var entries = result.entries;
+        var summary = result.summary;
     };
     return OutputDetectiveChart;
 }());

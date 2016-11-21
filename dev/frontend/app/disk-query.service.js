@@ -47,7 +47,7 @@ var DiskQueryService = (function () {
         console.log(output.status);
         console.log(entries);
         console.log(summary);
-        this.diskQueryFinishedEvent.emit({ "status": output.status, "entries": entries, "summary": summary });
+        this.diskQueryFinishedEvent.emit(new DiskQueryResult(output.status, entries, summary));
     };
     return DiskQueryService;
 }());
@@ -60,4 +60,13 @@ DiskQueryService = __decorate([
     __metadata("design:paramtypes", [])
 ], DiskQueryService);
 exports.DiskQueryService = DiskQueryService;
+var DiskQueryResult = (function () {
+    function DiskQueryResult(status, entries, summary) {
+        this.status = status;
+        this.entries = entries;
+        this.summary = summary;
+    }
+    return DiskQueryResult;
+}());
+exports.DiskQueryResult = DiskQueryResult;
 //# sourceMappingURL=disk-query.service.js.map

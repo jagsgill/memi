@@ -9,7 +9,7 @@ import { PathInputComponent } from "./path-input.component";
 import { OutputTextComponent } from "./output-text.component";
 import { OutputDetectiveComponent } from "./output-detective.component";
 
-import { DiskQueryService } from "./disk-query.service";
+import { DiskQueryService, DiskQueryResult } from "./disk-query.service";
 import { routing } from "./app.routes";
 
 
@@ -25,7 +25,7 @@ import { routing } from "./app.routes";
     MenuBarMainComponent,
     PathInputComponent,
     OutputTextComponent,
-    OutputDetectiveComponent
+    OutputDetectiveComponent,
   ],
   providers: [
     DiskQueryService

@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
 
-import { DiskQueryService } from "./disk-query.service";
+import { DiskQueryService, DiskQueryResult } from "./disk-query.service";
 const STATUS = require("../../util/errorcodes.js").STATUS;
 
 @Component({
@@ -25,7 +25,9 @@ export class OutputTextComponent implements OnInit {
   querySubmitted = false;
 
   ngOnInit(): void {
-    this.diskQueryService.diskQueryFinishedEvent.subscribe((result: any) => this.diskQueryFinishedHandler(result));
+    this.diskQueryService.diskQueryFinishedEvent.subscribe(
+      (result: DiskQueryResult) => this.diskQueryFinishedHandler(result)
+    );
   }
 
   constructor(
@@ -37,7 +39,7 @@ export class OutputTextComponent implements OnInit {
     this.diskQueryService.diskUsage(path);
   }
 
-  diskQueryFinishedHandler(result: any): void {
+  diskQueryFinishedHandler(result: DiskQueryResult): void {
     this.querySubmitted = true;
     // TODO could be done using Observables? e.g. to solve situation where one can submit a long-time query then short
     // time query, short query results are displayed, then later the longer query results are displayed
