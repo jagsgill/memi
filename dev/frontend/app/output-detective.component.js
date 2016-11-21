@@ -10,7 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require("@angular/core");
 var disk_query_service_1 = require("./disk-query.service");
-var output_detective_chart_1 = require("./output-detective.chart");
+var output_detective_chart_component_1 = require("./output-detective-chart.component");
 var STATUS = require("../../util/errorcodes.js").STATUS;
 var OutputDetectiveComponent = (function () {
     function OutputDetectiveComponent(diskQueryService) {
@@ -24,12 +24,11 @@ var OutputDetectiveComponent = (function () {
         this.diskQueryService.diskQueryFinishedEvent.subscribe(function (result) { return _this.diskQueryFinishedHandler(result); });
     };
     OutputDetectiveComponent.prototype.ngAfterViewInit = function () {
-        this.chart = new output_detective_chart_1.OutputDetectiveChart(this.canvas.nativeElement);
+        this.chart = new output_detective_chart_component_1.OutputDetectiveChart(this.canvas.nativeElement);
     };
     OutputDetectiveComponent.prototype.diskQueryFinishedHandler = function (result) {
         this.querySubmitted = true;
         this.summary = result.summary; // for displaying <dir> not found msg
-        console.log(result);
         if (result.status === STATUS.OK) {
             this.dirExists = true;
             this.chart.render(result);
@@ -53,7 +52,8 @@ OutputDetectiveComponent = __decorate([
         selector: "output-detective",
         templateUrl: "output-detective.component.html",
         styleUrls: [
-            "output-detective.component.css"
+            "output-detective.component.css",
+            "output-detective-chart.style.css"
         ]
     }),
     __metadata("design:paramtypes", [disk_query_service_1.DiskQueryService])

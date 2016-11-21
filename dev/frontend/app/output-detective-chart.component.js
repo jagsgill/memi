@@ -49,10 +49,12 @@ OutputDetectiveChart = __decorate([
     core_1.Component({
         // encapsulation: ViewEncapsulation.None,
         selector: "detective-chart",
-        template: "<detective-chart></detective-chart>",
-        styleUrls: ["output-detective-chart.style.css"]
+        template: "",
+        styleUrls: [
+            "output-detective-chart.style.css"
+        ]
     }),
     __metadata("design:paramtypes", [HTMLElement])
 ], OutputDetectiveChart);
 exports.OutputDetectiveChart = OutputDetectiveChart;
-//# sourceMappingURL=output-detective.chart.js.map
+//# sourceMappingURL=output-detective-chart.component.js.map

@@ -1,14 +1,15 @@
 import { Component, Input, Inject, ViewChild, AfterViewInit } from "@angular/core";
 
 import { DiskQueryService, DiskQueryResult } from "./disk-query.service";
-import { OutputDetectiveChart } from "./output-detective.chart";
+import { OutputDetectiveChart } from "./output-detective-chart.component";
 const STATUS = require("../../util/errorcodes.js").STATUS;
 
 @Component({
     selector: "output-detective",
     templateUrl: "output-detective.component.html",
     styleUrls: [
-        "output-detective.component.css"
+        "output-detective.component.css",
+        "output-detective-chart.style.css"
     ]
 })
 
@@ -37,7 +38,6 @@ export class OutputDetectiveComponent implements AfterViewInit {
     diskQueryFinishedHandler(result: DiskQueryResult): void {
         this.querySubmitted = true;
         this.summary = result.summary; // for displaying <dir> not found msg
-        console.log(result)
         if (result.status === STATUS.OK) {
             this.dirExists = true;
             this.chart.render(result);
