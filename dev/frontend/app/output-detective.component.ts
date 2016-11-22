@@ -5,6 +5,9 @@ import { DiskQueryService, DiskQueryResult } from "./disk-query.service";
 import { OutputDetectiveChart } from "./output-detective-chart.component";
 const STATUS = require("../../util/errorcodes.js").STATUS;
 
+const iconFile = require("./icons/ic_event_note_black_18px.svg");
+const iconDir = require("./icons/ic_folder_black_18px.svg");
+
 @Component({
     encapsulation: ViewEncapsulation.None, // style encapsulation breaks styling of SVG node's children
     selector: "output-detective",
@@ -16,6 +19,7 @@ const STATUS = require("../../util/errorcodes.js").STATUS;
 
 export class OutputDetectiveComponent {
     @Input() files: any[];
+    // @Inject(DiskQueryService) diskQueryService: DiskQueryService;
     @ViewChild("canvas") canvas: any; // reference to svg canvas child node for the view
 
     dirExists = false;
@@ -47,6 +51,7 @@ export class OutputDetectiveComponent {
         // [ {fname: ... , fsize: ..., type: ...}] <= result.entries
         // { totalsize: ..., cwd: ....} <= result.summary
 
+        let diskQueryService = this.diskQueryService;
         let entries = result.entries;
         let summary = result.summary;
         let root: any = {
@@ -71,8 +76,14 @@ export class OutputDetectiveComponent {
         let node = g.selectAll(".node")
         .data(pack(root).descendants())
         .enter().append("g")
-        .attr("class", function(d) { return d.children ? "node" : "leaf node"; })
-        .attr("transform", function(d) { return `translate( ${d.x}, ${d.y})`; });
+        .attr("class", function(d) { return d.children ? "internal node" : "leaf node"; })
+        .attr("transform", function(d) { return `translate( ${d.x}, ${d.y})`; })
+        .on("click", function(d: any) {
+          if (d.data.type === "directory") {
+            let path = summary.cwd + "/" + d.data.fname;
+            diskQueryService.diskUsage(path);
+          }
+        });
 
         node.append("title")
         .text(function(d: any) { return d.data.fname + "\n" + format(d.value); });
@@ -84,5 +95,16 @@ export class OutputDetectiveComponent {
         .append("text")
         .attr("dy", "0.3em")
         .text(function(d: any) { return d.data.fname.substring(0, d.r / 3); });
+
+        node.filter(function(d: any) { return d.data.fsize > 10000; })
+        .append("image")
+        .attr("transform", "translate(-9, -24)")
+        .attr("width", "18px")
+        .attr("height", "18px")
+        .attr("xlink:href", function(d: any) {
+        if (d.data.type === "directory") { return iconDir; }
+        else { return iconFile; }
+      });
+
     }
 }

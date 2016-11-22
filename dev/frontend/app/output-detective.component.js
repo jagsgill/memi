@@ -12,6 +12,8 @@ var core_1 = require("@angular/core");
 var d3 = require("d3");
 var disk_query_service_1 = require("./disk-query.service");
 var STATUS = require("../../util/errorcodes.js").STATUS;
+var iconFile = require("./icons/ic_event_note_black_18px.svg");
+var iconDir = require("./icons/ic_folder_black_18px.svg");
 var OutputDetectiveComponent = (function () {
     function OutputDetectiveComponent(diskQueryService) {
         this.diskQueryService = diskQueryService;
@@ -37,6 +39,7 @@ var OutputDetectiveComponent = (function () {
     OutputDetectiveComponent.prototype.render = function (result) {
         // [ {fname: ... , fsize: ..., type: ...}] <= result.entries
         // { totalsize: ..., cwd: ....} <= result.summary
+        var diskQueryService = this.diskQueryService;
         var entries = result.entries;
         var summary = result.summary;
         var root = {
@@ -54,8 +57,14 @@ var OutputDetectiveComponent = (function () {
         var node = g.selectAll(".node")
             .data(pack(root).descendants())
             .enter().append("g")
-            .attr("class", function (d) { return d.children ? "node" : "leaf node"; })
-            .attr("transform", function (d) { return "translate( " + d.x + ", " + d.y + ")"; });
+            .attr("class", function (d) { return d.children ? "internal node" : "leaf node"; })
+            .attr("transform", function (d) { return "translate( " + d.x + ", " + d.y + ")"; })
+            .on("click", function (d) {
+            if (d.data.type === "directory") {
+                var path = summary.cwd + "/" + d.data.fname;
+                diskQueryService.diskUsage(path);
+            }
+        });
         node.append("title")
             .text(function (d) { return d.data.fname + "\n" + format(d.value); });
         node.append("circle")
@@ -64,6 +73,19 @@ var OutputDetectiveComponent = (function () {
             .append("text")
             .attr("dy", "0.3em")
             .text(function (d) { return d.data.fname.substring(0, d.r / 3); });
+        node.filter(function (d) { return d.data.fsize > 10000; })
+            .append("image")
+            .attr("transform", "translate(-9, -24)")
+            .attr("width", "18px")
+            .attr("height", "18px")
+            .attr("xlink:href", function (d) {
+            if (d.data.type === "directory") {
+                return iconDir;
+            }
+            else {
+                return iconFile;
+            }
+        });
     };
     return OutputDetectiveComponent;
 }());

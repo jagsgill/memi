@@ -1,13 +1,21 @@
-circle {
-  fill: rgb(31, 119, 180);
-  fill-opacity: .25;
-  stroke: rgb(31, 119, 180);
+/* http://paletton.com/palette.php?uid=b5f0b3o0k8HpnlmojdPov4Jr81UtL */
+
+.leaf.node circle:hover {
+  cursor: pointer;
+  stroke: #A23669;
+  stroke-width: 1.5px;
+}
+
+.internal.node circle {
+  fill: #C6BAC0 ;
+  stroke: #B49AA6;
   stroke-width: 1px;
 }
 
-.leaf circle {
-  fill: #ff7f0e;
-  fill-opacity: 1;
+.leaf.node circle {
+  fill: #B49AA6;
+  stroke: #A35D7E;
+  stroke-width: 1px;
 }
 
 text {
