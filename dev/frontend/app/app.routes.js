@@ -9,5 +9,5 @@ exports.routes = [
     { path: "list", component: output_text_component_1.OutputTextComponent },
     { path: "detective", component: output_detective_component_1.OutputDetectiveComponent }
 ];
-exports.routing = router_1.RouterModule.forRoot(exports.routes);
+exports.routing = router_1.RouterModule.forRoot(exports.routes, { useHash: true });
 //# sourceMappingURL=app.routes.js.map

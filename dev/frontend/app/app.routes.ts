@@ -12,4 +12,7 @@ export const routes: Routes = [
   { path: "detective", component: OutputDetectiveComponent }
 ];
 
-export const routing: ModuleWithProviders = RouterModule.forRoot(routes);
+export const routing: ModuleWithProviders = RouterModule.forRoot(
+  routes,
+  { useHash: true }
+);
