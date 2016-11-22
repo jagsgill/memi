@@ -2,7 +2,6 @@ import { Component, Input, Inject, ViewChild, ViewEncapsulation } from "@angular
 import * as d3 from "d3";
 
 import { DiskQueryService, DiskQueryResult } from "./disk-query.service";
-import { OutputDetectiveChart } from "./output-detective-chart.component";
 const STATUS = require("../../util/errorcodes.js").STATUS;
 
 const iconFile = require("./icons/ic_event_note_black_18px.svg");
