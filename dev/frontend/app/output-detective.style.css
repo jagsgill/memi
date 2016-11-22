@@ -3,7 +3,7 @@
 .leaf.node circle:hover {
   cursor: pointer;
   stroke: #A23669;
-  stroke-width: 1.5px;
+  stroke-width: 2.5px;
 }
 
 .internal.node circle {
