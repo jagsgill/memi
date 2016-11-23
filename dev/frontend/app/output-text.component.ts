@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
+import { Component, OnInit, NgZone } from "@angular/core";
 
 import { DiskQueryService, DiskQueryResult } from "./disk-query.service";
 const STATUS = require("../../util/errorcodes.js").STATUS;
@@ -26,13 +26,14 @@ export class OutputTextComponent implements OnInit {
 
   ngOnInit(): void {
     this.diskQueryService.diskQueryFinishedEvent.subscribe(
-      (result: DiskQueryResult) => this.diskQueryFinishedHandler(result)
-    );
+      (result: DiskQueryResult) => this.zone.run(
+        () => this.diskQueryFinishedHandler(result)
+    ));
   }
 
   constructor(
     private diskQueryService: DiskQueryService,
-    private changeDetectorRef: ChangeDetectorRef
+    private zone: NgZone
   ) {}
 
   sendDiskUsageQuery(path: string): void {
@@ -57,11 +58,6 @@ export class OutputTextComponent implements OnInit {
     } else if (result.status === STATUS.DIR_NOT_EXIST) {
       this.dirExists = false;
     }
-      // TODO find a non-buggy forced re-rendering method
-      // console shows Subscriber.js:227 Uncaught Error: Attempt to use a destroyed view: detectChanges
-      // inside this method
-      // potential solution @ http://blog.thoughtram.io/angular/2016/02/22/angular-2-change-detection-explained.html#change-detection
-      // this.changeDetectorRef.detectChanges();
   }
 
   openFileView(path: string): void {

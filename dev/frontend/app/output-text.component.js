@@ -12,9 +12,9 @@ var core_1 = require("@angular/core");
 var disk_query_service_1 = require("./disk-query.service");
 var STATUS = require("../../util/errorcodes.js").STATUS;
 var OutputTextComponent = (function () {
-    function OutputTextComponent(diskQueryService, changeDetectorRef) {
+    function OutputTextComponent(diskQueryService, zone) {
         this.diskQueryService = diskQueryService;
-        this.changeDetectorRef = changeDetectorRef;
+        this.zone = zone;
         this.iconFolder = require("./icons/ic_folder_black_18px.svg");
         this.iconFile = require("./icons/ic_event_note_black_18px.svg");
         this.iconLt = require("./icons/ic_keyboard_arrow_left_black_18px.svg");
@@ -24,7 +24,7 @@ var OutputTextComponent = (function () {
     }
     OutputTextComponent.prototype.ngOnInit = function () {
         var _this = this;
-        this.diskQueryService.diskQueryFinishedEvent.subscribe(function (result) { return _this.diskQueryFinishedHandler(result); });
+        this.diskQueryService.diskQueryFinishedEvent.subscribe(function (result) { return _this.zone.run(function () { return _this.diskQueryFinishedHandler(result); }); });
     };
     OutputTextComponent.prototype.sendDiskUsageQuery = function (path) {
         this.diskQueryService.diskUsage(path);
@@ -47,11 +47,6 @@ var OutputTextComponent = (function () {
         else if (result.status === STATUS.DIR_NOT_EXIST) {
             this.dirExists = false;
         }
-        // TODO find a non-buggy forced re-rendering method
-        // console shows Subscriber.js:227 Uncaught Error: Attempt to use a destroyed view: detectChanges
-        // inside this method
-        // potential solution @ http://blog.thoughtram.io/angular/2016/02/22/angular-2-change-detection-explained.html#change-detection
-        // this.changeDetectorRef.detectChanges();
     };
     OutputTextComponent.prototype.openFileView = function (path) {
         // TODO handle user click on file
@@ -67,7 +62,7 @@ OutputTextComponent = __decorate([
         ]
     }),
     __metadata("design:paramtypes", [disk_query_service_1.DiskQueryService,
-        core_1.ChangeDetectorRef])
+        core_1.NgZone])
 ], OutputTextComponent);
 exports.OutputTextComponent = OutputTextComponent;
 //# sourceMappingURL=output-text.component.js.map
