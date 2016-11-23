@@ -1,7 +1,7 @@
 <nav>
-  <ul id="nav">
-    <li><a [routerLink]="['/']">Home</a></li>
-    <li><a [routerLink]="['/list']">List</a></li>
-    <li><a [routerLink]="['/detective']">Detective</a></li>
+  <ul #nav id="nav">
+    <li *ngFor="let link of links; let i = index" (click)="setActiveLink(i)">
+      <a [routerLink]="[link.path]">{{link.display}}</a>
+    </li>
   </ul>
 </nav>
