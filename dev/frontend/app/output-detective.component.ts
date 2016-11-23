@@ -95,7 +95,7 @@ export class OutputDetectiveComponent {
         .attr("dy", "0.3em")
         .text(function(d: any) { return d.data.fname.substring(0, d.r / 3); });
 
-        node.filter(function(d: any) { return d.data.fsize > 10000; })
+        node.filter(function(d: any) { return d.r > 30; })
         .append("image")
         .attr("transform", "translate(-9, -24)")
         .attr("width", "18px")

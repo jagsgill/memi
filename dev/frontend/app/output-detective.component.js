@@ -73,7 +73,7 @@ var OutputDetectiveComponent = (function () {
             .append("text")
             .attr("dy", "0.3em")
             .text(function (d) { return d.data.fname.substring(0, d.r / 3); });
-        node.filter(function (d) { return d.data.fsize > 10000; })
+        node.filter(function (d) { return d.r > 30; })
             .append("image")
             .attr("transform", "translate(-9, -24)")
             .attr("width", "18px")
