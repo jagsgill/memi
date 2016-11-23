@@ -1,10 +1,11 @@
 <form class="basic-grey">
-  <input [(ngModel)]="path" type="text" name="path" placeholder="path">
-  <!-- TODO use platform-specific examples -->
-  <button (click)="sendDiskUsageQuery(path)">Analyze</button>
+    <input [(ngModel)]="path" type="text" name="path" placeholder="path">
+    <!-- TODO use platform-specific examples -->
+    <button (click)="sendDiskUsageQuery(path)">Analyze</button>
 </form>
-<span *ngIf="cwd">
-  <h2 class="currDirHeading">{{cwd}}
+<span *ngIf="cwd" id="currDirHeadingContainer">
+  <h2 id="currDirHeading">
     <img [attr.src]="iconToParentDir" (click)="toParentDir()" id="iconToParentDir">
+    {{cwd}}
   </h2>
 </span>

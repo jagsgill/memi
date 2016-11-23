@@ -1,4 +1,4 @@
-import { Component, ViewChild } from "@angular/core";
+import { Component, ViewChild, AfterViewInit } from "@angular/core";
 
 @Component({
   selector: "menu-bar-main",
@@ -8,7 +8,7 @@ import { Component, ViewChild } from "@angular/core";
   ]
 })
 
-export class MenuBarMainComponent {
+export class MenuBarMainComponent implements AfterViewInit {
   @ViewChild("nav") navbar: any;
 
   links = [
@@ -16,6 +16,11 @@ export class MenuBarMainComponent {
     { path: "/list", display: "List" },
     { path: "/detective", display: "Detective" }
   ];
+
+  ngAfterViewInit(): void {
+    // apply ".active" class to Home tab
+    this.navbar.nativeElement.children[0].classList.add("active");
+  }
 
   setActiveLink(index: number) {
     let children: HTMLCollection = this.navbar.nativeElement.children;

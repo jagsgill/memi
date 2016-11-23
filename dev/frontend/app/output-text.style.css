@@ -1,6 +1,6 @@
 table {
   border-collapse: collapse;
-  width: 100%;
+  width: calc(100% - 4px);
   table-layout: fixed;
 }
 
@@ -12,19 +12,23 @@ tr, td {
   }
 
 .entry {
+  border-top: 1px solid #ddd;
   border-bottom: 1px solid #ddd;
+  border-left: 1px solid #ddd;
+  border-right: 1px solid #ddd;
 }
 
+/* TODO fix hover border */
 .entry:hover {
   cursor: pointer;
+  border-top: 1px solid #c6bac0;
+  border-left: 1px solid #c6bac0;
+  border-right: 1px solid #c6bac0;
+  border-bottom: 1px solid #c6bac0;
 }
 
 .entry td {
-  background-color: white;
-}
-
-.entry:hover td {
-  background-color: #ebebeb;
+  background-color: #f2f2f2;
 }
 
 .entry:hover .entrybracket {
@@ -53,7 +57,7 @@ tbody tr:nth-last-child(2) {
 }
 
 .entry-sizebar {
-  background-color: lightblue;
+  background-color: #C6BAC0;
   position: absolute;
   height: calc(100% - 4px);
   top: 50%;
@@ -66,6 +70,7 @@ tbody tr:nth-last-child(2) {
   top: 50%;
   transform: translateY(-50%);
   z-index: 2;
+  width: 100%
 }
 
 .col1 {

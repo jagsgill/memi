@@ -3,13 +3,13 @@
 .basic-grey {
     margin-left:auto;
     margin-right:auto;
-    width:100%
-    background: #F7F7F7;
+    width:100%;
+    background-color: #f2f2f2;
     padding: 5px 5px 5px 5px;
     font: 12px Georgia, "Times New Roman", Times, serif;
     color: #888;
     text-shadow: 1px 1px 1px #FFF;
-    border:1px solid #E4E4E4;
+    border:1px solid #ccc;
 }
 .basic-grey h1 {
     font-size: 25px;
@@ -84,7 +84,7 @@
 }
 
 #currDirHeading {
-  float: right;
+  padding-left: 10px;
 }
 
 #iconToParentDir {

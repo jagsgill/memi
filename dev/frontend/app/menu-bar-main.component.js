@@ -17,6 +17,10 @@ var MenuBarMainComponent = (function () {
             { path: "/detective", display: "Detective" }
         ];
     }
+    MenuBarMainComponent.prototype.ngAfterViewInit = function () {
+        // apply ".active" class to Home tab
+        this.navbar.nativeElement.children[0].classList.add("active");
+    };
     MenuBarMainComponent.prototype.setActiveLink = function (index) {
         var children = this.navbar.nativeElement.children;
         for (var i = 0; i < children.length; i++) {
