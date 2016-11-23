@@ -8,13 +8,16 @@ then
 
 	# http://mywiki.wooledge.org/ProcessSubstitution
 	f=""
-	while read line;
-	do
-		line=`echo "$line" | tr -s $"\t" ':'`
-		fd=`echo "$line" | cut -d':' -f2`
-		type=`file --brief "$dir"/"$fd"`
-		f="$f$line:$type\n"
-	done < <(echo "$du_entries")
+	if [ "$(ls -A $dir)" ]
+	then
+		while read line;
+		do
+			line=`echo "$line" | tr -s $"\t" ':'`
+			fd=`echo "$line" | cut -d':' -f2`
+			type=`file --brief "$dir"/"$fd"`
+			f="$f$line:$type\n"
+		done < <(echo "$du_entries")
+	fi
 	echo -e "$f"
 	# echo -e "$f" | column -t -s':' # for inspecting output
 
