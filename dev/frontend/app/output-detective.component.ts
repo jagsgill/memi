@@ -1,7 +1,7 @@
 import { Component, Input, Inject, ViewChild, ViewEncapsulation } from "@angular/core";
 import * as d3 from "d3";
 
-import { DiskQueryService, DiskQueryResult } from "./disk-query.service";
+import { DiskUsageService, DiskUsageResult } from "./disk-usage-for-path.service";
 const STATUS = require("../../util/errorcodes.js").STATUS;
 
 const iconFile = require("./icons/ic_event_note_black_18px.svg");
@@ -18,7 +18,7 @@ const iconDir = require("./icons/ic_folder_black_18px.svg");
 
 export class OutputDetectiveComponent {
     @Input() files: any[];
-    // @Inject(DiskQueryService) diskQueryService: DiskQueryService;
+    // @Inject(DiskUsageService) diskQueryService: DiskUsageService;
     @ViewChild("canvas") canvas: any; // reference to svg canvas child node for the view
 
     dirExists = false;
@@ -26,15 +26,15 @@ export class OutputDetectiveComponent {
     entries: any[] = [];
     summary: {};
 
-    constructor(private diskQueryService: DiskQueryService) { }
+    constructor(private diskQueryService: DiskUsageService) { }
 
     ngOnInit(): void {
         this.diskQueryService.diskQueryFinishedEvent.subscribe(
-            (result: DiskQueryResult) => this.diskQueryFinishedHandler(result)
+            (result: DiskUsageResult) => this.diskQueryFinishedHandler(result)
         );
     }
 
-    diskQueryFinishedHandler(result: DiskQueryResult): void {
+    diskQueryFinishedHandler(result: DiskUsageResult): void {
         this.querySubmitted = true;
         this.summary = result.summary; // for displaying <dir> not found msg
         if (result.status === STATUS.OK) {
@@ -45,7 +45,7 @@ export class OutputDetectiveComponent {
         }
     }
 
-  render(result: DiskQueryResult): void {
+  render(result: DiskUsageResult): void {
 
         // [ {fname: ... , fsize: ..., type: ...}] <= result.entries
         // { totalsize: ..., cwd: ....} <= result.summary

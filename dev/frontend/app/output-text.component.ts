@@ -1,6 +1,6 @@
 import { Component, OnInit, NgZone } from "@angular/core";
 
-import { DiskQueryService, DiskQueryResult } from "./disk-query.service";
+import { DiskUsageService, DiskUsageResult } from "./disk-usage-for-path.service";
 const STATUS = require("../../util/errorcodes.js").STATUS;
 
 @Component({
@@ -26,13 +26,13 @@ export class OutputTextComponent implements OnInit {
 
   ngOnInit(): void {
     this.diskQueryService.diskQueryFinishedEvent.subscribe(
-      (result: DiskQueryResult) => this.zone.run(
+      (result: DiskUsageResult) => this.zone.run(
         () => this.diskQueryFinishedHandler(result)
     ));
   }
 
   constructor(
-    private diskQueryService: DiskQueryService,
+    private diskQueryService: DiskUsageService,
     private zone: NgZone
   ) {}
 
@@ -40,7 +40,7 @@ export class OutputTextComponent implements OnInit {
     this.diskQueryService.diskUsage(path);
   }
 
-  diskQueryFinishedHandler(result: DiskQueryResult): void {
+  diskQueryFinishedHandler(result: DiskUsageResult): void {
     this.querySubmitted = true;
     // TODO could be done using Observables? e.g. to solve situation where one can submit a long-time query then short
     // time query, short query results are displayed, then later the longer query results are displayed

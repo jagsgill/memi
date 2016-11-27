@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require("@angular/core");
-var disk_query_service_1 = require("./disk-query.service");
+var disk_usage_for_path_service_1 = require("./disk-usage-for-path.service");
 var STATUS = require("../../util/errorcodes.js").STATUS;
 var OutputTextComponent = (function () {
     function OutputTextComponent(diskQueryService, zone) {
@@ -61,8 +61,8 @@ OutputTextComponent = __decorate([
             "output-text.style.css"
         ]
     }),
-    __metadata("design:paramtypes", [disk_query_service_1.DiskQueryService,
-        core_1.NgZone])
+    __metadata("design:paramtypes", [typeof (_a = typeof disk_usage_for_path_service_1.DiskUsageService !== "undefined" && disk_usage_for_path_service_1.DiskUsageService) === "function" && _a || Object, core_1.NgZone])
 ], OutputTextComponent);
 exports.OutputTextComponent = OutputTextComponent;
+var _a;
 //# sourceMappingURL=output-text.component.js.map

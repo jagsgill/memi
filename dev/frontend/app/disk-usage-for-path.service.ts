@@ -6,7 +6,7 @@ const STATUS = require("../../util/errorcodes.js").STATUS;
 
 
 @Injectable()
-export class DiskQueryService {
+export class DiskUsageService {
 
   @Output() diskQueryFinishedEvent = new EventEmitter();
 
@@ -51,12 +51,12 @@ export class DiskQueryService {
     console.log(entries);
     console.log(summary);
     this.diskQueryFinishedEvent.emit(
-      new DiskQueryResult(output.status, entries, summary)
+      new DiskUsageResult(output.status, entries, summary)
     );
   }
 }
 
-export class DiskQueryResult {
+export class DiskUsageResult {
   status: string;
   entries: any[];
   summary: any;

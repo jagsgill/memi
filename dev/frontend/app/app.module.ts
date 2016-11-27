@@ -9,7 +9,8 @@ import { PathInputComponent } from "./path-input.component";
 import { OutputTextComponent } from "./output-text.component";
 import { OutputDetectiveComponent } from "./output-detective.component";
 
-import { DiskQueryService, DiskQueryResult } from "./disk-query.service";
+import { DiskUsageService, DiskUsageResult } from "./disk-usage-for-path.service";
+import { ListDirService } from "./list-contents-for-path.service";
 import { routing } from "./app.routes";
 
 
@@ -28,7 +29,8 @@ import { routing } from "./app.routes";
     OutputDetectiveComponent,
   ],
   providers: [
-    DiskQueryService
+    DiskUsageService,
+    ListDirService
   ],
   bootstrap: [ HomeComponent ]
 })

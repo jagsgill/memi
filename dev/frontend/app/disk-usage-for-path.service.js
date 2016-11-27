@@ -12,17 +12,17 @@ var core_1 = require("@angular/core");
 var electron_1 = require("electron");
 var paths = require("path");
 var STATUS = require("../../util/errorcodes.js").STATUS;
-var DiskQueryService = (function () {
-    function DiskQueryService() {
+var DiskUsageService = (function () {
+    function DiskUsageService() {
         this.diskQueryFinishedEvent = new core_1.EventEmitter();
         // http://onehungrymind.com/electron-angular-2-things/
         electron_1.ipcRenderer.on("clientRequestDiskUsageForPath", this.sendParsedDiskUsageForPath.bind(this));
     }
-    DiskQueryService.prototype.diskUsage = function (path) {
+    DiskUsageService.prototype.diskUsage = function (path) {
         console.log("sending path: " + path);
         electron_1.ipcRenderer.send("clientRequestDiskUsageForPath", paths.normalize(path));
     };
-    DiskQueryService.prototype.sendParsedDiskUsageForPath = function (event, output, dir) {
+    DiskUsageService.prototype.sendParsedDiskUsageForPath = function (event, output, dir) {
         var rawdata = output.content.split("\n"), entries_to_process = rawdata.slice(0, -2), // trim the total line and 2x
         entries, summary;
         if (output.status === STATUS.OK) {
@@ -47,26 +47,26 @@ var DiskQueryService = (function () {
         console.log(output.status);
         console.log(entries);
         console.log(summary);
-        this.diskQueryFinishedEvent.emit(new DiskQueryResult(output.status, entries, summary));
+        this.diskQueryFinishedEvent.emit(new DiskUsageResult(output.status, entries, summary));
     };
-    return DiskQueryService;
+    return DiskUsageService;
 }());
 __decorate([
     core_1.Output(),
     __metadata("design:type", Object)
-], DiskQueryService.prototype, "diskQueryFinishedEvent", void 0);
-DiskQueryService = __decorate([
+], DiskUsageService.prototype, "diskQueryFinishedEvent", void 0);
+DiskUsageService = __decorate([
     core_1.Injectable(),
     __metadata("design:paramtypes", [])
-], DiskQueryService);
-exports.DiskQueryService = DiskQueryService;
-var DiskQueryResult = (function () {
-    function DiskQueryResult(status, entries, summary) {
+], DiskUsageService);
+exports.DiskUsageService = DiskUsageService;
+var DiskUsageResult = (function () {
+    function DiskUsageResult(status, entries, summary) {
         this.status = status;
         this.entries = entries;
         this.summary = summary;
     }
-    return DiskQueryResult;
+    return DiskUsageResult;
 }());
-exports.DiskQueryResult = DiskQueryResult;
-//# sourceMappingURL=disk-query.service.js.map
+exports.DiskUsageResult = DiskUsageResult;
+//# sourceMappingURL=disk-usage-for-path.service.js.map

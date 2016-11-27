@@ -10,7 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require("@angular/core");
 var d3 = require("d3");
-var disk_query_service_1 = require("./disk-query.service");
+var disk_usage_for_path_service_1 = require("./disk-usage-for-path.service");
 var STATUS = require("../../util/errorcodes.js").STATUS;
 var iconFile = require("./icons/ic_event_note_black_18px.svg");
 var iconDir = require("./icons/ic_folder_black_18px.svg");
@@ -106,7 +106,8 @@ OutputDetectiveComponent = __decorate([
             "output-detective.style.css",
         ]
     }),
-    __metadata("design:paramtypes", [disk_query_service_1.DiskQueryService])
+    __metadata("design:paramtypes", [typeof (_a = typeof disk_usage_for_path_service_1.DiskUsageService !== "undefined" && disk_usage_for_path_service_1.DiskUsageService) === "function" && _a || Object])
 ], OutputDetectiveComponent);
 exports.OutputDetectiveComponent = OutputDetectiveComponent;
+var _a;
 //# sourceMappingURL=output-detective.component.js.map
