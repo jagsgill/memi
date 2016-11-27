@@ -50,9 +50,13 @@ ipc.on('clientSendFormMsg', (event, arg1) => {
       command(dir),
       sudo_options,
       (err, stdout, stderr) => {
-        let output = (err || stdout || stderr)
-        console.log(`${command(dir)} :\n ${output}`)
-        event.sender.send(channel, output)
+        let output = (err || stdout || stderr).trim()
+        if(output === STATUS.DIR_NOT_EXIST){
+          event.sender.send(channel, {status: STATUS.DIR_NOT_EXIST, content: ""}, dir)
+        } else {
+          console.log(`${command(dir)} :\n ${output}`)
+          event.sender.send(channel, {status: STATUS.OK, content: output}, dir)
+        }
       })
     })
   }

@@ -7,7 +7,7 @@ function cmdRunMacScript(script_name, dir){
 exports.commands = {
   list_dir_contents: {
     // list all dir contents
-    'darwin': undefined,
+    'darwin': (dir) => {return cmdRunMacScript('list_dir_contents_MAC.sh', dir)},
     'freebsd': undefined,
     'linux': undefined,
     'sunos': undefined,
