@@ -1,8 +1,17 @@
 <form class="basic-grey">
-    <input [(ngModel)]="path" type="text" name="path" placeholder="path">
-    <!-- TODO use platform-specific examples -->
-    <button (click)="sendDiskUsageQuery(path)">Analyze</button>
-    <button (click)="listDirQuery(path)">Contents</button>
+  <div id="inputarea">
+    <span class="inputbox">
+      <input [(ngModel)]="path" type="text" name="path" placeholder="path">
+      <button (click)="sendDiskUsageQuery(path)">Analyze</button>
+      <button (click)="listDirQuery(path)">Contents</button>
+      <button (click)="hidePathSuggestions ? (hidePathSuggestions = false) : (hidePathSuggestions = true)">Toggle</button>
+    </span>
+
+    <ul *ngIf="hidePathSuggestions">
+      <li *ngFor="let entry of autocompletePaths">{{ entry | joinpaths:path }}</li>
+    </ul>
+  </div>
+  <!-- TODO use platform-specific examples -->
 </form>
 <span *ngIf="cwd" id="currDirHeadingContainer">
   <h2 id="currDirHeading">

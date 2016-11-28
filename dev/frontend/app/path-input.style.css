@@ -1,15 +1,20 @@
 /* Placeholder style from https://www.sanwebe.com/2013/10/css-html-form-styles */
 /* Basic Grey */
 .basic-grey {
+    position: absolute;
+    top: 35px;
+    height: 60px;
     margin-left:auto;
     margin-right:auto;
     width:100%;
     background-color: #f2f2f2;
     padding: 5px 5px 5px 5px;
-    font: 12px Georgia, "Times New Roman", Times, serif;
     color: #888;
     text-shadow: 1px 1px 1px #FFF;
-    border:1px solid #ccc;
+    border-left:1px solid #ccc;
+    border-right:1px solid #ccc;
+    border-bottom:1px solid #ccc;
+    z-index: -1;
 }
 .basic-grey h1 {
     font-size: 25px;
@@ -44,7 +49,6 @@
     margin-top: 2px;
     outline: 0 none;
     padding: 3px 3px 3px 5px;
-    width: 70%;
     font-size: 12px;
     line-height:15px;
     box-shadow: inset 0px 1px 4px #ECECEC;
@@ -94,4 +98,44 @@
 
 #iconToParentDir:hover {
   border: 1px solid black;
+}
+
+#inputarea {
+  position: absolute;
+  top: auto;
+  width: 100%;
+  font-size: 11px;
+  font-family: sans-serif;
+  padding-top: 10px;
+}
+
+.inputbox {
+  position: absolute;
+  top: auto;
+  width: 100%;
+  height: 30px;
+}
+
+.inputbox input {
+    width: 450px;
+}
+
+#inputarea ul {
+  position: absolute;
+  top: 49px;
+  width: 460px;
+  list-style-type: none;
+  z-index: 5;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background-color: #fff;
+}
+
+#inputarea li {
+  height: auto;
+  padding: 5px;
+  margin-bottom: -1px;
+  border: 1px solid #ddd;
+  word-break: break-all;
 }
