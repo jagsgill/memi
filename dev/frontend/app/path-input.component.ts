@@ -1,4 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
+import { Observable, Subscription } from "rxjs";
 
 import { DiskUsageService } from "./disk-usage-for-path.service";
 import { ListDirService } from "./list-contents-for-path.service";
@@ -26,11 +27,15 @@ iconToParentDir = require("./icons/ic_subdirectory_arrow_right_black_24px.svg");
     private diskQueryService: DiskUsageService,
     private listDirService: ListDirService,
     private changeDetectorRef: ChangeDetectorRef
-  ) {}
+  ) {
+      this.listDirResultStream = listDirService.getResultStream()
+      .subscribe( (result: string[]) => this.listDirQueryHandler(result));
+  }
 
   path = "";
   cwd: string;
-  ls: any;
+  autocompletePaths: string[] = [];
+  listDirResultStream: Subscription;
 
   sendDiskUsageQuery(path: string): void {
     // TODO replace console.log with dev logging
@@ -45,13 +50,19 @@ iconToParentDir = require("./icons/ic_subdirectory_arrow_right_black_24px.svg");
   }
 
   listDirQuery(path: string): void {
-      console.log("clicked ls button")
       this.listDirService.listDirContents(path);
   }
 
-  listDirQueryFinishedHandler(result: any): void {
-      console.log("path input received ls:")
-      console.log(result.toString())
+  listDirQueryHandler(result: string[]): void {
+      this.autocompletePaths = [];
+      let onlyDirStream = Observable.from(result)
+      .filter( (entry: string) => {
+        return entry.charAt(entry.length - 1) === "/";
+      });
+      let s = onlyDirStream.subscribe( (entry: string) => {
+        this.autocompletePaths.push(entry);
+      });
+      console.log(this.autocompletePaths);
   }
 
   toParentDir(): void {

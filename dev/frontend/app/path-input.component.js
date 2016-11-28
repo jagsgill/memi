@@ -9,17 +9,22 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require("@angular/core");
+var rxjs_1 = require("rxjs");
 var disk_usage_for_path_service_1 = require("./disk-usage-for-path.service");
 var list_contents_for_path_service_1 = require("./list-contents-for-path.service");
 var STATUS = require("../../util/errorcodes.js").STATUS;
 var PathInputComponent = (function () {
     function PathInputComponent(diskQueryService, listDirService, changeDetectorRef) {
+        var _this = this;
         this.diskQueryService = diskQueryService;
         this.listDirService = listDirService;
         this.changeDetectorRef = changeDetectorRef;
         // TODO path completion
         this.iconToParentDir = require("./icons/ic_subdirectory_arrow_right_black_24px.svg");
         this.path = "";
+        this.autocompletePaths = [];
+        this.listDirResultStream = listDirService.getResultStream()
+            .subscribe(function (result) { return _this.listDirQueryHandler(result); });
     }
     PathInputComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -36,12 +41,19 @@ var PathInputComponent = (function () {
         this.changeDetectorRef.detectChanges();
     };
     PathInputComponent.prototype.listDirQuery = function (path) {
-        console.log("clicked ls button");
         this.listDirService.listDirContents(path);
     };
-    PathInputComponent.prototype.listDirQueryFinishedHandler = function (result) {
-        console.log("path input received ls:");
-        console.log(result.toString());
+    PathInputComponent.prototype.listDirQueryHandler = function (result) {
+        var _this = this;
+        this.autocompletePaths = [];
+        var onlyDirStream = rxjs_1.Observable.from(result)
+            .filter(function (entry) {
+            return entry.charAt(entry.length - 1) === "/";
+        });
+        var s = onlyDirStream.subscribe(function (entry) {
+            _this.autocompletePaths.push(entry);
+        });
+        console.log(this.autocompletePaths);
     };
     PathInputComponent.prototype.toParentDir = function () {
         this.sendDiskUsageQuery(this.cwd + "/..");

@@ -10,23 +10,34 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require("@angular/core");
 var electron_1 = require("electron");
+var rxjs_1 = require("rxjs");
 var paths = require("path");
 var STATUS = require("../../util/errorcodes.js").STATUS;
 var ListDirService = (function () {
     function ListDirService() {
+        var _this = this;
         this.listDirFinishedEvent = new core_1.EventEmitter();
         this.channel = "requestListDirContents";
-        electron_1.ipcRenderer.on(this.channel, this.listDirContentsHandler.bind(this));
+        this.resultStream = rxjs_1.Observable.fromEvent(electron_1.ipcRenderer, this.channel, function (event, output, dir) {
+            return _this.parseListDirResults(output);
+        });
     }
+    ListDirService.prototype.getResultStream = function () {
+        return this.resultStream;
+    };
     ListDirService.prototype.listDirContents = function (path) {
         console.log("sending path for list dir contents: " + path);
         electron_1.ipcRenderer.send(this.channel, paths.normalize(path));
     };
-    ListDirService.prototype.listDirContentsHandler = function (event, output, dir) {
-        console.log("ls event:");
-        console.log(event);
-        console.log("received result");
-        console.log(output);
+    ListDirService.prototype.parseListDirResults = function (output) {
+        var entries;
+        if (output.status === STATUS.OK) {
+            entries = output.content.split("\n");
+        }
+        else if (output.status === STATUS.DIR_NOT_EXIST) {
+            entries = ["Path does not exist."];
+        }
+        return entries;
     };
     return ListDirService;
 }());
