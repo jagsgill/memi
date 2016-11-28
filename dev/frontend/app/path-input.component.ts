@@ -1,5 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
 import { Observable, Subscription } from "rxjs";
+import * as paths from "path";
 
 import { DiskUsageService } from "./disk-usage-for-path.service";
 import { ListDirService } from "./list-contents-for-path.service";
@@ -35,6 +36,7 @@ iconToParentDir = require("./icons/ic_subdirectory_arrow_right_black_24px.svg");
   path = "";
   cwd: string;
   autocompletePaths: string[] = [];
+  hidePathSuggestions = true;
   listDirResultStream: Subscription;
 
   sendDiskUsageQuery(path: string): void {
@@ -68,4 +70,5 @@ iconToParentDir = require("./icons/ic_subdirectory_arrow_right_black_24px.svg");
   toParentDir(): void {
     this.sendDiskUsageQuery(`${this.cwd}/..`);
   }
+
 }

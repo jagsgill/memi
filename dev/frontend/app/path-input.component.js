@@ -23,6 +23,7 @@ var PathInputComponent = (function () {
         this.iconToParentDir = require("./icons/ic_subdirectory_arrow_right_black_24px.svg");
         this.path = "";
         this.autocompletePaths = [];
+        this.hidePathSuggestions = true;
         this.listDirResultStream = listDirService.getResultStream()
             .subscribe(function (result) { return _this.listDirQueryHandler(result); });
     }

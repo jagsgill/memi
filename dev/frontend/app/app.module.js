@@ -17,6 +17,7 @@ var menu_bar_main_component_1 = require("./menu-bar-main.component");
 var path_input_component_1 = require("./path-input.component");
 var output_text_component_1 = require("./output-text.component");
 var output_detective_component_1 = require("./output-detective.component");
+var join_paths_pipe_1 = require("./join-paths.pipe");
 var disk_usage_for_path_service_1 = require("./disk-usage-for-path.service");
 var list_contents_for_path_service_1 = require("./list-contents-for-path.service");
 var app_routes_1 = require("./app.routes");
@@ -39,6 +40,7 @@ AppModule = __decorate([
             path_input_component_1.PathInputComponent,
             output_text_component_1.OutputTextComponent,
             output_detective_component_1.OutputDetectiveComponent,
+            join_paths_pipe_1.JoinPathsPipe
         ],
         providers: [
             disk_usage_for_path_service_1.DiskUsageService,

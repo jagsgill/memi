@@ -9,6 +9,8 @@ import { PathInputComponent } from "./path-input.component";
 import { OutputTextComponent } from "./output-text.component";
 import { OutputDetectiveComponent } from "./output-detective.component";
 
+import { JoinPathsPipe } from "./join-paths.pipe";
+
 import { DiskUsageService, DiskUsageResult } from "./disk-usage-for-path.service";
 import { ListDirService } from "./list-contents-for-path.service";
 import { routing } from "./app.routes";
@@ -27,6 +29,7 @@ import { routing } from "./app.routes";
     PathInputComponent,
     OutputTextComponent,
     OutputDetectiveComponent,
+    JoinPathsPipe
   ],
   providers: [
     DiskUsageService,
