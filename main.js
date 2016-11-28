@@ -43,7 +43,7 @@ ipc.on('clientSendFormMsg', (event, arg1) => {
 })
 
 {
-  let channel = 'clientRequestListDirContents',
+  let channel = 'requestListDirContents',
   command = commands.list_dir_contents[platform]
   ipc.on(channel, (event, dir) => {
     exec(

@@ -9,11 +9,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require("@angular/core");
-var disk_query_service_1 = require("./disk-query.service");
+var disk_usage_for_path_service_1 = require("./disk-usage-for-path.service");
+var list_contents_for_path_service_1 = require("./list-contents-for-path.service");
 var STATUS = require("../../util/errorcodes.js").STATUS;
 var PathInputComponent = (function () {
-    function PathInputComponent(diskQueryService, changeDetectorRef) {
+    function PathInputComponent(diskQueryService, listDirService, changeDetectorRef) {
         this.diskQueryService = diskQueryService;
+        this.listDirService = listDirService;
         this.changeDetectorRef = changeDetectorRef;
         // TODO path completion
         this.iconToParentDir = require("./icons/ic_subdirectory_arrow_right_black_24px.svg");
@@ -33,6 +35,14 @@ var PathInputComponent = (function () {
         this.path = result.summary.cwd;
         this.changeDetectorRef.detectChanges();
     };
+    PathInputComponent.prototype.listDirQuery = function (path) {
+        console.log("clicked ls button");
+        this.listDirService.listDirContents(path);
+    };
+    PathInputComponent.prototype.listDirQueryFinishedHandler = function (result) {
+        console.log("path input received ls:");
+        console.log(result.toString());
+    };
     PathInputComponent.prototype.toParentDir = function () {
         this.sendDiskUsageQuery(this.cwd + "/..");
     };
@@ -46,7 +56,8 @@ PathInputComponent = __decorate([
             "path-input.style.css"
         ]
     }),
-    __metadata("design:paramtypes", [disk_query_service_1.DiskQueryService,
+    __metadata("design:paramtypes", [disk_usage_for_path_service_1.DiskUsageService,
+        list_contents_for_path_service_1.ListDirService,
         core_1.ChangeDetectorRef])
 ], PathInputComponent);
 exports.PathInputComponent = PathInputComponent;

@@ -2,6 +2,7 @@
     <input [(ngModel)]="path" type="text" name="path" placeholder="path">
     <!-- TODO use platform-specific examples -->
     <button (click)="sendDiskUsageQuery(path)">Analyze</button>
+    <button (click)="listDirQuery(path)">Contents</button>
 </form>
 <span *ngIf="cwd" id="currDirHeadingContainer">
   <h2 id="currDirHeading">
