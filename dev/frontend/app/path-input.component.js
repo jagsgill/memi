@@ -23,13 +23,18 @@ var PathInputComponent = (function () {
         this.iconToParentDir = require("./icons/ic_subdirectory_arrow_right_black_24px.svg");
         this.path = "";
         this.autocompletePaths = [];
-        this.hidePathSuggestions = true;
+        this.autocompleteActive = false;
         this.listDirResultStream = listDirService.getResultStream()
             .subscribe(function (result) { return _this.listDirQueryHandler(result); });
     }
     PathInputComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.diskQueryService.diskQueryFinishedEvent.subscribe(function (result) { return _this.diskQueryFinishedHandler(result); });
+    };
+    PathInputComponent.prototype.ngAfterViewInit = function () {
+        var _this = this;
+        this.inputBoxStreamSource = rxjs_1.Observable.fromEvent(this.pathInputBox.nativeElement, "input", function (x) { return x.target.value; });
+        this.inputBoxStream = this.inputBoxStreamSource.subscribe(function (x) { _this.listDirQuery(x); });
     };
     PathInputComponent.prototype.sendDiskUsageQuery = function (path) {
         // TODO replace console.log with dev logging
@@ -61,6 +66,10 @@ var PathInputComponent = (function () {
     };
     return PathInputComponent;
 }());
+__decorate([
+    core_1.ViewChild("pathInputBox"),
+    __metadata("design:type", Object)
+], PathInputComponent.prototype, "pathInputBox", void 0);
 PathInputComponent = __decorate([
     core_1.Component({
         selector: "path-input",
