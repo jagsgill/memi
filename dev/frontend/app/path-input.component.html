@@ -14,7 +14,7 @@
   </div>
   <!-- TODO use platform-specific examples -->
 </form>
-<span *ngIf="cwd" id="currDirHeadingContainer">
+<span *ngIf="cwd" id="currDirHeadingContainer" id="currdirHeadingContainer">
   <h2 id="currDirHeading">
     <img [attr.src]="iconToParentDir" (click)="toParentDir()" id="iconToParentDir">
     {{cwd}}
