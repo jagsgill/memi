@@ -7,7 +7,7 @@
       <button (click)="sendDiskUsageQuery(path)">Analyze</button>
       <button (click)="listDirQuery(path)">Contents</button>
     </span>
-
+    <!-- TODO bring autocomplete entries to forefront -->
     <ul *ngIf="autocompleteActive">
       <li *ngFor="let entry of autocompletePaths">{{ entry | joinpaths:path }}</li>
     </ul>

@@ -87,6 +87,10 @@
     background: #CF7A7A
 }
 
+#currDirHeadingContainer {
+  position: absolute;
+}
+
 #currDirHeading {
   position: absolute;
   top: 100px;
@@ -127,7 +131,6 @@
   top: 49px;
   width: 460px;
   list-style-type: none;
-  z-index: 5;
   padding: 0;
   margin: 0;
   border: none;
@@ -140,8 +143,4 @@
   margin-bottom: -1px;
   border: 1px solid #ddd;
   word-break: break-all;
-}
-
-#currDirHeadingContainer {
-  position: absolute;
 }
