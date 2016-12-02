@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require("@angular/core");
 var rxjs_1 = require("rxjs");
+var paths = require("path");
 var disk_usage_for_path_service_1 = require("./disk-usage-for-path.service");
 var list_contents_for_path_service_1 = require("./list-contents-for-path.service");
 var STATUS = require("../../util/errorcodes.js").STATUS;
@@ -19,9 +20,10 @@ var PathInputComponent = (function () {
         this.diskQueryService = diskQueryService;
         this.listDirService = listDirService;
         this.changeDetectorRef = changeDetectorRef;
-        // TODO path completion
+        // TODO path completio
         this.iconToParentDir = require("./icons/ic_subdirectory_arrow_right_black_24px.svg");
-        this.path = "";
+        this.path = ""; // user path in input box
+        this.dirname = ""; // directory path for autocomplete entries
         this.autocompletePaths = [];
         this.autocompleteActive = false;
         this.listDirResultStream = listDirService.getResultStream()
@@ -34,7 +36,19 @@ var PathInputComponent = (function () {
     PathInputComponent.prototype.ngAfterViewInit = function () {
         var _this = this;
         this.inputBoxStreamSource = rxjs_1.Observable.fromEvent(this.pathInputBox.nativeElement, "input", function (x) { return x.target.value; });
-        this.inputBoxStream = this.inputBoxStreamSource.subscribe(function (x) { _this.listDirQuery(x); });
+        this.inputBoxStream = this.inputBoxStreamSource
+            .map(function (x) {
+            var regexDir = /.*\/$/; // directories end in '/'
+            if (regexDir.test(x)) {
+                _this.dirname = x;
+                return x; // identity mapping if its a dir
+            }
+            else {
+                _this.dirname = paths.dirname(x) + "/";
+                return paths.dirname(x) + "/"; // map to parent dir otherwise
+            }
+        })
+            .subscribe(function (x) { _this.listDirQuery(x); });
     };
     PathInputComponent.prototype.sendDiskUsageQuery = function (path) {
         // TODO replace console.log with dev logging
@@ -54,12 +68,12 @@ var PathInputComponent = (function () {
         this.autocompletePaths = [];
         var onlyDirStream = rxjs_1.Observable.from(result)
             .filter(function (entry) {
-            return entry.charAt(entry.length - 1) === "/";
+            return entry.charAt(entry.length - 1) === "/"; // only dirs
         });
         var s = onlyDirStream.subscribe(function (entry) {
-            _this.autocompletePaths.push(entry);
+            _this.autocompletePaths.push("" + _this.dirname + entry);
         });
-        console.log(this.autocompletePaths);
+        this.changeDetectorRef.detectChanges();
     };
     PathInputComponent.prototype.toParentDir = function () {
         this.sendDiskUsageQuery(this.cwd + "/..");
