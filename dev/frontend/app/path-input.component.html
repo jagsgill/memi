@@ -3,15 +3,16 @@
     <span class="inputbox">
       <input #pathInputBox [(ngModel)]="path" type="text" name="path" placeholder="path"
       (focus)="autocompleteActive = true"
-      (focusout)="autocompleteActive = false">
-      <button (click)="sendDiskUsageQuery(path)">Analyze</button>
-      <button (click)="listDirQuery(path)">Contents</button>
+      (focusout)="autocompleteActive = false"
+      (keydown)="navigateInputs($event)">
+      <button #pathSubmitter (click)="sendDiskUsageQuery(path)">Analyze</button>
     </span>
     <!-- TODO bring autocomplete entries to forefront -->
     <ul *ngIf="autocompleteActive">
-      <div *ngFor="let entry of autocompletePaths">
-        <li *ngIf="entry.indexOf(path) === 0">{{entry}}</li>
-      </div>
+      <li *ngFor="let entry of autocompletePaths; let i = index"
+      [class.active]="i === selectedAutocompleteEntry"
+      (mouseover)="selectedAutocompleteEntry = i"
+      (click)="selectAutocompleteEntry(i);">{{entry}}</li>
     </ul>
   </div>
   <!-- TODO use platform-specific examples -->

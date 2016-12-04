@@ -16,14 +16,18 @@ const STATUS = require("../../util/errorcodes.js").STATUS;
 })
 
 export class PathInputComponent implements OnInit, AfterViewInit {
-    // TODO path completio
+    // TODO path completion
+    // TODO use observables & eventemitters to simplify ui actions
     iconToParentDir = require("./icons/ic_subdirectory_arrow_right_black_24px.svg");
+    @ViewChild("pathSubmitter") pathSubmitter: any;
     @ViewChild("pathInputBox") pathInputBox: any;
     path = ""; // user path in input box
     dirname = ""; // directory path for autocomplete entries
     cwd: string; // current working directory for analysis in output view
     autocompletePaths: string[] = [];
     autocompleteActive = false;
+    selectedAutocompleteEntry: number = undefined;
+
     listDirResultStream: Subscription;
     inputBoxStreamSource: Observable<any>;
     inputBoxStream: Subscription;
@@ -35,21 +39,22 @@ export class PathInputComponent implements OnInit, AfterViewInit {
     ngAfterViewInit(): void {
         this.inputBoxStreamSource = Observable.fromEvent(
             this.pathInputBox.nativeElement,
-            "input",
-            (x: any) => { return x.target.value; }
-        );
+            "keydown",
+            (x: any) => { return x.target.value; })
+            .distinctUntilChanged()
+            .map((x: any) => {
+                let regexDir = /.*\/$/; // directories end in '/'
+                if (regexDir.test(x)) {
+                    this.dirname = x;
+                    return x; // identity mapping if its a dir
+                } else {
+                    // TODO use paths.join instead of literal '/'
+                    this.dirname = `${paths.dirname(x)}/`;
+                    return `${paths.dirname(x)}/`; // map to parent dir otherwise
+                }
+            });
         this.inputBoxStream = this.inputBoxStreamSource
-        .map( (x: any) => {
-          let regexDir = /.*\/$/; // directories end in '/'
-          if (regexDir.test(x)) {
-            this.dirname = x;
-            return x; // identity mapping if its a dir
-          } else {
-            this.dirname = `${paths.dirname(x)}/`;
-            return `${paths.dirname(x)}/`; // map to parent dir otherwise
-          }
-        })
-        .subscribe( (x: any) => { this.listDirQuery(x); } );
+            .subscribe((x: any) => { this.listDirQuery(x); });
     }
 
     constructor(
@@ -58,7 +63,8 @@ export class PathInputComponent implements OnInit, AfterViewInit {
         private changeDetectorRef: ChangeDetectorRef
     ) {
         this.listDirResultStream = listDirService.getResultStream()
-            .subscribe((result: string[]) => this.listDirQueryHandler(result));
+        .distinctUntilChanged()
+        .subscribe((result: string[]) => this.listDirQueryHandler(result));
     }
 
     sendDiskUsageQuery(path: string): void {
@@ -74,19 +80,68 @@ export class PathInputComponent implements OnInit, AfterViewInit {
     }
 
     listDirQuery(path: string): void {
-        this.listDirService.listDirContents(path);
+        this.listDirService.listDirContents(paths.normalize(path));
     }
 
     listDirQueryHandler(result: string[]): void {
         this.autocompletePaths = [];
-        let onlyDirStream = Observable.from(result)
+        let listDirStream = Observable.from(result);
+        let s = listDirStream
             .filter((entry: string) => {
                 return entry.charAt(entry.length - 1) === "/"; // only dirs
+            })
+            .map((entry: string) => {
+                return paths.join(this.dirname, entry);
+            })
+            .filter((entry: string) => {
+                return entry.indexOf(this.path) === 0;
+            })
+            .subscribe((entry: string) => {
+                this.autocompletePaths.push(entry);
             });
-        let s = onlyDirStream.subscribe((entry: string) => {
-            this.autocompletePaths.push(`${this.dirname}${entry}`);
-        });
+        console.log(this.autocompletePaths)
         this.changeDetectorRef.detectChanges();
+    }
+
+    navigateInputs(event: any) {
+        if (!this.autocompletePaths) {
+            return;
+        } else if (this.selectedAutocompleteEntry === undefined) {
+            if (event.key === "ArrowDown") {
+                event.preventDefault();
+                this.selectedAutocompleteEntry = 0;
+            } else if (event.key === "ArrowUp") {
+                event.preventDefault();
+                this.selectedAutocompleteEntry = this.autocompletePaths.length - 1;
+            } else if (event.key === "Enter") {
+                this.sendDiskUsageQuery(this.path);
+                this.pathInputBox.nativeElement.blur();
+            }
+        } else {
+            if (event.key === "ArrowDown") {
+                event.preventDefault();
+                this.selectedAutocompleteEntry = (++this.selectedAutocompleteEntry
+                    % this.autocompletePaths.length);
+            } else if (event.key === "ArrowUp") {
+                event.preventDefault();
+                this.selectedAutocompleteEntry = (--this.selectedAutocompleteEntry
+                    % this.autocompletePaths.length);
+            } else if (event.key === "Tab") {
+                event.preventDefault();
+                this.selectAutocompleteEntry(this.selectedAutocompleteEntry);
+            } else if (event.key === "Enter") {
+                event.preventDefault();
+                this.selectAutocompleteEntry(this.selectedAutocompleteEntry);
+                this.sendDiskUsageQuery(this.path);
+                this.pathInputBox.nativeElement.blur();
+            }
+        }
+        console.log("selected: ", this.selectedAutocompleteEntry)
+    }
+
+    selectAutocompleteEntry(i: number): void {
+        this.path = this.autocompletePaths[i];
+        console.log("set path to: ", this.path)
     }
 
     toParentDir(): void {

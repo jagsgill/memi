@@ -144,3 +144,8 @@
   border: 1px solid #ddd;
   word-break: break-all;
 }
+
+.active {
+  background-color: #f2f2f2;
+  cursor: pointer;
+}

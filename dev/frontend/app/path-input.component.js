@@ -20,13 +20,16 @@ var PathInputComponent = (function () {
         this.diskQueryService = diskQueryService;
         this.listDirService = listDirService;
         this.changeDetectorRef = changeDetectorRef;
-        // TODO path completio
+        // TODO path completion
+        // TODO use observables & eventemitters to simplify ui actions
         this.iconToParentDir = require("./icons/ic_subdirectory_arrow_right_black_24px.svg");
         this.path = ""; // user path in input box
         this.dirname = ""; // directory path for autocomplete entries
         this.autocompletePaths = [];
         this.autocompleteActive = false;
+        this.selectedAutocompleteEntry = undefined;
         this.listDirResultStream = listDirService.getResultStream()
+            .distinctUntilChanged()
             .subscribe(function (result) { return _this.listDirQueryHandler(result); });
     }
     PathInputComponent.prototype.ngOnInit = function () {
@@ -35,8 +38,8 @@ var PathInputComponent = (function () {
     };
     PathInputComponent.prototype.ngAfterViewInit = function () {
         var _this = this;
-        this.inputBoxStreamSource = rxjs_1.Observable.fromEvent(this.pathInputBox.nativeElement, "input", function (x) { return x.target.value; });
-        this.inputBoxStream = this.inputBoxStreamSource
+        this.inputBoxStreamSource = rxjs_1.Observable.fromEvent(this.pathInputBox.nativeElement, "keydown", function (x) { return x.target.value; })
+            .distinctUntilChanged()
             .map(function (x) {
             var regexDir = /.*\/$/; // directories end in '/'
             if (regexDir.test(x)) {
@@ -44,10 +47,12 @@ var PathInputComponent = (function () {
                 return x; // identity mapping if its a dir
             }
             else {
+                // TODO use paths.join instead of literal '/'
                 _this.dirname = paths.dirname(x) + "/";
                 return paths.dirname(x) + "/"; // map to parent dir otherwise
             }
-        })
+        });
+        this.inputBoxStream = this.inputBoxStreamSource
             .subscribe(function (x) { _this.listDirQuery(x); });
     };
     PathInputComponent.prototype.sendDiskUsageQuery = function (path) {
@@ -61,25 +66,83 @@ var PathInputComponent = (function () {
         this.changeDetectorRef.detectChanges();
     };
     PathInputComponent.prototype.listDirQuery = function (path) {
-        this.listDirService.listDirContents(path);
+        this.listDirService.listDirContents(paths.normalize(path));
     };
     PathInputComponent.prototype.listDirQueryHandler = function (result) {
         var _this = this;
         this.autocompletePaths = [];
-        var onlyDirStream = rxjs_1.Observable.from(result)
+        var listDirStream = rxjs_1.Observable.from(result);
+        var s = listDirStream
             .filter(function (entry) {
             return entry.charAt(entry.length - 1) === "/"; // only dirs
+        })
+            .map(function (entry) {
+            return paths.join(_this.dirname, entry);
+        })
+            .filter(function (entry) {
+            return entry.indexOf(_this.path) === 0;
+        })
+            .subscribe(function (entry) {
+            _this.autocompletePaths.push(entry);
         });
-        var s = onlyDirStream.subscribe(function (entry) {
-            _this.autocompletePaths.push("" + _this.dirname + entry);
-        });
+        console.log(this.autocompletePaths);
         this.changeDetectorRef.detectChanges();
+    };
+    PathInputComponent.prototype.navigateInputs = function (event) {
+        if (!this.autocompletePaths) {
+            return;
+        }
+        else if (this.selectedAutocompleteEntry === undefined) {
+            if (event.key === "ArrowDown") {
+                event.preventDefault();
+                this.selectedAutocompleteEntry = 0;
+            }
+            else if (event.key === "ArrowUp") {
+                event.preventDefault();
+                this.selectedAutocompleteEntry = this.autocompletePaths.length - 1;
+            }
+            else if (event.key === "Enter") {
+                this.sendDiskUsageQuery(this.path);
+                this.pathInputBox.nativeElement.blur();
+            }
+        }
+        else {
+            if (event.key === "ArrowDown") {
+                event.preventDefault();
+                this.selectedAutocompleteEntry = (++this.selectedAutocompleteEntry
+                    % this.autocompletePaths.length);
+            }
+            else if (event.key === "ArrowUp") {
+                event.preventDefault();
+                this.selectedAutocompleteEntry = (--this.selectedAutocompleteEntry
+                    % this.autocompletePaths.length);
+            }
+            else if (event.key === "Tab") {
+                event.preventDefault();
+                this.selectAutocompleteEntry(this.selectedAutocompleteEntry);
+            }
+            else if (event.key === "Enter") {
+                event.preventDefault();
+                this.selectAutocompleteEntry(this.selectedAutocompleteEntry);
+                this.sendDiskUsageQuery(this.path);
+                this.pathInputBox.nativeElement.blur();
+            }
+        }
+        console.log("selected: ", this.selectedAutocompleteEntry);
+    };
+    PathInputComponent.prototype.selectAutocompleteEntry = function (i) {
+        this.path = this.autocompletePaths[i];
+        console.log("set path to: ", this.path);
     };
     PathInputComponent.prototype.toParentDir = function () {
         this.sendDiskUsageQuery(this.cwd + "/..");
     };
     return PathInputComponent;
 }());
+__decorate([
+    core_1.ViewChild("pathSubmitter"),
+    __metadata("design:type", Object)
+], PathInputComponent.prototype, "pathSubmitter", void 0);
 __decorate([
     core_1.ViewChild("pathInputBox"),
     __metadata("design:type", Object)
