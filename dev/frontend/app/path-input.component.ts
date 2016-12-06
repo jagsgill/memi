@@ -42,6 +42,7 @@ export class PathInputComponent implements OnInit, AfterViewInit {
             "keydown",
             (x: any) => { return x.target.value; })
             .distinctUntilChanged()
+            .debounceTime(500)
             .map((x: any) => {
                 let regexDir = /.*\/$/; // directories end in '/'
                 if (regexDir.test(x)) {
@@ -70,6 +71,7 @@ export class PathInputComponent implements OnInit, AfterViewInit {
     sendDiskUsageQuery(path: string): void {
         // TODO replace console.log with dev logging
         console.log(`Analyzing path: ${path}`);
+        console.log(this.path);
         this.diskQueryService.diskUsage(path);
     }
 
@@ -113,9 +115,11 @@ export class PathInputComponent implements OnInit, AfterViewInit {
             } else if (event.key === "ArrowUp") {
                 event.preventDefault();
                 this.selectedAutocompleteEntry = this.autocompletePaths.length - 1;
-            } else if (event.key === "Enter") {
-                this.sendDiskUsageQuery(this.path);
-                this.pathInputBox.nativeElement.blur();
+            } else if (event.key === "Tab") {
+                event.preventDefault();
+                if (this.autocompletePaths.length === 1){
+                  this.selectAutocompleteEntry(0);
+                }
             }
         } else {
             if (event.key === "ArrowDown") {
@@ -129,15 +133,10 @@ export class PathInputComponent implements OnInit, AfterViewInit {
             } else if (event.key === "Tab") {
                 event.preventDefault();
                 this.selectAutocompleteEntry(this.selectedAutocompleteEntry);
-            } else if (event.key === "Enter") {
-                event.preventDefault();
-                this.selectAutocompleteEntry(this.selectedAutocompleteEntry);
-                this.sendDiskUsageQuery(this.path);
-                this.pathInputBox.nativeElement.blur();
             }
-        }
         console.log("selected: ", this.selectedAutocompleteEntry)
     }
+  }
 
     selectAutocompleteEntry(i: number): void {
         this.path = this.autocompletePaths[i];

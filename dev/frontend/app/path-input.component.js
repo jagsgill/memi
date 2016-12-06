@@ -40,6 +40,7 @@ var PathInputComponent = (function () {
         var _this = this;
         this.inputBoxStreamSource = rxjs_1.Observable.fromEvent(this.pathInputBox.nativeElement, "keydown", function (x) { return x.target.value; })
             .distinctUntilChanged()
+            .debounceTime(500)
             .map(function (x) {
             var regexDir = /.*\/$/; // directories end in '/'
             if (regexDir.test(x)) {
@@ -58,6 +59,7 @@ var PathInputComponent = (function () {
     PathInputComponent.prototype.sendDiskUsageQuery = function (path) {
         // TODO replace console.log with dev logging
         console.log("Analyzing path: " + path);
+        console.log(this.path);
         this.diskQueryService.diskUsage(path);
     };
     PathInputComponent.prototype.diskQueryFinishedHandler = function (result) {
@@ -101,9 +103,11 @@ var PathInputComponent = (function () {
                 event.preventDefault();
                 this.selectedAutocompleteEntry = this.autocompletePaths.length - 1;
             }
-            else if (event.key === "Enter") {
-                this.sendDiskUsageQuery(this.path);
-                this.pathInputBox.nativeElement.blur();
+            else if (event.key === "Tab") {
+                event.preventDefault();
+                if (this.autocompletePaths.length === 1) {
+                    this.selectAutocompleteEntry(0);
+                }
             }
         }
         else {
@@ -121,14 +125,8 @@ var PathInputComponent = (function () {
                 event.preventDefault();
                 this.selectAutocompleteEntry(this.selectedAutocompleteEntry);
             }
-            else if (event.key === "Enter") {
-                event.preventDefault();
-                this.selectAutocompleteEntry(this.selectedAutocompleteEntry);
-                this.sendDiskUsageQuery(this.path);
-                this.pathInputBox.nativeElement.blur();
-            }
+            console.log("selected: ", this.selectedAutocompleteEntry);
         }
-        console.log("selected: ", this.selectedAutocompleteEntry);
     };
     PathInputComponent.prototype.selectAutocompleteEntry = function (i) {
         this.path = this.autocompletePaths[i];
