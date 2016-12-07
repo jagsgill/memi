@@ -3,8 +3,7 @@
     <span class="inputbox">
       <input #pathInputBox [(ngModel)]="path" type="text" name="path" placeholder="path"
       (focus)="autocompleteActive = true"
-      (focusout)="autocompleteActive = false"
-      (keydown)="navigateInputs($event)">
+      (focusout)="autocompleteActive = false">
       <button #pathSubmitter (click)="sendDiskUsageQuery(path)">Analyze</button>
     </span>
     <!-- TODO bring autocomplete entries to forefront -->
