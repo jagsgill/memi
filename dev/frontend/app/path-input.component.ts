@@ -28,34 +28,48 @@ export class PathInputComponent implements OnInit, AfterViewInit {
     autocompleteActive = false;
     selectedAutocompleteEntry: number = undefined;
 
-    listDirResultStream: Subscription;
-    inputBoxStreamSource: Observable<any>;
-    inputBoxStream: Subscription;
+    streamListDirResults: Observable<any>;
+    streamInputKeyPresses: Observable<any>;
+    streamEnter: Observable<any>;
+    streamEnterResultHandler: Observable<any>; // handles async results
+    streamTabSlash: Observable<any>;
+    streamTabSlashResultHandler: Observable<any>; // handles async results
+    streamArrowKeys: Observable<any>;
 
     ngOnInit(): void {
         this.diskQueryService.diskQueryFinishedEvent.subscribe((result: any) => this.diskQueryFinishedHandler(result));
     }
 
     ngAfterViewInit(): void {
-        this.inputBoxStreamSource = Observable.fromEvent(
-            this.pathInputBox.nativeElement,
-            "keydown",
-            (x: any) => { return x.target.value; })
-            .distinctUntilChanged()
-            .debounceTime(500)
-            .map((x: any) => {
-                let regexDir = /.*\/$/; // directories end in '/'
-                if (regexDir.test(x)) {
-                    this.dirname = x;
-                    return x; // identity mapping if its a dir
-                } else {
-                    // TODO use paths.join instead of literal '/'
-                    this.dirname = `${paths.dirname(x)}/`;
-                    return `${paths.dirname(x)}/`; // map to parent dir otherwise
-                }
-            });
-        this.inputBoxStream = this.inputBoxStreamSource
-            .subscribe((x: any) => { this.listDirQuery(x); });
+        // configure Observables for path autocompletion, etc.
+        this.streamInputKeyPresses = Observable.fromEvent(
+          this.pathInputBox.nativeElement,
+          "keydown",
+          (event: any) => { return event; })
+        .debounceTime(500);
+
+        this.streamEnter = this.streamInputKeyPresses
+        .filter(event => event.key === "Enter")
+        .combineLatest(this.streamListDirResults);
+        // this.inputBoxStreamSource = Observable.fromEvent(
+        //     this.pathInputBox.nativeElement,
+        //     "keydown",
+        //     (x: any) => { return x.target.value; })
+        //     .debounceTime(500)
+        //     .distinctUntilChanged()
+        //     .map((x: any) => {
+        //         let regexDir = /.*\/$/; // directories end in '/'
+        //         if (regexDir.test(x)) {
+        //             this.dirname = x;
+        //             return x; // identity mapping if its a dir
+        //         } else {
+        //             // TODO use paths.join instead of literal '/'
+        //             this.dirname = `${paths.dirname(x)}/`;
+        //             return `${paths.dirname(x)}/`; // map to parent dir otherwise
+        //         }
+        //     });
+        // this.inputBoxStream = this.inputBoxStreamSource
+        //     .subscribe((x: any) => { this.listDirQuery(x); });
     }
 
     constructor(
@@ -108,6 +122,8 @@ export class PathInputComponent implements OnInit, AfterViewInit {
     navigateInputs(event: any) {
         if (!this.autocompletePaths) {
             return;
+        } else if (event.key === "Enter") {
+            this.pathInputBox.nativeElement.blur();
         } else if (this.selectedAutocompleteEntry === undefined) {
             if (event.key === "ArrowDown") {
                 event.preventDefault();

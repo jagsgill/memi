@@ -37,24 +37,31 @@ var PathInputComponent = (function () {
         this.diskQueryService.diskQueryFinishedEvent.subscribe(function (result) { return _this.diskQueryFinishedHandler(result); });
     };
     PathInputComponent.prototype.ngAfterViewInit = function () {
-        var _this = this;
-        this.inputBoxStreamSource = rxjs_1.Observable.fromEvent(this.pathInputBox.nativeElement, "keydown", function (x) { return x.target.value; })
-            .distinctUntilChanged()
-            .debounceTime(500)
-            .map(function (x) {
-            var regexDir = /.*\/$/; // directories end in '/'
-            if (regexDir.test(x)) {
-                _this.dirname = x;
-                return x; // identity mapping if its a dir
-            }
-            else {
-                // TODO use paths.join instead of literal '/'
-                _this.dirname = paths.dirname(x) + "/";
-                return paths.dirname(x) + "/"; // map to parent dir otherwise
-            }
-        });
-        this.inputBoxStream = this.inputBoxStreamSource
-            .subscribe(function (x) { _this.listDirQuery(x); });
+        // configure Observables for path autocompletion, etc.
+        this.streamInputKeyPresses = rxjs_1.Observable.fromEvent(this.pathInputBox.nativeElement, "keydown", function (event) { return event; })
+            .debounceTime(500);
+        this.streamEnter = this.streamInputKeyPresses
+            .filter(function (event) { return event.key === "Enter"; })
+            .combineLatest(this.streamListDirResults);
+        // this.inputBoxStreamSource = Observable.fromEvent(
+        //     this.pathInputBox.nativeElement,
+        //     "keydown",
+        //     (x: any) => { return x.target.value; })
+        //     .debounceTime(500)
+        //     .distinctUntilChanged()
+        //     .map((x: any) => {
+        //         let regexDir = /.*\/$/; // directories end in '/'
+        //         if (regexDir.test(x)) {
+        //             this.dirname = x;
+        //             return x; // identity mapping if its a dir
+        //         } else {
+        //             // TODO use paths.join instead of literal '/'
+        //             this.dirname = `${paths.dirname(x)}/`;
+        //             return `${paths.dirname(x)}/`; // map to parent dir otherwise
+        //         }
+        //     });
+        // this.inputBoxStream = this.inputBoxStreamSource
+        //     .subscribe((x: any) => { this.listDirQuery(x); });
     };
     PathInputComponent.prototype.sendDiskUsageQuery = function (path) {
         // TODO replace console.log with dev logging
@@ -93,6 +100,9 @@ var PathInputComponent = (function () {
     PathInputComponent.prototype.navigateInputs = function (event) {
         if (!this.autocompletePaths) {
             return;
+        }
+        else if (event.key === "Enter") {
+            this.pathInputBox.nativeElement.blur();
         }
         else if (this.selectedAutocompleteEntry === undefined) {
             if (event.key === "ArrowDown") {
