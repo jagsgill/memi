@@ -77,9 +77,9 @@ export class PathInputComponent implements OnInit, AfterViewInit {
         private listDirService: ListDirService,
         private changeDetectorRef: ChangeDetectorRef
     ) {
-        this.listDirResultStream = listDirService.getResultStream()
+        this.streamListDirResults = listDirService.getResultStream()
         .distinctUntilChanged()
-        .subscribe((result: string[]) => this.listDirQueryHandler(result));
+        .do((result: string[]) => this.listDirQueryHandler(result));
     }
 
     sendDiskUsageQuery(path: string): void {
@@ -100,6 +100,7 @@ export class PathInputComponent implements OnInit, AfterViewInit {
     }
 
     listDirQueryHandler(result: string[]): void {
+      // TODO change to constructing an InputSelection object
         this.autocompletePaths = [];
         let listDirStream = Observable.from(result);
         let s = listDirStream
@@ -119,48 +120,63 @@ export class PathInputComponent implements OnInit, AfterViewInit {
         this.changeDetectorRef.detectChanges();
     }
 
-    navigateInputs(event: any) {
-        if (!this.autocompletePaths) {
-            return;
-        } else if (event.key === "Enter") {
-            this.pathInputBox.nativeElement.blur();
-        } else if (this.selectedAutocompleteEntry === undefined) {
-            if (event.key === "ArrowDown") {
-                event.preventDefault();
-                this.selectedAutocompleteEntry = 0;
-            } else if (event.key === "ArrowUp") {
-                event.preventDefault();
-                this.selectedAutocompleteEntry = this.autocompletePaths.length - 1;
-            } else if (event.key === "Tab") {
-                event.preventDefault();
-                if (this.autocompletePaths.length === 1){
-                  this.selectAutocompleteEntry(0);
-                }
-            }
-        } else {
-            if (event.key === "ArrowDown") {
-                event.preventDefault();
-                this.selectedAutocompleteEntry = (++this.selectedAutocompleteEntry
-                    % this.autocompletePaths.length);
-            } else if (event.key === "ArrowUp") {
-                event.preventDefault();
-                this.selectedAutocompleteEntry = (--this.selectedAutocompleteEntry
-                    % this.autocompletePaths.length);
-            } else if (event.key === "Tab") {
-                event.preventDefault();
-                this.selectAutocompleteEntry(this.selectedAutocompleteEntry);
-            }
-        console.log("selected: ", this.selectedAutocompleteEntry)
-    }
+  //   navigateInputs(event: any) {
+  // TODO remove
+  //       if (!this.autocompletePaths) {
+  //           return;
+  //       } else if (event.key === "Enter") {
+  //           this.pathInputBox.nativeElement.blur();
+  //       } else if (this.selectedAutocompleteEntry === undefined) {
+  //           if (event.key === "ArrowDown") {
+  //               event.preventDefault();
+  //               this.selectedAutocompleteEntry = 0;
+  //           } else if (event.key === "ArrowUp") {
+  //               event.preventDefault();
+  //               this.selectedAutocompleteEntry = this.autocompletePaths.length - 1;
+  //           } else if (event.key === "Tab") {
+  //               event.preventDefault();
+  //               if (this.autocompletePaths.length === 1){
+  //                 this.selectAutocompleteEntry(0);
+  //               }
+  //           }
+  //       } else {
+  //           if (event.key === "ArrowDown") {
+  //               event.preventDefault();
+  //               this.selectedAutocompleteEntry = (++this.selectedAutocompleteEntry
+  //                   % this.autocompletePaths.length);
+  //           } else if (event.key === "ArrowUp") {
+  //               event.preventDefault();
+  //               this.selectedAutocompleteEntry = (--this.selectedAutocompleteEntry
+  //                   % this.autocompletePaths.length);
+  //           } else if (event.key === "Tab") {
+  //               event.preventDefault();
+  //               this.selectAutocompleteEntry(this.selectedAutocompleteEntry);
+  //           }
+  //       console.log("selected: ", this.selectedAutocompleteEntry)
+  //   }
+  // }
+  //
+    // selectAutocompleteEntry(i: number): void {
+    //     TODO remove
+    //     this.path = this.autocompletePaths[i];
+    //     console.log("set path to: ", this.path)
+    // }
+
+    // toParentDir(): void {
+    //     // TODO this belongs in routing for analysis/output view
+    //     this.sendDiskUsageQuery(`${this.cwd}/..`);
+    // }
+
+}
+
+class InputSelection {
+  entries : string[];
+  selected: number; // index in `entries`
+  cwd: string; // parent directory for items in `entries`
+
+  constructor(entries: string[]) {
+    this.entries = entries
+    .filter(e => e.charAt(e.length - 1) === "/")
+    .map(e => paths.join(this.cwd, e));
   }
-
-    selectAutocompleteEntry(i: number): void {
-        this.path = this.autocompletePaths[i];
-        console.log("set path to: ", this.path)
-    }
-
-    toParentDir(): void {
-        this.sendDiskUsageQuery(`${this.cwd}/..`);
-    }
-
 }

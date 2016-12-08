@@ -28,9 +28,9 @@ var PathInputComponent = (function () {
         this.autocompletePaths = [];
         this.autocompleteActive = false;
         this.selectedAutocompleteEntry = undefined;
-        this.listDirResultStream = listDirService.getResultStream()
+        this.streamListDirResults = listDirService.getResultStream()
             .distinctUntilChanged()
-            .subscribe(function (result) { return _this.listDirQueryHandler(result); });
+            .do(function (result) { return _this.listDirQueryHandler(result); });
     }
     PathInputComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -79,6 +79,7 @@ var PathInputComponent = (function () {
     };
     PathInputComponent.prototype.listDirQueryHandler = function (result) {
         var _this = this;
+        // TODO change to constructing an InputSelection object
         this.autocompletePaths = [];
         var listDirStream = rxjs_1.Observable.from(result);
         var s = listDirStream
@@ -96,54 +97,6 @@ var PathInputComponent = (function () {
         });
         console.log(this.autocompletePaths);
         this.changeDetectorRef.detectChanges();
-    };
-    PathInputComponent.prototype.navigateInputs = function (event) {
-        if (!this.autocompletePaths) {
-            return;
-        }
-        else if (event.key === "Enter") {
-            this.pathInputBox.nativeElement.blur();
-        }
-        else if (this.selectedAutocompleteEntry === undefined) {
-            if (event.key === "ArrowDown") {
-                event.preventDefault();
-                this.selectedAutocompleteEntry = 0;
-            }
-            else if (event.key === "ArrowUp") {
-                event.preventDefault();
-                this.selectedAutocompleteEntry = this.autocompletePaths.length - 1;
-            }
-            else if (event.key === "Tab") {
-                event.preventDefault();
-                if (this.autocompletePaths.length === 1) {
-                    this.selectAutocompleteEntry(0);
-                }
-            }
-        }
-        else {
-            if (event.key === "ArrowDown") {
-                event.preventDefault();
-                this.selectedAutocompleteEntry = (++this.selectedAutocompleteEntry
-                    % this.autocompletePaths.length);
-            }
-            else if (event.key === "ArrowUp") {
-                event.preventDefault();
-                this.selectedAutocompleteEntry = (--this.selectedAutocompleteEntry
-                    % this.autocompletePaths.length);
-            }
-            else if (event.key === "Tab") {
-                event.preventDefault();
-                this.selectAutocompleteEntry(this.selectedAutocompleteEntry);
-            }
-            console.log("selected: ", this.selectedAutocompleteEntry);
-        }
-    };
-    PathInputComponent.prototype.selectAutocompleteEntry = function (i) {
-        this.path = this.autocompletePaths[i];
-        console.log("set path to: ", this.path);
-    };
-    PathInputComponent.prototype.toParentDir = function () {
-        this.sendDiskUsageQuery(this.cwd + "/..");
     };
     return PathInputComponent;
 }());
@@ -168,4 +121,13 @@ PathInputComponent = __decorate([
         core_1.ChangeDetectorRef])
 ], PathInputComponent);
 exports.PathInputComponent = PathInputComponent;
+var InputSelection = (function () {
+    function InputSelection(entries) {
+        var _this = this;
+        this.entries = entries
+            .filter(function (e) { return e.charAt(e.length - 1) === "/"; })
+            .map(function (e) { return paths.join(_this.cwd, e); });
+    }
+    return InputSelection;
+}());
 //# sourceMappingURL=path-input.component.js.map
