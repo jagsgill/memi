@@ -25,9 +25,7 @@ var PathInputComponent = (function () {
         this.iconToParentDir = require("./icons/ic_subdirectory_arrow_right_black_24px.svg");
         this.path = ""; // user path in input box
         this.dirname = ""; // directory path for autocomplete entries
-        this.autocompletePaths = [];
         this.autocompleteActive = false;
-        this.selectedAutocompleteEntry = undefined;
         this.streamListDirResults = listDirService.getResultStream()
             .distinctUntilChanged()
             .do(function (result) { return _this.listDirQueryHandler(result); });
@@ -121,13 +119,18 @@ PathInputComponent = __decorate([
         core_1.ChangeDetectorRef])
 ], PathInputComponent);
 exports.PathInputComponent = PathInputComponent;
-var InputSelection = (function () {
-    function InputSelection(entries) {
+var AutocompleteEntries = (function () {
+    function AutocompleteEntries(entries, cwd) {
         var _this = this;
         this.entries = entries
             .filter(function (e) { return e.charAt(e.length - 1) === "/"; })
             .map(function (e) { return paths.join(_this.cwd, e); });
+        if (entries.length > 0) {
+            this.isEmpty = false;
+        }
+        this.selected = -1;
+        this.cwd = cwd;
     }
-    return InputSelection;
+    return AutocompleteEntries;
 }());
 //# sourceMappingURL=path-input.component.js.map

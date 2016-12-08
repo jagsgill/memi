@@ -23,10 +23,9 @@ export class PathInputComponent implements OnInit, AfterViewInit {
     @ViewChild("pathInputBox") pathInputBox: any;
     path = ""; // user path in input box
     dirname = ""; // directory path for autocomplete entries
-    cwd: string; // current working directory for analysis in output view
-    autocompletePaths: string[] = [];
+    cwd: string; // current working directory for analysis in output view TODO remove, belongs in output view routing
+    autocompleteEntries: AutocompleteEntries;
     autocompleteActive = false;
-    selectedAutocompleteEntry: number = undefined;
 
     streamListDirResults: Observable<any>;
     streamInputKeyPresses: Observable<any>;
@@ -43,14 +42,14 @@ export class PathInputComponent implements OnInit, AfterViewInit {
     ngAfterViewInit(): void {
         // configure Observables for path autocompletion, etc.
         this.streamInputKeyPresses = Observable.fromEvent(
-          this.pathInputBox.nativeElement,
-          "keydown",
-          (event: any) => { return event; })
-        .debounceTime(500);
+            this.pathInputBox.nativeElement,
+            "keydown",
+            (event: any) => { return event; })
+            .debounceTime(500);
 
         this.streamEnter = this.streamInputKeyPresses
-        .filter(event => event.key === "Enter")
-        .combineLatest(this.streamListDirResults);
+            .filter(event => event.key === "Enter")
+            .combineLatest(this.streamListDirResults);
         // this.inputBoxStreamSource = Observable.fromEvent(
         //     this.pathInputBox.nativeElement,
         //     "keydown",
@@ -78,8 +77,8 @@ export class PathInputComponent implements OnInit, AfterViewInit {
         private changeDetectorRef: ChangeDetectorRef
     ) {
         this.streamListDirResults = listDirService.getResultStream()
-        .distinctUntilChanged()
-        .do((result: string[]) => this.listDirQueryHandler(result));
+            .distinctUntilChanged()
+            .do((result: string[]) => this.listDirQueryHandler(result));
     }
 
     sendDiskUsageQuery(path: string): void {
@@ -100,7 +99,7 @@ export class PathInputComponent implements OnInit, AfterViewInit {
     }
 
     listDirQueryHandler(result: string[]): void {
-      // TODO change to constructing an InputSelection object
+        // TODO change to constructing an InputSelection object
         this.autocompletePaths = [];
         let listDirStream = Observable.from(result);
         let s = listDirStream
@@ -120,42 +119,42 @@ export class PathInputComponent implements OnInit, AfterViewInit {
         this.changeDetectorRef.detectChanges();
     }
 
-  //   navigateInputs(event: any) {
-  // TODO remove
-  //       if (!this.autocompletePaths) {
-  //           return;
-  //       } else if (event.key === "Enter") {
-  //           this.pathInputBox.nativeElement.blur();
-  //       } else if (this.selectedAutocompleteEntry === undefined) {
-  //           if (event.key === "ArrowDown") {
-  //               event.preventDefault();
-  //               this.selectedAutocompleteEntry = 0;
-  //           } else if (event.key === "ArrowUp") {
-  //               event.preventDefault();
-  //               this.selectedAutocompleteEntry = this.autocompletePaths.length - 1;
-  //           } else if (event.key === "Tab") {
-  //               event.preventDefault();
-  //               if (this.autocompletePaths.length === 1){
-  //                 this.selectAutocompleteEntry(0);
-  //               }
-  //           }
-  //       } else {
-  //           if (event.key === "ArrowDown") {
-  //               event.preventDefault();
-  //               this.selectedAutocompleteEntry = (++this.selectedAutocompleteEntry
-  //                   % this.autocompletePaths.length);
-  //           } else if (event.key === "ArrowUp") {
-  //               event.preventDefault();
-  //               this.selectedAutocompleteEntry = (--this.selectedAutocompleteEntry
-  //                   % this.autocompletePaths.length);
-  //           } else if (event.key === "Tab") {
-  //               event.preventDefault();
-  //               this.selectAutocompleteEntry(this.selectedAutocompleteEntry);
-  //           }
-  //       console.log("selected: ", this.selectedAutocompleteEntry)
-  //   }
-  // }
-  //
+    //   navigateInputs(event: any) {
+    // TODO remove
+    //       if (!this.autocompletePaths) {
+    //           return;
+    //       } else if (event.key === "Enter") {
+    //           this.pathInputBox.nativeElement.blur();
+    //       } else if (this.selectedAutocompleteEntry === undefined) {
+    //           if (event.key === "ArrowDown") {
+    //               event.preventDefault();
+    //               this.selectedAutocompleteEntry = 0;
+    //           } else if (event.key === "ArrowUp") {
+    //               event.preventDefault();
+    //               this.selectedAutocompleteEntry = this.autocompletePaths.length - 1;
+    //           } else if (event.key === "Tab") {
+    //               event.preventDefault();
+    //               if (this.autocompletePaths.length === 1){
+    //                 this.selectAutocompleteEntry(0);
+    //               }
+    //           }
+    //       } else {
+    //           if (event.key === "ArrowDown") {
+    //               event.preventDefault();
+    //               this.selectedAutocompleteEntry = (++this.selectedAutocompleteEntry
+    //                   % this.autocompletePaths.length);
+    //           } else if (event.key === "ArrowUp") {
+    //               event.preventDefault();
+    //               this.selectedAutocompleteEntry = (--this.selectedAutocompleteEntry
+    //                   % this.autocompletePaths.length);
+    //           } else if (event.key === "Tab") {
+    //               event.preventDefault();
+    //               this.selectAutocompleteEntry(this.selectedAutocompleteEntry);
+    //           }
+    //       console.log("selected: ", this.selectedAutocompleteEntry)
+    //   }
+    // }
+    //
     // selectAutocompleteEntry(i: number): void {
     //     TODO remove
     //     this.path = this.autocompletePaths[i];
@@ -169,14 +168,22 @@ export class PathInputComponent implements OnInit, AfterViewInit {
 
 }
 
-class InputSelection {
-  entries : string[];
-  selected: number; // index in `entries`
-  cwd: string; // parent directory for items in `entries`
+class AutocompleteEntries {
+    entries: string[];
+    selected: number; // index in `entries` or -1 (nothing selected)
+    cwd: string; // parent directory for items in `entries`
+    isEmpty: boolean;
 
-  constructor(entries: string[]) {
-    this.entries = entries
-    .filter(e => e.charAt(e.length - 1) === "/")
-    .map(e => paths.join(this.cwd, e));
-  }
+    constructor(entries: string[], cwd: string) {
+        this.entries = entries
+            .filter(e => e.charAt(e.length - 1) === "/")
+            .map(e => paths.join(this.cwd, e));
+
+        if (entries.length > 0) {
+            this.isEmpty = false;
+        }
+
+        this.selected = -1;
+        this.cwd = cwd;
+    }
 }
