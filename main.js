@@ -1,4 +1,8 @@
-const {app, BrowserWindow, ipcMain: ipc} = require('electron')
+const {
+    app,
+    BrowserWindow,
+    ipcMain: ipc
+} = require('electron')
 const exec = require('sudo-prompt').exec
 
 const commands = require('./dev/backend/commands').commands
@@ -12,70 +16,86 @@ const STATUS = require('./dev/util/errorcodes.js').STATUS
 const platform = process.platform
 let win // the window
 let sudo_options = {
-  name: 'memi'
+    name: 'memi'
 }
 
-function notImpl(){
-  // TODO
+function notImpl() {
+    // TODO
 }
 
-function createMainWindow(){
-  win = new BrowserWindow({
-    width: 800,
-    height: 800
-  })
+function createMainWindow() {
+    win = new BrowserWindow({
+        width: 800,
+        height: 800
+    })
 
-  win.loadURL(`http://localhost:8080/index.html`)
-  var contents = win.webContents
+    win.loadURL(`http://localhost:8080/index.html`)
+    var contents = win.webContents
 
-  win.webContents.openDevTools()
+    win.webContents.openDevTools()
 
-  win.on('closed', () => {
-    win = null
-  })
+    win.on('closed', () => {
+        win = null
+    })
 }
 
 app.on('ready', createMainWindow) // don't call createWindow yet!
 
 ipc.on('clientSendFormMsg', (event, arg1) => {
-  console.log(`Received msg: ${arg1}`)
-  event.sender.send('echoMain', arg1)
+    console.log(`Received msg: ${arg1}`)
+    event.sender.send('echoMain', arg1)
 })
 
 {
-  let channel = 'requestListDirContents',
-  command = commands.list_dir_contents[platform]
-  ipc.on(channel, (event, dir) => {
-    exec(
-      command(dir),
-      sudo_options,
-      (err, stdout, stderr) => {
-        let output = (err || stdout || stderr).trim()
-        if(output === STATUS.DIR_NOT_EXIST){
-          event.sender.send(channel, {status: STATUS.DIR_NOT_EXIST, content: ""}, dir)
-        } else {
-          console.log(`${command(dir)} :\n ${output}`)
-          event.sender.send(channel, {status: STATUS.OK, content: output}, dir)
-        }
-      })
-    })
-  }
-
-  {
-    let channel = 'clientRequestDiskUsageForPath',
-    command = commands.disk_usage_summary[platform]
+    let channel = 'requestListDirContents',
+        command = commands.list_dir_contents[platform]
     ipc.on(channel, (event, dir) => {
-      exec(
-        command(dir),
-        sudo_options,
-        (err, stdout, stderr) => {
-          let output = (err || stdout || stderr).trim()
-          if (output  === STATUS.DIR_NOT_EXIST){
-            event.sender.send(channel, { status: STATUS.DIR_NOT_EXIST, content: "" }, dir)
-          } else {
-            console.log(`${command(dir)} :\n ${output}`)
-            event.sender.send(channel, { status: STATUS.OK, content: output }, dir)
-          }
-        })
-      })
-    }
+        exec(
+            command(dir),
+            sudo_options,
+            (err, stdout, stderr) => {
+                let output = (err || stdout || stderr).trim()
+                if (output === STATUS.DIR_NOT_EXIST) {
+                    event.sender.send(channel, {
+                        status: STATUS.DIR_NOT_EXIST,
+                        content: "",
+                        dir: dir
+                    })
+                } else {
+                    console.log(`${command(dir)} :\n ${output}`)
+                    event.sender.send(channel, {
+                        status: STATUS.OK,
+                        content: output,
+                        dir: dir
+                    })
+                }
+            })
+    })
+}
+
+{
+    let channel = 'clientRequestDiskUsageForPath',
+        command = commands.disk_usage_summary[platform]
+    ipc.on(channel, (event, dir) => {
+        exec(
+            command(dir),
+            sudo_options,
+            (err, stdout, stderr) => {
+                let output = (err || stdout || stderr).trim()
+                if (output === STATUS.DIR_NOT_EXIST) {
+                    event.sender.send(channel, {
+                        status: STATUS.DIR_NOT_EXIST,
+                        content: ""
+                            // TODO move dir inside object
+                    }, dir)
+                } else {
+                    console.log(`${command(dir)} :\n ${output}`)
+                    event.sender.send(channel, {
+                        status: STATUS.OK,
+                        content: output
+                            // TODO move dir inside object
+                    }, dir)
+                }
+            })
+    })
+}

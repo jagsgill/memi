@@ -76,25 +76,16 @@ var PathInputComponent = (function () {
         this.listDirService.listDirContents(paths.normalize(path));
     };
     PathInputComponent.prototype.listDirQueryHandler = function (result) {
-        var _this = this;
         // TODO change to constructing an InputSelection object
-        this.autocompletePaths = [];
-        var listDirStream = rxjs_1.Observable.from(result);
-        var s = listDirStream
-            .filter(function (entry) {
-            return entry.charAt(entry.length - 1) === "/"; // only dirs
-        })
-            .map(function (entry) {
-            return paths.join(_this.dirname, entry);
-        })
-            .filter(function (entry) {
-            return entry.indexOf(_this.path) === 0;
-        })
-            .subscribe(function (entry) {
-            _this.autocompletePaths.push(entry);
-        });
-        console.log(this.autocompletePaths);
-        this.changeDetectorRef.detectChanges();
+        this.autocompleteEntries = new AutocompleteEntries(result.entries, result.dir);
+        // .filter((entry: string) => {
+        //     return entry.indexOf(this.path) === 0;
+        // })
+        // .subscribe((entry: string) => {
+        //     this.autocompletePaths.push(entry);
+        // });
+        console.log(this.autocompleteEntries);
+        //this.changeDetectorRef.detectChanges();
     };
     return PathInputComponent;
 }());

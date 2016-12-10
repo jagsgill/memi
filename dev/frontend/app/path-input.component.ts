@@ -98,25 +98,17 @@ export class PathInputComponent implements OnInit, AfterViewInit {
         this.listDirService.listDirContents(paths.normalize(path));
     }
 
-    listDirQueryHandler(result: string[]): void {
+    listDirQueryHandler(result: any): void {
         // TODO change to constructing an InputSelection object
-        this.autocompletePaths = [];
-        let listDirStream = Observable.from(result);
-        let s = listDirStream
-            .filter((entry: string) => {
-                return entry.charAt(entry.length - 1) === "/"; // only dirs
-            })
-            .map((entry: string) => {
-                return paths.join(this.dirname, entry);
-            })
-            .filter((entry: string) => {
-                return entry.indexOf(this.path) === 0;
-            })
-            .subscribe((entry: string) => {
-                this.autocompletePaths.push(entry);
-            });
-        console.log(this.autocompletePaths)
-        this.changeDetectorRef.detectChanges();
+        this.autocompleteEntries = new AutocompleteEntries(result.entries, result.dir);
+        // .filter((entry: string) => {
+        //     return entry.indexOf(this.path) === 0;
+        // })
+        // .subscribe((entry: string) => {
+        //     this.autocompletePaths.push(entry);
+        // });
+        console.log(this.autocompleteEntries)
+        //this.changeDetectorRef.detectChanges();
     }
 
     //   navigateInputs(event: any) {

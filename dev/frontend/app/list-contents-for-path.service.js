@@ -37,7 +37,7 @@ var ListDirService = (function () {
         else if (output.status === STATUS.DIR_NOT_EXIST) {
             entries = ["Path does not exist."];
         }
-        return entries;
+        return { entries: entries, dir: output.dir };
     };
     return ListDirService;
 }());

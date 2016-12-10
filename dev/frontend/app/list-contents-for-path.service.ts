@@ -32,13 +32,13 @@ export class ListDirService {
         ipc.send(this.channel, paths.normalize(path));
     }
 
-    parseListDirResults(output: any): string[] {
+    parseListDirResults(output: any): any {
         let entries: string[];
         if (output.status === STATUS.OK) {
             entries = output.content.split("\n");
         } else if (output.status === STATUS.DIR_NOT_EXIST) {
             entries = ["Path does not exist."];
         }
-        return entries;
+        return { entries: entries, dir: output.dir };
     }
 }
