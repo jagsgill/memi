@@ -17,7 +17,7 @@ export class ListDirService {
         this.resultStream = Observable.fromEvent(
             ipc,
             this.channel,
-            (event: any, output: any, dir: any) => {
+            (event: any, output: any) => {
                 return this.parseListDirResults(output);
             }
         );
@@ -29,7 +29,7 @@ export class ListDirService {
 
     listDirContents(path: string): void {
         console.log(`sending path for list dir contents: ${path}`);
-        ipc.send(this.channel, paths.normalize(path));
+        ipc.send(this.channel, path);
     }
 
     parseListDirResults(output: any): any {

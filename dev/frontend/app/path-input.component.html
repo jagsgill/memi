@@ -1,20 +1,17 @@
 <form class="basic-grey">
-  <div id="inputarea">
-    <span class="inputbox">
+    <div id="inputarea">
+        <span class="inputbox">
       <input #pathInputBox [(ngModel)]="path" type="text" name="path" placeholder="path"
       (focus)="autocompleteActive = true"
       (focusout)="autocompleteActive = false">
       <button #pathSubmitter (click)="sendDiskUsageQuery(path)">Analyze</button>
     </span>
-    <!-- TODO bring autocomplete entries to forefront -->
-    <ul *ngIf="autocompleteActive">
-      <li *ngFor="let entry of autocompletePaths; let i = index"
-      [class.active]="i === selectedAutocompleteEntry"
-      (mouseover)="selectedAutocompleteEntry = i"
-      (click)="selectAutocompleteEntry(i);">{{entry}}</li>
-    </ul>
-  </div>
-  <!-- TODO use platform-specific examples -->
+        <!-- TODO bring autocomplete entries to forefront -->
+        <ul *ngIf="autocompleteActive">
+            <li *ngFor="let entry of autocompleteEntries.entries; let i = index" [class.active]="i === selectedAutocompleteEntry" (mouseover)="selectedAutocompleteEntry = i" (click)="selectAutocompleteEntry(i);">{{entry}}</li>
+        </ul>
+    </div>
+    <!-- TODO use platform-specific examples -->
 </form>
 <span *ngIf="cwd" id="currDirHeadingContainer" id="currdirHeadingContainer">
   <h2 id="currDirHeading">

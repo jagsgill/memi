@@ -11,14 +11,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require("@angular/core");
 var electron_1 = require("electron");
 var rxjs_1 = require("rxjs");
-var paths = require("path");
 var STATUS = require("../../util/errorcodes.js").STATUS;
 var ListDirService = (function () {
     function ListDirService() {
         var _this = this;
         this.listDirFinishedEvent = new core_1.EventEmitter();
         this.channel = "requestListDirContents";
-        this.resultStream = rxjs_1.Observable.fromEvent(electron_1.ipcRenderer, this.channel, function (event, output, dir) {
+        this.resultStream = rxjs_1.Observable.fromEvent(electron_1.ipcRenderer, this.channel, function (event, output) {
             return _this.parseListDirResults(output);
         });
     }
@@ -27,7 +26,7 @@ var ListDirService = (function () {
     };
     ListDirService.prototype.listDirContents = function (path) {
         console.log("sending path for list dir contents: " + path);
-        electron_1.ipcRenderer.send(this.channel, paths.normalize(path));
+        electron_1.ipcRenderer.send(this.channel, path);
     };
     ListDirService.prototype.parseListDirResults = function (output) {
         var entries;

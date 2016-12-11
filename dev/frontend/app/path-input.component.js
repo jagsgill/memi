@@ -27,19 +27,35 @@ var PathInputComponent = (function () {
         this.dirname = ""; // directory path for autocomplete entries
         this.autocompleteActive = false;
         this.streamListDirResults = listDirService.getResultStream()
-            .distinctUntilChanged()
             .do(function (result) { return _this.listDirQueryHandler(result); });
+        this.autocompleteEntries = new AutocompleteEntries([], ".");
     }
     PathInputComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.diskQueryService.diskQueryFinishedEvent.subscribe(function (result) { return _this.diskQueryFinishedHandler(result); });
     };
     PathInputComponent.prototype.ngAfterViewInit = function () {
+        var _this = this;
         // configure Observables for path autocompletion, etc.
         this.streamInputKeyPresses = rxjs_1.Observable.fromEvent(this.pathInputBox.nativeElement, "keydown", function (event) { return event; })
             .debounceTime(500);
         this.streamEnter = this.streamInputKeyPresses
             .filter(function (event) { return event.key === "Enter"; })
+            .combineLatest(this.streamListDirResults);
+        this.streamTabSlash = rxjs_1.Observable.zip(
+        // zip key press with upcoming results of the list dir query it initiates here
+        this.streamListDirResults, this.streamInputKeyPresses
+            .filter(function (event) { return ["/", "Tab"].indexOf(event.key) > -1; })
+            .do(function (e) {
+            console.log(e);
+            console.log(e.target.value);
+            console.log(paths.dirname(e.target.value));
+            // TODO fix, paths.dirname truncates last subdir in e.g. /Users/Applications/  
+            var dirname = paths.dirname(e.target.value);
+            _this.listDirQuery(paths.normalize(dirname));
+        }), function (result, key) { return { result: result, key: key }; }).subscribe();
+        this.streamArrowKeys = this.streamInputKeyPresses
+            .filter(function (event) { return ["ArrowUp", "ArrowDown"].indexOf(event.key) > -1; })
             .combineLatest(this.streamListDirResults);
         // this.inputBoxStreamSource = Observable.fromEvent(
         //     this.pathInputBox.nativeElement,
@@ -85,7 +101,7 @@ var PathInputComponent = (function () {
         //     this.autocompletePaths.push(entry);
         // });
         console.log(this.autocompleteEntries);
-        //this.changeDetectorRef.detectChanges();
+        this.changeDetectorRef.detectChanges();
     };
     return PathInputComponent;
 }());
@@ -113,14 +129,14 @@ exports.PathInputComponent = PathInputComponent;
 var AutocompleteEntries = (function () {
     function AutocompleteEntries(entries, cwd) {
         var _this = this;
+        this.cwd = cwd;
         this.entries = entries
             .filter(function (e) { return e.charAt(e.length - 1) === "/"; })
             .map(function (e) { return paths.join(_this.cwd, e); });
         if (entries.length > 0) {
             this.isEmpty = false;
         }
-        this.selected = -1;
-        this.cwd = cwd;
+        this.selected = null;
     }
     return AutocompleteEntries;
 }());

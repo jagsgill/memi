@@ -31,7 +31,7 @@ export class PathInputComponent implements OnInit, AfterViewInit {
     streamInputKeyPresses: Observable<any>;
     streamEnter: Observable<any>;
     streamEnterResultHandler: Observable<any>; // handles async results
-    streamTabSlash: Observable<any>;
+    streamTabSlash: Subscription;
     streamTabSlashResultHandler: Observable<any>; // handles async results
     streamArrowKeys: Observable<any>;
 
@@ -49,6 +49,26 @@ export class PathInputComponent implements OnInit, AfterViewInit {
 
         this.streamEnter = this.streamInputKeyPresses
             .filter(event => event.key === "Enter")
+            .combineLatest(this.streamListDirResults);
+
+        this.streamTabSlash = Observable.zip(
+            // zip key press with upcoming results of the list dir query it initiates here
+            this.streamListDirResults,
+            this.streamInputKeyPresses
+                .filter(event => ["/", "Tab"].indexOf(event.key) > -1)
+                // TODO handle Tab separately
+                .do(e => {
+                    console.log(e);
+                    console.log(e.target.value);
+                    console.log(paths.dirname(e.target.value));
+                    // TODO fix, paths.dirname truncates last subdir in e.g. /Users/Applications/  
+                    let dirname = paths.dirname(e.target.value);
+                    this.listDirQuery(paths.normalize(dirname));
+                }),
+            (result, key) => { return { result: result, key: key } }).subscribe();
+
+        this.streamArrowKeys = this.streamInputKeyPresses
+            .filter(event => ["ArrowUp", "ArrowDown"].indexOf(event.key) > -1)
             .combineLatest(this.streamListDirResults);
         // this.inputBoxStreamSource = Observable.fromEvent(
         //     this.pathInputBox.nativeElement,
@@ -77,8 +97,9 @@ export class PathInputComponent implements OnInit, AfterViewInit {
         private changeDetectorRef: ChangeDetectorRef
     ) {
         this.streamListDirResults = listDirService.getResultStream()
-            .distinctUntilChanged()
-            .do((result: string[]) => this.listDirQueryHandler(result));
+            .do((result: any) => this.listDirQueryHandler(result));
+        this.autocompleteEntries = new AutocompleteEntries([], ".");
+
     }
 
     sendDiskUsageQuery(path: string): void {
@@ -108,7 +129,7 @@ export class PathInputComponent implements OnInit, AfterViewInit {
         //     this.autocompletePaths.push(entry);
         // });
         console.log(this.autocompleteEntries)
-        //this.changeDetectorRef.detectChanges();
+        this.changeDetectorRef.detectChanges();
     }
 
     //   navigateInputs(event: any) {
@@ -162,11 +183,12 @@ export class PathInputComponent implements OnInit, AfterViewInit {
 
 class AutocompleteEntries {
     entries: string[];
-    selected: number; // index in `entries` or -1 (nothing selected)
+    selected: number; // index in `entries` or null (nothing selected)
     cwd: string; // parent directory for items in `entries`
     isEmpty: boolean;
 
     constructor(entries: string[], cwd: string) {
+        this.cwd = cwd;
         this.entries = entries
             .filter(e => e.charAt(e.length - 1) === "/")
             .map(e => paths.join(this.cwd, e));
@@ -174,8 +196,6 @@ class AutocompleteEntries {
         if (entries.length > 0) {
             this.isEmpty = false;
         }
-
-        this.selected = -1;
-        this.cwd = cwd;
+        this.selected = null;
     }
 }
