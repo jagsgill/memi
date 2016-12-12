@@ -29,7 +29,7 @@ export class PathInputComponent implements OnInit, AfterViewInit {
 
     streamListDirResults: Observable<any>;
     streamInputKeyPresses: Observable<any>;
-    streamEnter: Observable<any>;
+    streamEnter: Subscription;
     streamEnterResultHandler: Observable<any>; // handles async results
     streamTabSlash: Subscription;
     streamTabSlashResultHandler: Observable<any>; // handles async results
@@ -48,7 +48,19 @@ export class PathInputComponent implements OnInit, AfterViewInit {
 
         this.streamEnter = this.streamInputKeyPresses
             .filter(event => event.key === "Enter")
-            .combineLatest(this.streamListDirResults);
+            .do(event => {
+                let ae = this.autocompleteEntries,
+                    path: string;
+                event.preventDefault();
+                event.target.blur(); // hide autocomplete list
+                console.log(ae);
+                if (ae.selected === null) { // use path in input box
+                    path = this.path;
+                } else {
+                    path = ae.entries[ae.selected];
+                }
+                this.sendDiskUsageQuery(paths.normalize(path));
+            }).subscribe();
 
         let slowInputStream = this.streamInputKeyPresses.debounceTime(500);
         this.streamTabSlash = Observable.zip(
@@ -66,11 +78,9 @@ export class PathInputComponent implements OnInit, AfterViewInit {
 
         this.streamArrowKeys = this.streamInputKeyPresses
             .filter(event => ["ArrowUp", "ArrowDown"].indexOf(event.key) > -1)
-            .combineLatest(this.streamListDirResults)
-            .do(eventAndResult => {
-                console.log(eventAndResult)
-                let key = eventAndResult[0].key;
-                let ae: AutocompleteEntries = eventAndResult[1];
+            .do(event => {
+                let key = event.key;
+                let ae = this.autocompleteEntries;
                 if (ae.isEmpty) {
                     // do nothing
                 } else if (key === "ArrowDown") {
@@ -215,7 +225,6 @@ class AutocompleteEntries {
         this.entries = entries
             .filter(e => e.charAt(e.length - 1) === paths.sep)
             .map(e => paths.join(this.cwd, e));
-        console.log(this.entries);
 
         if (entries.length > 0) {
             this.isEmpty = false;

@@ -40,7 +40,19 @@ var PathInputComponent = (function () {
         this.streamInputKeyPresses = rxjs_1.Observable.fromEvent(this.pathInputBox.nativeElement, "keydown", function (event) { return event; });
         this.streamEnter = this.streamInputKeyPresses
             .filter(function (event) { return event.key === "Enter"; })
-            .combineLatest(this.streamListDirResults);
+            .do(function (event) {
+            var ae = _this.autocompleteEntries, path;
+            event.preventDefault();
+            event.target.blur(); // hide autocomplete list
+            console.log(ae);
+            if (ae.selected === null) {
+                path = _this.path;
+            }
+            else {
+                path = ae.entries[ae.selected];
+            }
+            _this.sendDiskUsageQuery(paths.normalize(path));
+        }).subscribe();
         var slowInputStream = this.streamInputKeyPresses.debounceTime(500);
         this.streamTabSlash = rxjs_1.Observable.zip(
         // zip the key press with upcoming results of the list dir query it initiates here
@@ -53,11 +65,9 @@ var PathInputComponent = (function () {
         }), function (result, key) { return { result: result, key: key }; }).subscribe();
         this.streamArrowKeys = this.streamInputKeyPresses
             .filter(function (event) { return ["ArrowUp", "ArrowDown"].indexOf(event.key) > -1; })
-            .combineLatest(this.streamListDirResults)
-            .do(function (eventAndResult) {
-            console.log(eventAndResult);
-            var key = eventAndResult[0].key;
-            var ae = eventAndResult[1];
+            .do(function (event) {
+            var key = event.key;
+            var ae = _this.autocompleteEntries;
             if (ae.isEmpty) {
             }
             else if (key === "ArrowDown") {
@@ -162,7 +172,6 @@ var AutocompleteEntries = (function () {
         this.entries = entries
             .filter(function (e) { return e.charAt(e.length - 1) === paths.sep; })
             .map(function (e) { return paths.join(_this.cwd, e); });
-        console.log(this.entries);
         if (entries.length > 0) {
             this.isEmpty = false;
         }
