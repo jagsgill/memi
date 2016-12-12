@@ -37,14 +37,14 @@ var PathInputComponent = (function () {
     PathInputComponent.prototype.ngAfterViewInit = function () {
         var _this = this;
         // configure Observables for path autocompletion, etc.
-        this.streamInputKeyPresses = rxjs_1.Observable.fromEvent(this.pathInputBox.nativeElement, "keydown", function (event) { return event; })
-            .debounceTime(500);
+        this.streamInputKeyPresses = rxjs_1.Observable.fromEvent(this.pathInputBox.nativeElement, "keydown", function (event) { return event; });
         this.streamEnter = this.streamInputKeyPresses
             .filter(function (event) { return event.key === "Enter"; })
             .combineLatest(this.streamListDirResults);
+        var slowInputStream = this.streamInputKeyPresses.debounceTime(500);
         this.streamTabSlash = rxjs_1.Observable.zip(
-        // zip key press with upcoming results of the list dir query it initiates here
-        this.streamListDirResults, this.streamInputKeyPresses
+        // zip the key press with upcoming results of the list dir query it initiates here
+        this.streamListDirResults, slowInputStream
             .filter(function (event) { return [paths.sep, "Tab"].indexOf(event.key) > -1; })
             .do(function (e) {
             var path = e.target.value;

@@ -44,17 +44,17 @@ export class PathInputComponent implements OnInit, AfterViewInit {
         this.streamInputKeyPresses = Observable.fromEvent(
             this.pathInputBox.nativeElement,
             "keydown",
-            (event: any) => { return event; })
-            .debounceTime(500);
+            (event: any) => { return event; });
 
         this.streamEnter = this.streamInputKeyPresses
             .filter(event => event.key === "Enter")
             .combineLatest(this.streamListDirResults);
 
+        let slowInputStream = this.streamInputKeyPresses.debounceTime(500);
         this.streamTabSlash = Observable.zip(
-            // zip key press with upcoming results of the list dir query it initiates here
+            // zip the key press with upcoming results of the list dir query it initiates here
             this.streamListDirResults,
-            this.streamInputKeyPresses
+            slowInputStream
                 .filter(event => [paths.sep, "Tab"].indexOf(event.key) > -1)
                 // TODO handle Tab separately
                 .do(e => {
@@ -65,7 +65,6 @@ export class PathInputComponent implements OnInit, AfterViewInit {
             (result, key) => { return { result: result, key: key } }).subscribe();
 
         this.streamArrowKeys = this.streamInputKeyPresses
-            // TODO make this more responsive (debounceTime earlier in Observable sequence slows this too much)
             .filter(event => ["ArrowUp", "ArrowDown"].indexOf(event.key) > -1)
             .combineLatest(this.streamListDirResults)
             .do(eventAndResult => {
