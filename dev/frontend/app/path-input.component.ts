@@ -89,7 +89,8 @@ export class PathInputComponent implements OnInit, AfterViewInit {
             (result, key) => { return { result: result, key: key } }).subscribe();
 
         this.streamArrowKeys = this.streamInputKeyPresses
-            .filter(event => ["ArrowUp", "ArrowDown"].indexOf(event.key) > -1)
+            .filter(event => ["ArrowUp", "ArrowDown",
+                "ArrowLeft", "ArrowRight"].indexOf(event.key) > -1)
             .do(event => {
                 let key = event.key;
                 let ae = this.autocompleteEntries;
@@ -103,13 +104,20 @@ export class PathInputComponent implements OnInit, AfterViewInit {
                     } else { // somewhere in the middle
                         ae.selected++;
                     }
-                } else {
+                } else if (key === "ArrowUp") {
                     if (ae.selected === null) { // nothing selected
                         ae.selected = ae.entries.length - 1;
                     } else if (ae.selected === 0) { // at first entry
                         ae.selected = null;
                     } else { // somewhere in the middle
                         ae.selected--;
+                    }
+                } else if (key === "ArrowLeft") {
+                    event.preventDefault();
+                    if (event.target.value) { // input box contains non-empty string
+                        let newPath = paths.dirname(event.target.value);
+                        this.path = newPath;
+                        this.listDirQuery(newPath);
                     }
                 }
             }).subscribe();

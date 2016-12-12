@@ -75,7 +75,8 @@ var PathInputComponent = (function () {
             _this.listDirQuery(paths.normalize(path));
         }), function (result, key) { return { result: result, key: key }; }).subscribe();
         this.streamArrowKeys = this.streamInputKeyPresses
-            .filter(function (event) { return ["ArrowUp", "ArrowDown"].indexOf(event.key) > -1; })
+            .filter(function (event) { return ["ArrowUp", "ArrowDown",
+            "ArrowLeft", "ArrowRight"].indexOf(event.key) > -1; })
             .do(function (event) {
             var key = event.key;
             var ae = _this.autocompleteEntries;
@@ -92,7 +93,7 @@ var PathInputComponent = (function () {
                     ae.selected++;
                 }
             }
-            else {
+            else if (key === "ArrowUp") {
                 if (ae.selected === null) {
                     ae.selected = ae.entries.length - 1;
                 }
@@ -101,6 +102,14 @@ var PathInputComponent = (function () {
                 }
                 else {
                     ae.selected--;
+                }
+            }
+            else if (key === "ArrowLeft") {
+                event.preventDefault();
+                if (event.target.value) {
+                    var newPath = paths.dirname(event.target.value);
+                    _this.path = newPath;
+                    _this.listDirQuery(newPath);
                 }
             }
         }).subscribe();
