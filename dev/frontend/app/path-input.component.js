@@ -27,7 +27,7 @@ var PathInputComponent = (function () {
         this.dirname = ""; // directory path for autocomplete entries
         this.autocompleteActive = false;
         this.streamListDirResults = listDirService.getResultStream()
-            .do(function (result) { return _this.listDirQueryHandler(result); });
+            .map(function (result) { return _this.listDirQueryHandler(result); });
         this.autocompleteEntries = new AutocompleteEntries([], "."); // TODO find platform-agnostic default path
     }
     PathInputComponent.prototype.ngOnInit = function () {
@@ -53,7 +53,36 @@ var PathInputComponent = (function () {
         }), function (result, key) { return { result: result, key: key }; }).subscribe();
         this.streamArrowKeys = this.streamInputKeyPresses
             .filter(function (event) { return ["ArrowUp", "ArrowDown"].indexOf(event.key) > -1; })
-            .combineLatest(this.streamListDirResults);
+            .combineLatest(this.streamListDirResults)
+            .do(function (eventAndResult) {
+            console.log(eventAndResult);
+            var key = eventAndResult[0].key;
+            var ae = eventAndResult[1];
+            if (ae.isEmpty) {
+            }
+            else if (key === "ArrowDown") {
+                if (ae.selected === null) {
+                    ae.selected = 0;
+                }
+                else if (ae.selected === (ae.entries.length - 1)) {
+                    ae.selected = null;
+                }
+                else {
+                    ae.selected++;
+                }
+            }
+            else {
+                if (ae.selected === null) {
+                    ae.selected = ae.entries.length - 1;
+                }
+                else if (ae.selected === 0) {
+                    ae.selected = null;
+                }
+                else {
+                    ae.selected--;
+                }
+            }
+        }).subscribe();
         // this.inputBoxStreamSource = Observable.fromEvent(
         //     this.pathInputBox.nativeElement,
         //     "keydown",
@@ -90,15 +119,17 @@ var PathInputComponent = (function () {
     };
     PathInputComponent.prototype.listDirQueryHandler = function (result) {
         // TODO change to constructing an InputSelection object
-        this.autocompleteEntries = new AutocompleteEntries(result.entries, result.dir);
+        // save an instance member for template re-rendering
+        var ae = new AutocompleteEntries(result.entries, result.dir);
+        this.autocompleteEntries = ae;
+        this.changeDetectorRef.detectChanges(); // force re-rendering of autocomplete list
+        return ae;
         // .filter((entry: string) => {
         //     return entry.indexOf(this.path) === 0;
         // })
         // .subscribe((entry: string) => {
         //     this.autocompletePaths.push(entry);
         // });
-        console.log(this.autocompleteEntries);
-        this.changeDetectorRef.detectChanges();
     };
     return PathInputComponent;
 }());
@@ -126,10 +157,12 @@ exports.PathInputComponent = PathInputComponent;
 var AutocompleteEntries = (function () {
     function AutocompleteEntries(entries, cwd) {
         var _this = this;
+        this.isEmpty = true;
         this.cwd = cwd;
         this.entries = entries
             .filter(function (e) { return e.charAt(e.length - 1) === paths.sep; })
             .map(function (e) { return paths.join(_this.cwd, e); });
+        console.log(this.entries);
         if (entries.length > 0) {
             this.isEmpty = false;
         }

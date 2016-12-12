@@ -33,7 +33,7 @@ export class PathInputComponent implements OnInit, AfterViewInit {
     streamEnterResultHandler: Observable<any>; // handles async results
     streamTabSlash: Subscription;
     streamTabSlashResultHandler: Observable<any>; // handles async results
-    streamArrowKeys: Observable<any>;
+    streamArrowKeys: Subscription;
 
     ngOnInit(): void {
         this.diskQueryService.diskQueryFinishedEvent.subscribe((result: any) => this.diskQueryFinishedHandler(result));
@@ -65,8 +65,33 @@ export class PathInputComponent implements OnInit, AfterViewInit {
             (result, key) => { return { result: result, key: key } }).subscribe();
 
         this.streamArrowKeys = this.streamInputKeyPresses
+            // TODO make this more responsive (debounceTime earlier in Observable sequence slows this too much)
             .filter(event => ["ArrowUp", "ArrowDown"].indexOf(event.key) > -1)
-            .combineLatest(this.streamListDirResults);
+            .combineLatest(this.streamListDirResults)
+            .do(eventAndResult => {
+                console.log(eventAndResult)
+                let key = eventAndResult[0].key;
+                let ae: AutocompleteEntries = eventAndResult[1];
+                if (ae.isEmpty) {
+                    // do nothing
+                } else if (key === "ArrowDown") {
+                    if (ae.selected === null) { // nothing selected
+                        ae.selected = 0;
+                    } else if (ae.selected === (ae.entries.length - 1)) { // already at last entry
+                        ae.selected = null;
+                    } else { // somewhere in the middle
+                        ae.selected++;
+                    }
+                } else {
+                    if (ae.selected === null) { // nothing selected
+                        ae.selected = ae.entries.length - 1;
+                    } else if (ae.selected === 0) { // at first entry
+                        ae.selected = null;
+                    } else { // somewhere in the middle
+                        ae.selected--;
+                    }
+                }
+            }).subscribe();
         // this.inputBoxStreamSource = Observable.fromEvent(
         //     this.pathInputBox.nativeElement,
         //     "keydown",
@@ -94,7 +119,7 @@ export class PathInputComponent implements OnInit, AfterViewInit {
         private changeDetectorRef: ChangeDetectorRef
     ) {
         this.streamListDirResults = listDirService.getResultStream()
-            .do((result: any) => this.listDirQueryHandler(result));
+            .map((result: any) => { return this.listDirQueryHandler(result) });
         this.autocompleteEntries = new AutocompleteEntries([], "."); // TODO find platform-agnostic default path
 
     }
@@ -116,17 +141,19 @@ export class PathInputComponent implements OnInit, AfterViewInit {
         this.listDirService.listDirContents(paths.normalize(path));
     }
 
-    listDirQueryHandler(result: any): void {
+    listDirQueryHandler(result: any): AutocompleteEntries {
         // TODO change to constructing an InputSelection object
-        this.autocompleteEntries = new AutocompleteEntries(result.entries, result.dir);
+        // save an instance member for template re-rendering
+        let ae = new AutocompleteEntries(result.entries, result.dir);
+        this.autocompleteEntries = ae;
+        this.changeDetectorRef.detectChanges(); // force re-rendering of autocomplete list
+        return ae;
         // .filter((entry: string) => {
         //     return entry.indexOf(this.path) === 0;
         // })
         // .subscribe((entry: string) => {
         //     this.autocompletePaths.push(entry);
         // });
-        console.log(this.autocompleteEntries)
-        this.changeDetectorRef.detectChanges();
     }
 
     //   navigateInputs(event: any) {
@@ -182,13 +209,14 @@ class AutocompleteEntries {
     entries: string[];
     selected: number; // index in `entries` or null (nothing selected)
     cwd: string; // parent directory for items in `entries`
-    isEmpty: boolean;
+    isEmpty = true;
 
     constructor(entries: string[], cwd: string) {
         this.cwd = cwd;
         this.entries = entries
             .filter(e => e.charAt(e.length - 1) === paths.sep)
             .map(e => paths.join(this.cwd, e));
+        console.log(this.entries);
 
         if (entries.length > 0) {
             this.isEmpty = false;

@@ -8,7 +8,7 @@
     </span>
         <!-- TODO bring autocomplete entries to forefront -->
         <ul *ngIf="autocompleteActive">
-            <li *ngFor="let entry of autocompleteEntries.entries; let i = index" [class.active]="i === selectedAutocompleteEntry" (mouseover)="selectedAutocompleteEntry = i" (click)="selectAutocompleteEntry(i);">{{entry}}</li>
+            <li *ngFor="let entry of autocompleteEntries.entries; let i = index" [class.active]="i === autocompleteEntries.selected" (mouseover)="autocompleteEntries.selected = i" (click)="i">{{entry}}</li>
         </ul>
     </div>
     <!-- TODO use platform-specific examples -->
