@@ -30,10 +30,9 @@ export class PathInputComponent implements OnInit, AfterViewInit {
     streamListDirResults: Observable<any>;
     streamInputKeyPresses: Observable<any>;
     streamEnter: Subscription;
-    streamEnterResultHandler: Observable<any>; // handles async results
-    streamTabSlash: Subscription;
-    streamTabSlashResultHandler: Observable<any>; // handles async results
+    streamSlash: Subscription;
     streamArrowKeys: Subscription;
+    streamBackspace: Subscription;
 
     ngOnInit(): void {
         this.diskQueryService.diskQueryFinishedEvent.subscribe((result: any) => this.diskQueryFinishedHandler(result));
@@ -45,6 +44,7 @@ export class PathInputComponent implements OnInit, AfterViewInit {
             this.pathInputBox.nativeElement,
             "keydown",
             (event: any) => { return event; });
+        let slowInputStream = this.streamInputKeyPresses.debounceTime(500);
 
         this.streamEnter = this.streamInputKeyPresses
             .filter(event => event.key === "Enter")
@@ -62,8 +62,20 @@ export class PathInputComponent implements OnInit, AfterViewInit {
                 this.sendDiskUsageQuery(paths.normalize(path));
             }).subscribe();
 
-        let slowInputStream = this.streamInputKeyPresses.debounceTime(500);
-        this.streamTabSlash = Observable.zip(
+        this.streamBackspace = this.streamInputKeyPresses
+            .filter(e => e.key === "Backspace")
+            .filter(event => {
+                let path = event.target.value,
+                    lastChar = path[path.length - 1]; // char to be removed by Backspace
+                return lastChar === paths.sep;
+            })
+            .do(event => {
+                let dirname = paths.dirname(event.target.value);
+                this.listDirQuery(paths.normalize(dirname));
+            })
+            .subscribe();
+
+        this.streamSlash = Observable.zip(
             // zip the key press with upcoming results of the list dir query it initiates here
             this.streamListDirResults,
             slowInputStream
@@ -71,7 +83,7 @@ export class PathInputComponent implements OnInit, AfterViewInit {
                 // TODO handle Tab separately
                 .do(e => {
                     let path = e.target.value;
-                    path = path[path.length - 1] === paths.sep ? path : paths.dirname(path);
+                    path = this.getDirName(path);
                     this.listDirQuery(paths.normalize(path));
                 }),
             (result, key) => { return { result: result, key: key } }).subscribe();
@@ -211,6 +223,13 @@ export class PathInputComponent implements OnInit, AfterViewInit {
     //     // TODO this belongs in routing for analysis/output view
     //     this.sendDiskUsageQuery(`${this.cwd}/..`);
     // }
+
+    getDirName(path: string): string {
+        // return the longest directory path found in the input string
+        // /Users/Applications/ => /Users/Applications/
+        // whereas paths.dirname("/Users/Applications/") => /Users/
+        return path[path.length - 1] === paths.sep ? path : paths.dirname(path);
+    }
 
 }
 

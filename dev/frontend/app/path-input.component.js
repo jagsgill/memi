@@ -38,6 +38,7 @@ var PathInputComponent = (function () {
         var _this = this;
         // configure Observables for path autocompletion, etc.
         this.streamInputKeyPresses = rxjs_1.Observable.fromEvent(this.pathInputBox.nativeElement, "keydown", function (event) { return event; });
+        var slowInputStream = this.streamInputKeyPresses.debounceTime(500);
         this.streamEnter = this.streamInputKeyPresses
             .filter(function (event) { return event.key === "Enter"; })
             .do(function (event) {
@@ -53,14 +54,24 @@ var PathInputComponent = (function () {
             }
             _this.sendDiskUsageQuery(paths.normalize(path));
         }).subscribe();
-        var slowInputStream = this.streamInputKeyPresses.debounceTime(500);
-        this.streamTabSlash = rxjs_1.Observable.zip(
+        this.streamBackspace = this.streamInputKeyPresses
+            .filter(function (e) { return e.key === "Backspace"; })
+            .filter(function (event) {
+            var path = event.target.value, lastChar = path[path.length - 1]; // char to be removed by Backspace
+            return lastChar === paths.sep;
+        })
+            .do(function (event) {
+            var dirname = paths.dirname(event.target.value);
+            _this.listDirQuery(paths.normalize(dirname));
+        })
+            .subscribe();
+        this.streamSlash = rxjs_1.Observable.zip(
         // zip the key press with upcoming results of the list dir query it initiates here
         this.streamListDirResults, slowInputStream
             .filter(function (event) { return [paths.sep, "Tab"].indexOf(event.key) > -1; })
             .do(function (e) {
             var path = e.target.value;
-            path = path[path.length - 1] === paths.sep ? path : paths.dirname(path);
+            path = _this.getDirName(path);
             _this.listDirQuery(paths.normalize(path));
         }), function (result, key) { return { result: result, key: key }; }).subscribe();
         this.streamArrowKeys = this.streamInputKeyPresses
@@ -140,6 +151,57 @@ var PathInputComponent = (function () {
         // .subscribe((entry: string) => {
         //     this.autocompletePaths.push(entry);
         // });
+    };
+    //   navigateInputs(event: any) {
+    // TODO remove
+    //       if (!this.autocompletePaths) {
+    //           return;
+    //       } else if (event.key === "Enter") {
+    //           this.pathInputBox.nativeElement.blur();
+    //       } else if (this.selectedAutocompleteEntry === undefined) {
+    //           if (event.key === "ArrowDown") {
+    //               event.preventDefault();
+    //               this.selectedAutocompleteEntry = 0;
+    //           } else if (event.key === "ArrowUp") {
+    //               event.preventDefault();
+    //               this.selectedAutocompleteEntry = this.autocompletePaths.length - 1;
+    //           } else if (event.key === "Tab") {
+    //               event.preventDefault();
+    //               if (this.autocompletePaths.length === 1){
+    //                 this.selectAutocompleteEntry(0);
+    //               }
+    //           }
+    //       } else {
+    //           if (event.key === "ArrowDown") {
+    //               event.preventDefault();
+    //               this.selectedAutocompleteEntry = (++this.selectedAutocompleteEntry
+    //                   % this.autocompletePaths.length);
+    //           } else if (event.key === "ArrowUp") {
+    //               event.preventDefault();
+    //               this.selectedAutocompleteEntry = (--this.selectedAutocompleteEntry
+    //                   % this.autocompletePaths.length);
+    //           } else if (event.key === "Tab") {
+    //               event.preventDefault();
+    //               this.selectAutocompleteEntry(this.selectedAutocompleteEntry);
+    //           }
+    //       console.log("selected: ", this.selectedAutocompleteEntry)
+    //   }
+    // }
+    //
+    // selectAutocompleteEntry(i: number): void {
+    //     TODO remove
+    //     this.path = this.autocompletePaths[i];
+    //     console.log("set path to: ", this.path)
+    // }
+    // toParentDir(): void {
+    //     // TODO this belongs in routing for analysis/output view
+    //     this.sendDiskUsageQuery(`${this.cwd}/..`);
+    // }
+    PathInputComponent.prototype.getDirName = function (path) {
+        // return the longest directory path found in the input string
+        // /Users/Applications/ => /Users/Applications/
+        // whereas paths.dirname("/Users/Applications/") => /Users/
+        return path[path.length - 1] === paths.sep ? path : paths.dirname(path);
     };
     return PathInputComponent;
 }());
