@@ -55,15 +55,12 @@ export class PathInputComponent implements OnInit, AfterViewInit {
             // zip key press with upcoming results of the list dir query it initiates here
             this.streamListDirResults,
             this.streamInputKeyPresses
-                .filter(event => ["/", "Tab"].indexOf(event.key) > -1)
+                .filter(event => [paths.sep, "Tab"].indexOf(event.key) > -1)
                 // TODO handle Tab separately
                 .do(e => {
-                    console.log(e);
-                    console.log(e.target.value);
-                    console.log(paths.dirname(e.target.value));
-                    // TODO fix, paths.dirname truncates last subdir in e.g. /Users/Applications/  
-                    let dirname = paths.dirname(e.target.value);
-                    this.listDirQuery(paths.normalize(dirname));
+                    let path = e.target.value;
+                    path = path[path.length - 1] === paths.sep ? path : paths.dirname(path);
+                    this.listDirQuery(paths.normalize(path));
                 }),
             (result, key) => { return { result: result, key: key } }).subscribe();
 
@@ -98,7 +95,7 @@ export class PathInputComponent implements OnInit, AfterViewInit {
     ) {
         this.streamListDirResults = listDirService.getResultStream()
             .do((result: any) => this.listDirQueryHandler(result));
-        this.autocompleteEntries = new AutocompleteEntries([], ".");
+        this.autocompleteEntries = new AutocompleteEntries([], "."); // TODO find platform-agnostic default path
 
     }
 
@@ -190,7 +187,7 @@ class AutocompleteEntries {
     constructor(entries: string[], cwd: string) {
         this.cwd = cwd;
         this.entries = entries
-            .filter(e => e.charAt(e.length - 1) === "/")
+            .filter(e => e.charAt(e.length - 1) === paths.sep)
             .map(e => paths.join(this.cwd, e));
 
         if (entries.length > 0) {

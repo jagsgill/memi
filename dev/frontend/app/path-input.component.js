@@ -28,7 +28,7 @@ var PathInputComponent = (function () {
         this.autocompleteActive = false;
         this.streamListDirResults = listDirService.getResultStream()
             .do(function (result) { return _this.listDirQueryHandler(result); });
-        this.autocompleteEntries = new AutocompleteEntries([], ".");
+        this.autocompleteEntries = new AutocompleteEntries([], "."); // TODO find platform-agnostic default path
     }
     PathInputComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -45,14 +45,11 @@ var PathInputComponent = (function () {
         this.streamTabSlash = rxjs_1.Observable.zip(
         // zip key press with upcoming results of the list dir query it initiates here
         this.streamListDirResults, this.streamInputKeyPresses
-            .filter(function (event) { return ["/", "Tab"].indexOf(event.key) > -1; })
+            .filter(function (event) { return [paths.sep, "Tab"].indexOf(event.key) > -1; })
             .do(function (e) {
-            console.log(e);
-            console.log(e.target.value);
-            console.log(paths.dirname(e.target.value));
-            // TODO fix, paths.dirname truncates last subdir in e.g. /Users/Applications/  
-            var dirname = paths.dirname(e.target.value);
-            _this.listDirQuery(paths.normalize(dirname));
+            var path = e.target.value;
+            path = path[path.length - 1] === paths.sep ? path : paths.dirname(path);
+            _this.listDirQuery(paths.normalize(path));
         }), function (result, key) { return { result: result, key: key }; }).subscribe();
         this.streamArrowKeys = this.streamInputKeyPresses
             .filter(function (event) { return ["ArrowUp", "ArrowDown"].indexOf(event.key) > -1; })
@@ -131,7 +128,7 @@ var AutocompleteEntries = (function () {
         var _this = this;
         this.cwd = cwd;
         this.entries = entries
-            .filter(function (e) { return e.charAt(e.length - 1) === "/"; })
+            .filter(function (e) { return e.charAt(e.length - 1) === paths.sep; })
             .map(function (e) { return paths.join(_this.cwd, e); });
         if (entries.length > 0) {
             this.isEmpty = false;
