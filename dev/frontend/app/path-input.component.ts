@@ -42,7 +42,7 @@ export class PathInputComponent implements OnInit, AfterViewInit {
     ) {
         this.streamListDirResults = listDirService.getResultStream()
             .map((result: any) => { return this.listDirQueryHandler(result) });
-        this.autocompleteEntries = new AutocompleteEntries([], "."); // TODO find platform-agnostic default path
+        this.autocompleteEntries = new AutocompleteEntries([], paths.normalize("."));
     }
 
     ngOnInit(): void {

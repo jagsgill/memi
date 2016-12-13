@@ -28,7 +28,7 @@ var PathInputComponent = (function () {
         this.autocompleteActive = false;
         this.streamListDirResults = listDirService.getResultStream()
             .map(function (result) { return _this.listDirQueryHandler(result); });
-        this.autocompleteEntries = new AutocompleteEntries([], "."); // TODO find platform-agnostic default path
+        this.autocompleteEntries = new AutocompleteEntries([], paths.normalize("."));
     }
     PathInputComponent.prototype.ngOnInit = function () {
         var _this = this;
