@@ -36,10 +36,15 @@ var PathInputComponent = (function () {
     };
     PathInputComponent.prototype.ngAfterViewInit = function () {
         var _this = this;
-        // TODO typing too fast past a / will prevent the ls query from happening since the event is ignored
         // configure Observables for path autocompletion, etc.
         this.streamInputKeyPresses = rxjs_1.Observable.fromEvent(this.pathInputBox.nativeElement, "keydown", function (event) { return event; });
-        var slowInputStream = this.streamInputKeyPresses.debounceTime(500);
+        var slowInputStream = this.streamInputKeyPresses.debounceTime(100);
+        this.streamUpdateAutocompleteEntries = slowInputStream
+            .do(function (e) {
+            _this.autocompleteEntries.setFilteredEntries(_this.path);
+            _this.changeDetectorRef.detectChanges();
+        })
+            .subscribe();
         this.streamEnter = this.streamInputKeyPresses
             .filter(function (event) { return event.key === "Enter"; })
             .do(function (event) {
@@ -51,7 +56,7 @@ var PathInputComponent = (function () {
                 path = _this.path;
             }
             else {
-                path = ae.entries[ae.selected];
+                path = ae.filteredEntries[ae.selected];
             }
             _this.sendDiskUsageQuery(paths.normalize(path));
         }).subscribe();
@@ -68,10 +73,11 @@ var PathInputComponent = (function () {
             .subscribe();
         this.streamSlash = rxjs_1.Observable.zip(
         // zip the key press with upcoming results of the list dir query it initiates here
-        this.streamListDirResults, slowInputStream
+        this.streamListDirResults, this.streamInputKeyPresses
             .filter(function (event) { return event.key === paths.sep; })
             .do(function (e) {
-            var path = e.target.value;
+            // add separator char for testing the path becuase it is not appended yet
+            var path = "" + e.target.value + paths.sep;
             path = _this.getDirName(path);
             _this.listDirQuery(paths.normalize(path));
         }), function (result, key) { return { result: result, key: key }; }).subscribe();
@@ -86,7 +92,7 @@ var PathInputComponent = (function () {
                 if (ae.selected === null) {
                     ae.selected = 0;
                 }
-                else if (ae.selected === (ae.entries.length - 1)) {
+                else if (ae.selected === (ae.filteredEntries.length - 1)) {
                     ae.selected = null;
                 }
                 else {
@@ -95,7 +101,7 @@ var PathInputComponent = (function () {
             }
             else if (key === "ArrowUp") {
                 if (ae.selected === null) {
-                    ae.selected = ae.entries.length - 1;
+                    ae.selected = ae.filteredEntries.length - 1;
                 }
                 else if (ae.selected === 0) {
                     ae.selected = null;
@@ -114,14 +120,14 @@ var PathInputComponent = (function () {
             }
             else if (key === "Tab") {
                 event.preventDefault();
-                if (ae.entries.length === 1) {
-                    _this.path = ae.entries[0];
+                if (ae.filteredEntries.length === 1) {
+                    _this.path = ae.filteredEntries[0];
                     _this.listDirQuery(_this.path);
                 }
                 else if (ae.selected === null || ae.isEmpty) {
                 }
                 else if (ae.selected !== null) {
-                    _this.path = ae.entries[ae.selected];
+                    _this.path = ae.filteredEntries[ae.selected];
                     _this.listDirQuery(_this.path);
                 }
             }
@@ -223,6 +229,7 @@ var PathInputComponent = (function () {
         // return the longest directory path found in the input string
         // /Users/Applications/ => /Users/Applications/
         // whereas paths.dirname("/Users/Applications/") => /Users/
+        console.log("got dirname: ", path[path.length - 1] === paths.sep ? path : paths.dirname(path), " from: ", path);
         return path[path.length - 1] === paths.sep ? path : paths.dirname(path);
     };
     return PathInputComponent;
@@ -252,15 +259,27 @@ var AutocompleteEntries = (function () {
     function AutocompleteEntries(entries, cwd) {
         var _this = this;
         this.isEmpty = true;
+        this.filteredEntries = [];
         this.cwd = cwd;
         this.entries = entries
-            .filter(function (e) { return e.charAt(e.length - 1) === paths.sep; })
+            .filter(function (e) { return e.charAt(e.length - 1) === paths.sep; }) // only select directories
             .map(function (e) { return paths.join(_this.cwd, e); });
         if (entries.length > 0) {
             this.isEmpty = false;
         }
         this.selected = null;
+        console.log("--- set entries");
+        console.log(this.entries);
     }
+    AutocompleteEntries.prototype.setFilteredEntries = function (path) {
+        // select all entries that contain the exact path input by user
+        console.log("** setting filtered entries using: ", path);
+        console.log(this.entries);
+        this.filterPath = path;
+        this.filteredEntries = this.entries.filter(function (entry) { return entry.indexOf(path) === 0; });
+        console.log(this.filteredEntries);
+        return this.filteredEntries;
+    };
     return AutocompleteEntries;
 }());
 //# sourceMappingURL=path-input.component.js.map

@@ -33,19 +33,26 @@ export class PathInputComponent implements OnInit, AfterViewInit {
     streamSlash: Subscription;
     streamArrowKeys: Subscription;
     streamBackspace: Subscription;
+    streamUpdateAutocompleteEntries: Subscription;
 
     ngOnInit(): void {
         this.diskQueryService.diskQueryFinishedEvent.subscribe((result: any) => this.diskQueryFinishedHandler(result));
     }
 
     ngAfterViewInit(): void {
-        // TODO typing too fast past a / will prevent the ls query from happening since the event is ignored
         // configure Observables for path autocompletion, etc.
         this.streamInputKeyPresses = Observable.fromEvent(
             this.pathInputBox.nativeElement,
             "keydown",
             (event: any) => { return event; });
-        let slowInputStream = this.streamInputKeyPresses.debounceTime(500);
+        let slowInputStream = this.streamInputKeyPresses.debounceTime(100);
+
+        this.streamUpdateAutocompleteEntries = slowInputStream
+            .do(e => {
+                this.autocompleteEntries.setFilteredEntries(this.path);
+                this.changeDetectorRef.detectChanges();
+            })
+            .subscribe();
 
         this.streamEnter = this.streamInputKeyPresses
             .filter(event => event.key === "Enter")
@@ -57,8 +64,8 @@ export class PathInputComponent implements OnInit, AfterViewInit {
                 console.log(ae);
                 if (ae.selected === null) { // use path in input box
                     path = this.path;
-                } else {
-                    path = ae.entries[ae.selected];
+                } else { // use selected path in autocomplete list
+                    path = ae.filteredEntries[ae.selected];
                 }
                 this.sendDiskUsageQuery(paths.normalize(path));
             }).subscribe();
@@ -79,10 +86,11 @@ export class PathInputComponent implements OnInit, AfterViewInit {
         this.streamSlash = Observable.zip(
             // zip the key press with upcoming results of the list dir query it initiates here
             this.streamListDirResults,
-            slowInputStream
+            this.streamInputKeyPresses
                 .filter(event => event.key === paths.sep)
                 .do(e => {
-                    let path = e.target.value;
+                    // add separator char for testing the path becuase it is not appended yet
+                    let path = `${e.target.value}${paths.sep}`;
                     path = this.getDirName(path);
                     this.listDirQuery(paths.normalize(path));
                 }),
@@ -98,14 +106,14 @@ export class PathInputComponent implements OnInit, AfterViewInit {
                 } else if (key === "ArrowDown") {
                     if (ae.selected === null) { // nothing selected
                         ae.selected = 0;
-                    } else if (ae.selected === (ae.entries.length - 1)) { // already at last entry
+                    } else if (ae.selected === (ae.filteredEntries.length - 1)) { // already at last entry
                         ae.selected = null;
                     } else { // somewhere in the middle
                         ae.selected++;
                     }
                 } else if (key === "ArrowUp") {
                     if (ae.selected === null) { // nothing selected
-                        ae.selected = ae.entries.length - 1;
+                        ae.selected = ae.filteredEntries.length - 1;
                     } else if (ae.selected === 0) { // at first entry
                         ae.selected = null;
                     } else { // somewhere in the middle
@@ -120,13 +128,13 @@ export class PathInputComponent implements OnInit, AfterViewInit {
                     }
                 } else if (key === "Tab") {
                     event.preventDefault();
-                    if (ae.entries.length === 1) { // only 1 choice
-                        this.path = ae.entries[0];
+                    if (ae.filteredEntries.length === 1) { // only 1 choice
+                        this.path = ae.filteredEntries[0];
                         this.listDirQuery(this.path);
                     } else if (ae.selected === null || ae.isEmpty) { // no choices
                         // do nothing
                     } else if (ae.selected !== null) { // > 1 choice and user has one selected
-                        this.path = ae.entries[ae.selected];
+                        this.path = ae.filteredEntries[ae.selected];
                         this.listDirQuery(this.path);
                     }
                 }
@@ -246,6 +254,7 @@ export class PathInputComponent implements OnInit, AfterViewInit {
         // return the longest directory path found in the input string
         // /Users/Applications/ => /Users/Applications/
         // whereas paths.dirname("/Users/Applications/") => /Users/
+        console.log("got dirname: ", path[path.length - 1] === paths.sep ? path : paths.dirname(path), " from: ", path)
         return path[path.length - 1] === paths.sep ? path : paths.dirname(path);
     }
 
@@ -253,19 +262,34 @@ export class PathInputComponent implements OnInit, AfterViewInit {
 
 class AutocompleteEntries {
     entries: string[];
-    selected: number; // index in `entries` or null (nothing selected)
+    selected: number; // index in `filteredEntries` or null (nothing selected)
     cwd: string; // parent directory for items in `entries`
     isEmpty = true;
+    filterPath: string; // path used to produce filteredEntries from entries
+    filteredEntries: string[] = [];
 
     constructor(entries: string[], cwd: string) {
         this.cwd = cwd;
         this.entries = entries
-            .filter(e => e.charAt(e.length - 1) === paths.sep)
+            .filter(e => e.charAt(e.length - 1) === paths.sep) // only select directories
             .map(e => paths.join(this.cwd, e));
 
         if (entries.length > 0) {
             this.isEmpty = false;
         }
         this.selected = null;
+        console.log("--- set entries")
+        console.log(this.entries)
     }
+
+    setFilteredEntries(path: string): string[] {
+        // select all entries that contain the exact path input by user
+        console.log("** setting filtered entries using: ", path)
+        console.log(this.entries)
+        this.filterPath = path;
+        this.filteredEntries = this.entries.filter(entry => entry.indexOf(path) === 0);
+        console.log(this.filteredEntries)
+        return this.filteredEntries;
+    }
+
 }
