@@ -35,12 +35,22 @@ export class PathInputComponent implements OnInit, AfterViewInit {
     streamBackspace: Subscription;
     streamUpdateAutocompleteEntries: Subscription;
 
+    constructor(
+        private diskQueryService: DiskUsageService,
+        private listDirService: ListDirService,
+        private changeDetectorRef: ChangeDetectorRef
+    ) {
+        this.streamListDirResults = listDirService.getResultStream()
+            .map((result: any) => { return this.listDirQueryHandler(result) });
+        this.autocompleteEntries = new AutocompleteEntries([], "."); // TODO find platform-agnostic default path
+    }
+
     ngOnInit(): void {
         this.diskQueryService.diskQueryFinishedEvent.subscribe((result: any) => this.diskQueryFinishedHandler(result));
     }
 
     ngAfterViewInit(): void {
-        // configure Observables for path autocompletion, etc.
+        // configure Observables for path autocompletion and keybindings
         this.streamInputKeyPresses = Observable.fromEvent(
             this.pathInputBox.nativeElement,
             "keydown",
@@ -139,42 +149,10 @@ export class PathInputComponent implements OnInit, AfterViewInit {
                     }
                 }
             }).subscribe();
-        // this.inputBoxStreamSource = Observable.fromEvent(
-        //     this.pathInputBox.nativeElement,
-        //     "keydown",
-        //     (x: any) => { return x.target.value; })
-        //     .debounceTime(500)
-        //     .distinctUntilChanged()
-        //     .map((x: any) => {
-        //         let regexDir = /.*\/$/; // directories end in '/'
-        //         if (regexDir.test(x)) {
-        //             this.dirname = x;
-        //             return x; // identity mapping if its a dir
-        //         } else {
-        //             // TODO use paths.join instead of literal '/'
-        //             this.dirname = `${paths.dirname(x)}/`;
-        //             return `${paths.dirname(x)}/`; // map to parent dir otherwise
-        //         }
-        //     });
-        // this.inputBoxStream = this.inputBoxStreamSource
-        //     .subscribe((x: any) => { this.listDirQuery(x); });
-    }
-
-    constructor(
-        private diskQueryService: DiskUsageService,
-        private listDirService: ListDirService,
-        private changeDetectorRef: ChangeDetectorRef
-    ) {
-        this.streamListDirResults = listDirService.getResultStream()
-            .map((result: any) => { return this.listDirQueryHandler(result) });
-        this.autocompleteEntries = new AutocompleteEntries([], "."); // TODO find platform-agnostic default path
-
     }
 
     sendDiskUsageQuery(path: string): void {
         // TODO replace console.log with dev logging
-        console.log(`Analyzing path: ${path}`);
-        console.log(this.path);
         this.diskQueryService.diskUsage(path);
     }
 
@@ -189,75 +167,19 @@ export class PathInputComponent implements OnInit, AfterViewInit {
     }
 
     listDirQueryHandler(result: any): AutocompleteEntries {
-        // TODO change to constructing an InputSelection object
         // save an instance member for template re-rendering
         let ae = new AutocompleteEntries(result.entries, result.dir);
         this.autocompleteEntries = ae;
         this.changeDetectorRef.detectChanges(); // force re-rendering of autocomplete list
         return ae;
-        // .filter((entry: string) => {
-        //     return entry.indexOf(this.path) === 0;
-        // })
-        // .subscribe((entry: string) => {
-        //     this.autocompletePaths.push(entry);
-        // });
     }
-
-    //   navigateInputs(event: any) {
-    // TODO remove
-    //       if (!this.autocompletePaths) {
-    //           return;
-    //       } else if (event.key === "Enter") {
-    //           this.pathInputBox.nativeElement.blur();
-    //       } else if (this.selectedAutocompleteEntry === undefined) {
-    //           if (event.key === "ArrowDown") {
-    //               event.preventDefault();
-    //               this.selectedAutocompleteEntry = 0;
-    //           } else if (event.key === "ArrowUp") {
-    //               event.preventDefault();
-    //               this.selectedAutocompleteEntry = this.autocompletePaths.length - 1;
-    //           } else if (event.key === "Tab") {
-    //               event.preventDefault();
-    //               if (this.autocompletePaths.length === 1){
-    //                 this.selectAutocompleteEntry(0);
-    //               }
-    //           }
-    //       } else {
-    //           if (event.key === "ArrowDown") {
-    //               event.preventDefault();
-    //               this.selectedAutocompleteEntry = (++this.selectedAutocompleteEntry
-    //                   % this.autocompletePaths.length);
-    //           } else if (event.key === "ArrowUp") {
-    //               event.preventDefault();
-    //               this.selectedAutocompleteEntry = (--this.selectedAutocompleteEntry
-    //                   % this.autocompletePaths.length);
-    //           } else if (event.key === "Tab") {
-    //               event.preventDefault();
-    //               this.selectAutocompleteEntry(this.selectedAutocompleteEntry);
-    //           }
-    //       console.log("selected: ", this.selectedAutocompleteEntry)
-    //   }
-    // }
-    //
-    // selectAutocompleteEntry(i: number): void {
-    //     TODO remove
-    //     this.path = this.autocompletePaths[i];
-    //     console.log("set path to: ", this.path)
-    // }
-
-    // toParentDir(): void {
-    //     // TODO this belongs in routing for analysis/output view
-    //     this.sendDiskUsageQuery(`${this.cwd}/..`);
-    // }
 
     getDirName(path: string): string {
         // return the longest directory path found in the input string
         // /Users/Applications/ => /Users/Applications/
         // whereas paths.dirname("/Users/Applications/") => /Users/
-        console.log("got dirname: ", path[path.length - 1] === paths.sep ? path : paths.dirname(path), " from: ", path)
         return path[path.length - 1] === paths.sep ? path : paths.dirname(path);
     }
-
 }
 
 class AutocompleteEntries {
@@ -278,18 +200,12 @@ class AutocompleteEntries {
             this.isEmpty = false;
         }
         this.selected = null;
-        console.log("--- set entries")
-        console.log(this.entries)
     }
 
     setFilteredEntries(path: string): string[] {
         // select all entries that contain the exact path input by user
-        console.log("** setting filtered entries using: ", path)
-        console.log(this.entries)
         this.filterPath = path;
         this.filteredEntries = this.entries.filter(entry => entry.indexOf(path) === 0);
-        console.log(this.filteredEntries)
         return this.filteredEntries;
     }
-
 }
