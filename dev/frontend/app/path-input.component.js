@@ -36,6 +36,7 @@ var PathInputComponent = (function () {
     };
     PathInputComponent.prototype.ngAfterViewInit = function () {
         var _this = this;
+        // TODO typing too fast past a / will prevent the ls query from happening since the event is ignored
         // configure Observables for path autocompletion, etc.
         this.streamInputKeyPresses = rxjs_1.Observable.fromEvent(this.pathInputBox.nativeElement, "keydown", function (event) { return event; });
         var slowInputStream = this.streamInputKeyPresses.debounceTime(500);
@@ -68,15 +69,14 @@ var PathInputComponent = (function () {
         this.streamSlash = rxjs_1.Observable.zip(
         // zip the key press with upcoming results of the list dir query it initiates here
         this.streamListDirResults, slowInputStream
-            .filter(function (event) { return [paths.sep, "Tab"].indexOf(event.key) > -1; })
+            .filter(function (event) { return event.key === paths.sep; })
             .do(function (e) {
             var path = e.target.value;
             path = _this.getDirName(path);
             _this.listDirQuery(paths.normalize(path));
         }), function (result, key) { return { result: result, key: key }; }).subscribe();
         this.streamArrowKeys = this.streamInputKeyPresses
-            .filter(function (event) { return ["ArrowUp", "ArrowDown",
-            "ArrowLeft", "ArrowRight"].indexOf(event.key) > -1; })
+            .filter(function (event) { return ["ArrowUp", "ArrowDown", "Tab"].indexOf(event.key) > -1; })
             .do(function (event) {
             var key = event.key;
             var ae = _this.autocompleteEntries;
@@ -104,12 +104,25 @@ var PathInputComponent = (function () {
                     ae.selected--;
                 }
             }
-            else if (key === "ArrowLeft") {
+            else if (event.shiftKey && key === "Tab") {
                 event.preventDefault();
                 if (event.target.value) {
                     var newPath = paths.dirname(event.target.value);
                     _this.path = newPath;
                     _this.listDirQuery(newPath);
+                }
+            }
+            else if (key === "Tab") {
+                event.preventDefault();
+                if (ae.entries.length === 1) {
+                    _this.path = ae.entries[0];
+                    _this.listDirQuery(_this.path);
+                }
+                else if (ae.selected === null || ae.isEmpty) {
+                }
+                else if (ae.selected !== null) {
+                    _this.path = ae.entries[ae.selected];
+                    _this.listDirQuery(_this.path);
                 }
             }
         }).subscribe();

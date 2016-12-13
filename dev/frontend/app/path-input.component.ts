@@ -39,6 +39,7 @@ export class PathInputComponent implements OnInit, AfterViewInit {
     }
 
     ngAfterViewInit(): void {
+        // TODO typing too fast past a / will prevent the ls query from happening since the event is ignored
         // configure Observables for path autocompletion, etc.
         this.streamInputKeyPresses = Observable.fromEvent(
             this.pathInputBox.nativeElement,
@@ -79,8 +80,7 @@ export class PathInputComponent implements OnInit, AfterViewInit {
             // zip the key press with upcoming results of the list dir query it initiates here
             this.streamListDirResults,
             slowInputStream
-                .filter(event => [paths.sep, "Tab"].indexOf(event.key) > -1)
-                // TODO handle Tab separately
+                .filter(event => event.key === paths.sep)
                 .do(e => {
                     let path = e.target.value;
                     path = this.getDirName(path);
@@ -89,8 +89,7 @@ export class PathInputComponent implements OnInit, AfterViewInit {
             (result, key) => { return { result: result, key: key } }).subscribe();
 
         this.streamArrowKeys = this.streamInputKeyPresses
-            .filter(event => ["ArrowUp", "ArrowDown",
-                "ArrowLeft", "ArrowRight"].indexOf(event.key) > -1)
+            .filter(event => ["ArrowUp", "ArrowDown", "Tab"].indexOf(event.key) > -1)
             .do(event => {
                 let key = event.key;
                 let ae = this.autocompleteEntries;
@@ -112,12 +111,23 @@ export class PathInputComponent implements OnInit, AfterViewInit {
                     } else { // somewhere in the middle
                         ae.selected--;
                     }
-                } else if (key === "ArrowLeft") {
+                } else if (event.shiftKey && key === "Tab") {
                     event.preventDefault();
                     if (event.target.value) { // input box contains non-empty string
                         let newPath = paths.dirname(event.target.value);
                         this.path = newPath;
                         this.listDirQuery(newPath);
+                    }
+                } else if (key === "Tab") {
+                    event.preventDefault();
+                    if (ae.entries.length === 1) { // only 1 choice
+                        this.path = ae.entries[0];
+                        this.listDirQuery(this.path);
+                    } else if (ae.selected === null || ae.isEmpty) { // no choices
+                        // do nothing
+                    } else if (ae.selected !== null) { // > 1 choice and user has one selected
+                        this.path = ae.entries[ae.selected];
+                        this.listDirQuery(this.path);
                     }
                 }
             }).subscribe();
