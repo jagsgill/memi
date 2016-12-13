@@ -114,7 +114,7 @@ var PathInputComponent = (function () {
                 event.preventDefault();
                 if (event.target.value) {
                     var newPath = paths.dirname(event.target.value);
-                    _this.path = newPath;
+                    _this.path = "" + newPath + paths.sep; // re-add separator since paths.dirname removes it
                     _this.listDirQuery(newPath);
                 }
             }

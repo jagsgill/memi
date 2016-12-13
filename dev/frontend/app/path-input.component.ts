@@ -123,7 +123,7 @@ export class PathInputComponent implements OnInit, AfterViewInit {
                     event.preventDefault();
                     if (event.target.value) { // input box contains non-empty string
                         let newPath = paths.dirname(event.target.value);
-                        this.path = newPath;
+                        this.path = `${newPath}${paths.sep}`; // re-add separator since paths.dirname removes it
                         this.listDirQuery(newPath);
                     }
                 } else if (key === "Tab") {
