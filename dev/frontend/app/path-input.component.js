@@ -81,7 +81,7 @@ var PathInputComponent = (function () {
             var path = "" + e.target.value + paths.sep;
             path = _this.getDirName(path);
             _this.listDirQuery(paths.normalize(path));
-        }), function (result, key) { return { result: result, key: key }; }).subscribe();
+        })).subscribe();
         this.streamArrowKeys = this.streamInputKeyPresses
             .filter(function (event) { return ["ArrowUp", "ArrowDown", "Tab"].indexOf(event.key) > -1; })
             .do(function (event) {

@@ -37,7 +37,7 @@ export class PathInputComponent implements OnInit, AfterViewInit {
         private zone: NgZone
     ) {
         this.streamListDirResults = listDirService.getResultStream()
-            .map((result: any) => { return this.listDirQueryHandler(result) });
+            .map((result: any) => { return this.listDirQueryHandler(result); });
         this.autocompleteEntries = new AutocompleteEntries([], paths.normalize("."));
     }
 
@@ -59,7 +59,7 @@ export class PathInputComponent implements OnInit, AfterViewInit {
                 this.zone.run(() => {
                     this.autocompleteActive = true;
                     this.autocompleteEntries.setFilteredEntries(this.path);
-                })
+                });
             })
             .subscribe();
 
@@ -77,7 +77,7 @@ export class PathInputComponent implements OnInit, AfterViewInit {
                         path = ae.filteredEntries[ae.selected];
                     }
                     this.sendDiskUsageQuery(paths.normalize(path));
-                })
+                });
             }).subscribe();
 
         this.streamBackspace = this.streamInputKeyPresses
@@ -103,8 +103,8 @@ export class PathInputComponent implements OnInit, AfterViewInit {
                     let path = `${e.target.value}${paths.sep}`;
                     path = this.getDirName(path);
                     this.listDirQuery(paths.normalize(path));
-                }),
-            (result, key) => { return { result: result, key: key } }).subscribe();
+                })
+        ).subscribe();
 
         this.streamArrowKeys = this.streamInputKeyPresses
             .filter(event => ["ArrowUp", "ArrowDown", "Tab"].indexOf(event.key) > -1)
