@@ -20,8 +20,6 @@ var PathInputComponent = (function () {
         this.diskQueryService = diskQueryService;
         this.listDirService = listDirService;
         this.changeDetectorRef = changeDetectorRef;
-        // TODO path completion
-        // TODO use observables & eventemitters to simplify ui actions
         this.iconToParentDir = require("./icons/ic_subdirectory_arrow_right_black_24px.svg");
         this.path = ""; // user path in input box
         this.dirname = ""; // directory path for autocomplete entries

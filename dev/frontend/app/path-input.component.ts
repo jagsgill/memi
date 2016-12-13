@@ -16,8 +16,6 @@ const STATUS = require("../../util/errorcodes.js").STATUS;
 })
 
 export class PathInputComponent implements OnInit, AfterViewInit {
-    // TODO path completion
-    // TODO use observables & eventemitters to simplify ui actions
     iconToParentDir = require("./icons/ic_subdirectory_arrow_right_black_24px.svg");
     @ViewChild("pathSubmitter") pathSubmitter: any;
     @ViewChild("pathInputBox") pathInputBox: any;
