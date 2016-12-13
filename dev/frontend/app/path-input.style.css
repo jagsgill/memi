@@ -1,37 +1,45 @@
 /* Placeholder style from https://www.sanwebe.com/2013/10/css-html-form-styles */
+
+
 /* Basic Grey */
+
 .basic-grey {
     position: absolute;
     top: 35px;
     height: 60px;
-    margin-left:auto;
-    margin-right:auto;
-    width:100%;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
     background-color: #f2f2f2;
     padding: 5px 5px 5px 5px;
     color: #888;
     text-shadow: 1px 1px 1px #FFF;
-    border-left:1px solid #ccc;
-    border-right:1px solid #ccc;
-    border-bottom:1px solid #ccc;
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
     z-index: -1;
 }
+
 .basic-grey h1 {
     font-size: 25px;
     padding: 0px 0px 10px 40px;
     display: block;
-    border-bottom:1px solid #E4E4E4;
-    margin: -10px -15px 30px -10px;;
+    border-bottom: 1px solid #E4E4E4;
+    margin: -10px -15px 30px -10px;
+    ;
     color: #888;
 }
+
 .basic-grey h1>span {
     display: block;
     font-size: 11px;
 }
+
 .basic-grey label {
     display: block;
     margin: 0px;
 }
+
 .basic-grey label>span {
     float: left;
     width: 20%;
@@ -40,6 +48,7 @@
     margin-top: 10px;
     color: #888;
 }
+
 .basic-grey input[type="text"], .basic-grey input[type="email"], .basic-grey textarea, .basic-grey select {
     border: 1px solid #DADADA;
     color: #888;
@@ -50,19 +59,21 @@
     outline: 0 none;
     padding: 3px 3px 3px 5px;
     font-size: 12px;
-    line-height:15px;
+    line-height: 15px;
     box-shadow: inset 0px 1px 4px #ECECEC;
     -moz-box-shadow: inset 0px 1px 4px #ECECEC;
     -webkit-box-shadow: inset 0px 1px 4px #ECECEC;
 }
-.basic-grey textarea{
+
+.basic-grey textarea {
     padding: 5px 3px 3px 5px;
 }
+
 .basic-grey select {
     background: #FFF url('down-arrow.png') no-repeat right;
     background: #FFF url('down-arrow.png') no-repeat right);
-    appearance:none;
-    -webkit-appearance:none;
+    appearance: none;
+    -webkit-appearance: none;
     -moz-appearance: none;
     text-indent: 0.01px;
     text-overflow: '';
@@ -70,9 +81,11 @@
     height: 35px;
     line-height: 25px;
 }
-.basic-grey textarea{
-    height:100px;
+
+.basic-grey textarea {
+    height: 100px;
 }
+
 .basic-grey .button {
     background: #E27575;
     border: none;
@@ -83,43 +96,44 @@
     text-shadow: 1px 1px 1px #9E3F3F;
     cursor: pointer;
 }
+
 .basic-grey .button:hover {
     background: #CF7A7A
 }
 
 #currDirHeadingContainer {
-  position: absolute;
+    position: absolute;
 }
 
 #currDirHeading {
-  position: absolute;
-  top: 100px;
-  padding-left: 10px;
+    position: absolute;
+    top: 100px;
+    padding-left: 10px;
 }
 
 #iconToParentDir {
-  border: 1px solid transparent;
-  transform: rotate(-90deg);
+    border: 1px solid transparent;
+    transform: rotate(-90deg);
 }
 
 #iconToParentDir:hover {
-  border: 1px solid black;
+    border: 1px solid black;
 }
 
 #inputarea {
-  position: absolute;
-  top: auto;
-  width: 100%;
-  font-size: 11px;
-  font-family: sans-serif;
-  padding-top: 10px;
+    position: absolute;
+    top: auto;
+    width: 100%;
+    font-size: 11px;
+    font-family: sans-serif;
+    padding-top: 10px;
 }
 
 .inputbox {
-  position: absolute;
-  top: auto;
-  width: 100%;
-  height: 30px;
+    position: absolute;
+    top: auto;
+    width: 100%;
+    height: 30px;
 }
 
 .inputbox input {
@@ -127,25 +141,29 @@
 }
 
 #inputarea ul {
-  position: absolute;
-  top: 49px;
-  width: 460px;
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-  border: none;
-  background-color: #fff;
+    position: absolute;
+    top: 49px;
+    width: 460px;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    border: none;
+    background-color: #fff;
 }
 
 #inputarea li {
-  height: auto;
-  padding: 5px;
-  margin-bottom: -1px;
-  border: 1px solid #ddd;
-  word-break: break-all;
+    height: auto;
+    padding: 5px;
+    margin-bottom: -1px;
+    border: 1px solid #ddd;
+    word-break: break-all;
 }
 
 .active {
-  background-color: #f2f2f2;
-  cursor: pointer;
+    background-color: #f2f2f2;
+    cursor: pointer;
+}
+
+.autocompleteBoxHidden {
+    visibility: hidden;
 }
