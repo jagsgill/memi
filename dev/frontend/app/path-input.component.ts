@@ -30,6 +30,8 @@ export class PathInputComponent implements OnInit, AfterViewInit {
     streamArrowKeys: Subscription;
     streamBackspace: Subscription;
     streamUpdateAutocompleteEntries: Subscription;
+    streamFocusInput: Subscription;
+    streamUnfocusInput: Subscription;
 
     constructor(
         private diskQueryService: DiskUsageService,
@@ -47,10 +49,25 @@ export class PathInputComponent implements OnInit, AfterViewInit {
 
     ngAfterViewInit(): void {
         // configure Observables for path autocompletion and keybindings
+        let inputBox = this.pathInputBox.nativeElement;
+
+        this.streamFocusInput = Observable.fromEvent(
+            inputBox,
+            "focus")
+            .do(e => this.zone.run(() => this.autocompleteActive = true))
+            .subscribe();
+
+        this.streamFocusInput = Observable.fromEvent(
+            inputBox,
+            "focusout")
+            .do(e => this.zone.run(() => this.autocompleteActive = false))
+            .subscribe();
+
         this.streamInputKeyPresses = Observable.fromEvent(
-            this.pathInputBox.nativeElement,
+            inputBox,
             "keydown",
             (event: any) => { return event; });
+
         let slowInputStream = this.streamInputKeyPresses.debounceTime(100);
 
         this.streamUpdateAutocompleteEntries = slowInputStream

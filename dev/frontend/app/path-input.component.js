@@ -34,7 +34,14 @@ var PathInputComponent = (function () {
     PathInputComponent.prototype.ngAfterViewInit = function () {
         var _this = this;
         // configure Observables for path autocompletion and keybindings
-        this.streamInputKeyPresses = rxjs_1.Observable.fromEvent(this.pathInputBox.nativeElement, "keydown", function (event) { return event; });
+        var inputBox = this.pathInputBox.nativeElement;
+        this.streamFocusInput = rxjs_1.Observable.fromEvent(inputBox, "focus")
+            .do(function (e) { return _this.zone.run(function () { return _this.autocompleteActive = true; }); })
+            .subscribe();
+        this.streamFocusInput = rxjs_1.Observable.fromEvent(inputBox, "focusout")
+            .do(function (e) { return _this.zone.run(function () { return _this.autocompleteActive = false; }); })
+            .subscribe();
+        this.streamInputKeyPresses = rxjs_1.Observable.fromEvent(inputBox, "keydown", function (event) { return event; });
         var slowInputStream = this.streamInputKeyPresses.debounceTime(100);
         this.streamUpdateAutocompleteEntries = slowInputStream
             .filter(function (event) { return event.key !== "Enter"; })
